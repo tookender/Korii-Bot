@@ -1,0 +1,6 @@
+discord.py
+mystbin.py
+git+https://github.com/Gorialis/jishaku
+asyncpg
+isort
+black
