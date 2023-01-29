@@ -1,4 +1,4 @@
-# Korii Bot
+# 🤖 Korii Bot
 Korii Bot is a multi-purpose and open-source Discord Bot written in [`Python`](https://python.org) and [`discord.py`](https://github.com/Rapptz/discord.py).
 
 ## Installing & Running
