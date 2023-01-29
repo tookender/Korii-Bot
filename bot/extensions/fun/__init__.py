@@ -1,5 +1,5 @@
-from extensions.fun.animals import AnimalsCog
-from extensions.fun.random import RandomCog
+from .animals import AnimalsCog
+from .random import RandomCog
 
 
 class Fun(RandomCog, AnimalsCog):

@@ -3,14 +3,15 @@ import logging
 
 import discord
 import jishaku
-from bot import Korii
+from bot import Korii, config
 
 jishaku.Flags.HIDE = True
-jishaku.Flags.RETAIN = True
 jishaku.Flags.NO_UNDERSCORE = True
 jishaku.Flags.NO_DM_TRACEBACK = True
 jishaku.Flags.USE_ANSI_ALWAYS = True
 jishaku.Flags.FORCE_PAGINATOR = True
+
+discord.VoiceClient.warn_nacl = False
 
 
 async def main():

@@ -6,7 +6,7 @@ from bot import Korii
 from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
-from utilities.subclasses import Embed
+from bot.utilities.embed import Embed
 
 
 class BasicCog(commands.Cog):
@@ -15,8 +15,7 @@ class BasicCog(commands.Cog):
 
     @app_commands.command(description="Kicks the specified member from the server.")
     @app_commands.guild_only()
-    @app_commands.checks.has_permissions(kick_members=True)
-    @app_commands.checks.bot_has_permissions(kick_members=True)
+    @app_commands.default_permissions(moderate_members=True)
     @app_commands.describe(member="The member to kick.")
     @app_commands.describe(reason="The reason we are kicking this member.")
     @app_commands.describe(

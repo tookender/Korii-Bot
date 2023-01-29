@@ -4,7 +4,7 @@ import discord
 from bot import Korii
 from discord import app_commands
 from discord.ext import commands
-from utilities.subclasses import Embed
+from bot.utilities.embed import Embed
 
 
 class EmbedCog(commands.Cog):

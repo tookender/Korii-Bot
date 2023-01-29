@@ -6,7 +6,7 @@ Before trying to install and run the bot, make sure you have installed [`Python`
 1. Install the project dependencies: `poetry install`.
 2. Rename the `config.toml.example` to `config.toml`.
 3. Fill in all the required details in the `config.toml` file.
-4. Running the bot: `poetry run python -m bot`
+4. Running the bot: `poetry run python bot`
 
 ## Contributing
 We appreciate you for wanting to contribute to the project. If you are going to contribute, please follow the guidelines listed below:

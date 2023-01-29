@@ -1,4 +1,4 @@
-from extensions.events.guild import GuildCog
+from .guild import GuildCog
 
 
 class Events(GuildCog):

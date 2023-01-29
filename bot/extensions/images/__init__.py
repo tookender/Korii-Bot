@@ -1,4 +1,4 @@
-from extensions.images.jeyy_api import JeyyAPICog
+from .jeyy_api import JeyyAPICog
 
 
 class Images(JeyyAPICog):

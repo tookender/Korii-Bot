@@ -5,4 +5,4 @@ from dataclasses import dataclass
 class Configuration:
     BOT_TOKEN: str
     POSTGRESQL: str
-    EXTENSIONS: list[str]
+    

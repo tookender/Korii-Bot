@@ -4,12 +4,13 @@ from datetime import datetime
 
 import aiohttp
 import asyncpg
-import config
+from bot import config
 import discord
 import mystbin as mystbin_library
 from discord import Embed, app_commands
 from discord.ext import commands
-from utilities.classes.config import Configuration
+from bot.utilities.config import Configuration
+import pathlib
 
 
 class KoriiComandTree(app_commands.CommandTree):
@@ -66,7 +67,6 @@ class Korii(commands.AutoShardedBot):
         self.config: Configuration = Configuration(
             BOT_TOKEN=config.BOT_TOKEN,
             POSTGRESQL=config.DATABASE,
-            EXTENSIONS=config.EXTENSIONS,
         )
 
         self.owner_ids = {1022842005920940063, 746807014658801704}
@@ -133,13 +133,17 @@ class Korii(commands.AutoShardedBot):
 
         # Loading extensions
 
-        for extension in self.config.EXTENSIONS:
+        await self.load_extension("jishaku")
+
+        for path in pathlib.Path("./bot/extensions").glob("*/__init__.py"):
+            path = str(path.parent).replace("/", ".").replace("\\", ".")
             try:
-                await self.load_extension(extension)
-                logging.info(f"[EXT] Loaded {extension}")
+                await self.load_extension(path)
+                logging.info(f"[EXT] Loaded {path}")
 
             except Exception as error:
-                logging.error(f"[EXT] Failed to load {extension}", exc_info=error)
+                logging.error(f"[EXT] Failed to load {path}", exc_info=error)
+
 
     async def shorten_text(self, text: str, length: int | None = None, code: int | None = None, link: bool = False):
         """ A function to shorten text

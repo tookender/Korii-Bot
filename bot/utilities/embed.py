@@ -9,7 +9,7 @@ class Embed(discord.Embed):
         executed: Optional[str] = None,
         requested: Optional[str] = None,
         **kwargs,
-    ):
+    ) -> None:
         super().__init__(**kwargs)
         if not kwargs.get("color"):
             self.color = 0x2F3136
@@ -26,10 +26,8 @@ class Embed(discord.Embed):
         name: Any,
         value: Any,
         inline: bool = True,
-        no_title: bool = False,
-    ):
+        title: bool = True,
+    ) -> None:
         super().add_field(
-            name=name.title() if no_title else name,
-            value=value,
-            inline=inline,
+            name=name.title() if title else name, value=value, inline=inline
         )
