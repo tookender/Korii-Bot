@@ -4,7 +4,7 @@ import discord
 from bot import Korii
 from discord import app_commands
 from discord.ext import commands
-from bot.utilities.embed import Embed
+from bot import Embed
 
 
 class UserInfoView(discord.ui.View):

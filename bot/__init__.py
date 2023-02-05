@@ -1,3 +1,4 @@
-from .bot import Korii
+from .models import *
 from .utilities import *
-from .extensions import *
+from .bot import Korii
+from .config import *

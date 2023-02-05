@@ -4,7 +4,7 @@ import random
 import discord
 from bot import Korii
 from discord.ext import commands
-from bot.utilities.embed import Embed
+from bot import Embed
 
 
 class GuildCog(commands.Cog):

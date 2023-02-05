@@ -6,7 +6,7 @@ from bot import Korii
 from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
-from bot.utilities.embed import Embed
+from bot import Embed
 
 
 class BasicCog(commands.Cog):

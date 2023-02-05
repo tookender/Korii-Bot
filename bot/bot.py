@@ -1,59 +1,22 @@
+import datetime
 import logging
-import random
-from datetime import datetime
 
 import aiohttp
 import asyncpg
-from bot import config
 import discord
 import mystbin as mystbin_library
-from discord import Embed, app_commands
 from discord.ext import commands
-from bot.utilities.config import Configuration
-import pathlib
-
-
-class KoriiComandTree(app_commands.CommandTree):
-    async def on_error(
-        self,
-        interaction: discord.Interaction,
-        error: app_commands.AppCommandError,
-    ) -> None:
-        if interaction.command:
-            embed = Embed(
-                title=f"{interaction.client.E['close']} Error",  # type: ignore
-                color=discord.Color.red(),
-            )
-
-            embed.add_field(name="Reason", value=error)
-
-        embed = Embed(
-            title=f"{interaction.client.E['close']} Unexpected Error",  # type: ignore
-            description="We are sorry for this inconvenience.\n"
-            "The developers have been notified about this and will fix it.",
-            color=discord.Color.red(),
-        )
-
-        embed.add_field(name="Reason", value=error)
-
-        if interaction.response.is_done():
-            return await interaction.followup.send(embed=embed, ephemeral=True)
-
-        return await interaction.response.send_message(embed=embed, ephemeral=True)
+from bot import models
 
 
 class Korii(commands.AutoShardedBot):
+    user: discord.ClientUser
     pool: asyncpg.Pool
     session: aiohttp.ClientSession
+    uptime: datetime.datetime
     mystbin: mystbin_library.Client
 
-    __slots__: tuple = (
-        "pool",
-        "session",
-        "mystbin",
-    )
-
-    def __init__(self, **kwargs):
+    def __init__(self):
         super().__init__(
             command_prefix=commands.when_mentioned_or("s!"),
             description="A multi-purpose bot with swag 😎\n"
@@ -61,88 +24,40 @@ class Korii(commands.AutoShardedBot):
             "**Docs:** https://bot.korino.xyz/docs",
             intents=discord.Intents.all(),
             allowed_mentions=discord.AllowedMentions.none(),
-            tree_cls=KoriiComandTree,
-            **kwargs,
-        )
-        self.config: Configuration = Configuration(
-            BOT_TOKEN=config.BOT_TOKEN,
-            POSTGRESQL=config.DATABASE,
+            tree_cls=models.CommandTree,
         )
 
         self.owner_ids = {1022842005920940063, 746807014658801704}
-        self.E: dict = {}  # This will be a dictionary of all cool emojis
+        self.E: dict = {}  # Dictionary of all bot emojis
 
-        self.website = "https://bot.korino.xyz"
-        self.source = "https://bot.korino.xyz/source"
-        self.invite = "https://bot.korino.xyz/invite"
-        self.docs = "https://bot.korino.xyz/docs"
+        self.ext_logger = logging.getLogger("korino.ext")
+        self.cache_logger = logging.getLogger("korino.cache")
 
-    @staticmethod
-    def random_pastel_color() -> discord.Color:
-        return discord.Color.from_hsv(random.random(), 0.28, 0.97)
+    async def on_ready(self):
+        # Loading all emojis into the emoji cache
 
-    @staticmethod
-    def random_neon_color() -> discord.Color:
-        return discord.Color.from_hsv(random.random(), 0.7, 1.0)
-
-    async def on_ready(self) -> None:
-        if not hasattr(self, "launch_time"):
-            self.launch_time = discord.utils.utcnow()
-
-        # Here we are loading all emojis into the emoji cache
+        print("")
 
         emoji_guilds = [1036756543917527161, 1040293187354361857]
+
+        success = 0
+        failed = 0
 
         for guild in emoji_guilds:
             emoji_guild = self.get_guild(guild)
 
             if not emoji_guild:
-                logging.error(f"[CACHE] Emoji guild {guild} not found")
+                self.cache_logger.error(f"Emoji guild {guild} not found")
+                failed += 1
 
             else:
                 for emoji in emoji_guild.emojis:
                     self.E[emoji.name.lower()] = f"<{'a' if emoji.animated else ''}:owo:{emoji.id}>"
 
-                logging.info(f"[CACHE] Emoji guild {guild} has been loaded")
+                self.cache_logger.info(f"Emoji guild {guild} has been loaded")
+                success += 1
 
-    async def setup_hook(self):
-        # Initializing the database
-
-        try:
-            self.pool = await asyncpg.create_pool(self.config.POSTGRESQL)  # type: ignore
-            logging.info("[DB] Connected to database")
-
-        except Exception as error:
-            logging.error(f"[DB] Failed to connect to database", exc_info=error)
-            exit()
-        
-        # Executing the schema.sql to make sure all tables exist
-        
-        with open("schema.sql", "r") as file:
-            schema = file.read()
-
-        await self.pool.execute(schema)  # type: ignore
-
-        file.close()
-
-        # Initializing other essential clients
-
-        self.session = aiohttp.ClientSession()
-        self.mystbin = mystbin_library.Client(session=self.session)
-        self.uptime: datetime = discord.utils.utcnow()
-
-        # Loading extensions
-
-        await self.load_extension("jishaku")
-
-        for path in pathlib.Path("./bot/extensions").glob("*/__init__.py"):
-            path = str(path.parent).replace("/", ".").replace("\\", ".")
-            try:
-                await self.load_extension(path)
-                logging.info(f"[EXT] Loaded {path}")
-
-            except Exception as error:
-                logging.error(f"[EXT] Failed to load {path}", exc_info=error)
+        self.cache_logger.info(f"Loaded {success} out of {success + failed} emoji guilds")
 
 
     async def shorten_text(self, text: str, length: int | None = None, code: int | None = None, link: bool = False):
