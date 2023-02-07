@@ -9,3 +9,22 @@ BEGIN
     END IF;
 END
 $$;
+
+DROP TABLE levels;
+CREATE TABLE IF NOT EXISTS levels (
+    guild_id BIGINT PRIMARY KEY,
+    user_id  BIGINT NOT NULL,
+    level    BIGINT NOT NULL DEFAULT 0,
+    xp       BIGINT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS role_rewards (
+    guild_id BIGINT NOT NULL,
+    role_id  BIGINT PRIMARY KEY,
+    level    BIGINT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS guilds (
+    guild_id          BIGINT  PRIMARY KEY,
+    levelling_enabled BOOLEAN DEFAULT FALSE
+);

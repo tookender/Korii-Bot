@@ -171,8 +171,7 @@ class InfoCog(commands.Cog):
             f"\n"
             f"{self.bot.E['date']} **Joined:** {discord.utils.format_dt(user.joined_at, style='R')}\n"
             f"{self.bot.E['text2']} **Position:** `{sorted(interaction.guild.members, key=lambda m: m.joined_at or discord.utils.utcnow()).index(user) + 1}`\n"
-            f"{self.bot.E['text1']} **Full date:** {discord.utils.format_dt(user.joined_at, style='f')}\n"
-            f"{boosted}",
+            f"{self.bot.E['text1']} **Full date:** {discord.utils.format_dt(user.joined_at, style='f')}"
         )
 
         if user.voice and user.voice.channel:
@@ -194,7 +193,8 @@ class InfoCog(commands.Cog):
             f"{self.bot.E['text2']} **Top Role:** `{user.top_role}`\n"
             f"{self.bot.E['text2']} **Color:** `{user.color}`\n"
             f"{self.bot.E['text1']} **Permissions:** {await self.format_permissions(user.guild_permissions)}\n"
-            f"{voice}",
+            f"{voice}"
+            f"{boosted}",
         )
 
         fetched_user = await self.bot.fetch_user(user.id)
