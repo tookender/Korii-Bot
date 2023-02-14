@@ -1,3 +1,21 @@
+"""
+Korii Bot: A multi-purpose bot with swag 😎
+Copyright (C) 2023 Ender2K89
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
+
 import random
 
 import discord
@@ -28,7 +46,7 @@ class EventsCog(commands.Cog):
 
         if retry_after:
             # If the user still has a message cooldown we return
-            return
+            pass
         
         guild_levelling = await self.bot.pool.fetchval("SELECT levelling_enabled FROM guilds WHERE guild_id = $1", message.guild.id)
 
@@ -37,8 +55,8 @@ class EventsCog(commands.Cog):
             return
         
         # Amount of XP the user should get for the message
-        random_xp = random.randint(21, 33) + (random.randint(4, 7) if len(message.content) > random.randint(31, 46) else 0)
-        data = await self.bot.pool.fetchrow("SELECT level, xp FROM levels WHERE guild_id = $1 AND user_id = $2")
+        random_xp = random.randint(600, 900) + (random.randint(4, 7) if len(message.content) > random.randint(31, 46) else 0)
+        data = await self.bot.pool.fetchrow("SELECT level, xp FROM levels WHERE guild_id = $1 AND user_id = $2", message.guild.id, message.author.id)
 
         if not data:
             # If the user doesn't have any data in the database we add them into the database
@@ -48,8 +66,25 @@ class EventsCog(commands.Cog):
         required_xp = 300 * (data[0] + 1)
 
         if (data[1] + random_xp) > required_xp:
-            await self.bot.pool.execute("UPDATE levels SET level = $1, xp = $2 WHERE guild_id = $3 AND user_id = $4", data[0] + 1, 0, message.guild.id, message.author.id,)
-            
-            embed = Embed()
+            await self.bot.pool.execute("UPDATE levels SET level = $1, xp = $2 WHERE guild_id = $3 AND user_id = $4", data[0] + 1, 0, message.guild.id, message.author.id)
+
+            description = ""
+            role = await self.bot.pool.fetchval("SELECT role_id FROM role_rewards WHERE guild_id = $1 AND level = $2", message.guild.id, data[0] + 1)
+
+            if role:
+                role = message.guild.get_role(role)
+
+                if role:
+                    try:
+                        await message.author.add_roles(role)
+                        description = f"You have received the {role.mention} role."
+
+                    except Exception as error:
+                        description = f"I couldn't give you the {role.mention} role.```prolog\n{error}\n```"
+
+            embed = Embed(title=f"⚡ Level {data[0]} → Level {data[0] + 1}", description=description)
             embed.set_author(name=message.author.display_name, icon_url=message.author.display_avatar)
-            
+
+            return await message.reply(embed=embed)
+        
+        await self.bot.pool.execute("UPDATE levels SET xp = $1 WHERE guild_id = $2 AND user_id = $3", data[1] + random_xp, message.guild.id, message.author.id)
