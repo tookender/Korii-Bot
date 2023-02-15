@@ -12,7 +12,7 @@ Before trying to install and run the bot, make sure you have installed [`Python`
 
 ## Contributing 💁
 We appreciate you for wanting to contribute to the project. If you are going to contribute, please follow the guidelines listed below:
-1. Whenever you create a new file, you must paste the [`LICENSE SUMMARY`](https://github.com/Korino-Development/Korii-Bot/LICENSE_SUMMARY) at the top of the file. It must be in doc strings and have a line break at the end just like shown in other files. If you are going to commit anything, it would be nice if you used emojis at the beginning of your commits, this isn't necessary, but it looks nice.
+1. Whenever you create a new file, you must paste the [`LICENSE SUMMARY`](https://github.com/Korino-Development/Korii-Bot/LICENSE_SUMMARY) at the top of the file. It must be in doc strings and have a line break at the end just like shown in other files.
 2. After you're done contributing, make sure to use `black` and `isort` to format the code. Run the following command to do so: `black bot ; isort bot`.
 
 ## License 📜
