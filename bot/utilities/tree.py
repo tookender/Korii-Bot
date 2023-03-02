@@ -19,12 +19,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from typing import TYPE_CHECKING
 
 import discord
-from discord import Embed, app_commands
+from discord import app_commands
 
 if TYPE_CHECKING:
     from bot import Korii
+    from bot import Embed as CustomEmbed
 else:
     from discord.ext.commands import AutoShardedBot as Korii
+    from discord import Embed as CustomEmbed
 
 
 class CommandTree(app_commands.CommandTree):
@@ -36,14 +38,14 @@ class CommandTree(app_commands.CommandTree):
         error: app_commands.AppCommandError,
     ) -> None:
         if interaction.command:
-            embed = Embed(
+            embed = CustomEmbed(
                 title=f"{self.client.E['close']} Error",
                 color=discord.Color.red(),
             )
 
             embed.add_field(name="Reason", value=error)
 
-        embed = Embed(
+        embed = CustomEmbed(
             title=f"{self.client.E['close']} Unexpected Error",
             description="We are sorry for this inconvenience.\n"
             "The developers have been notified about this and will fix it.",

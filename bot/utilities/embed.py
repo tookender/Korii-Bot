@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 import discord
 
@@ -26,11 +26,10 @@ class Embed(discord.Embed):
         self,
         executed: Optional[str] = None,
         requested: Optional[str] = None,
+        colour = 0x10B981,
         **kwargs,
     ) -> None:
-        super().__init__(**kwargs)
-        if not kwargs.get("color"):
-            self.color = 0x2F3136
+        super().__init__(colour=colour, **kwargs)
 
         if executed:
             self.set_footer(text=f"Executed by {executed}")

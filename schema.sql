@@ -11,10 +11,13 @@ END
 $$;
 
 DROP TABLE levels;
+DROP TABLE guilds;
+DROP TABLE role_rewards;
+
 CREATE TABLE IF NOT EXISTS levels (
     guild_id BIGINT PRIMARY KEY,
     user_id  BIGINT NOT NULL,
-    level    BIGINT NOT NULL DEFAULT 0,
+    level    BIGINT NOT NULL,
     xp       BIGINT NOT NULL DEFAULT 0
 );
 

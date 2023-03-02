@@ -24,7 +24,8 @@ import asyncpg
 import discord
 import mystbin as mystbin_library
 from discord.ext import commands
-from bot import models
+
+from bot import CommandTree, LevellingCacheManager
 
 
 class Korii(commands.AutoShardedBot):
@@ -33,6 +34,7 @@ class Korii(commands.AutoShardedBot):
     session: aiohttp.ClientSession
     uptime: datetime.datetime
     mystbin: mystbin_library.Client
+    levelling_cache: LevellingCacheManager
 
     def __init__(self):
         super().__init__(
@@ -42,19 +44,18 @@ class Korii(commands.AutoShardedBot):
             "**Docs:** https://bot.korino.xyz/docs",
             intents=discord.Intents.all(),
             allowed_mentions=discord.AllowedMentions.none(),
-            tree_cls=models.CommandTree,
+            tree_cls=CommandTree,
         )
 
         self.owner_ids = {1022842005920940063, 746807014658801704}
         self.E: dict = {}  # Dictionary of all bot emojis
-
+        
         self.ext_logger = logging.getLogger("korino.ext")
         self.cache_logger = logging.getLogger("korino.cache")
+        self.levelling_cache_logger = logging.getLogger("korino.cache.levelling")
 
     async def on_ready(self):
         # Loading all emojis into the emoji cache
-
-        print("")
 
         emoji_guilds = [1036756543917527161, 1040293187354361857]
 

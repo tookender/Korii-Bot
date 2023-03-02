@@ -20,11 +20,10 @@ import contextlib
 from typing import Optional
 
 import discord
-from bot import Korii
+from bot import Korii, Embed
 from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
-from bot import Embed
 
 
 class BasicCog(commands.Cog):

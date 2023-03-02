@@ -16,4 +16,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from .tree import CommandTree
+from .faq import FAQCog, FAQView
+from .verify import VerifyCog, VerifyView
+from .welcome import WelcomeCog, WelcomeView
+
+
+class World(FAQCog, VerifyCog, WelcomeCog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.bot.add_view(FAQView())
+        self.bot.add_view(VerifyView())
+        self.bot.add_view(WelcomeView())
+        
+    pass
+
+
+async def setup(bot):
+    await bot.add_cog(World(bot))

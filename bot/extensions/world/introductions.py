@@ -1,5 +1,5 @@
 """
-Korii Bot: A multi-purpose bot with swag 😎
+Korii Bot: A multipurpose bot with swag 😎
 Copyright (C) 2023 Ender2K89
 
 This program is free software: you can redistribute it and/or modify
@@ -16,34 +16,31 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from typing import Optional
-
 import discord
-from bot import Korii
-from discord import app_commands
 from discord.ext import commands
-from bot import Embed
+
+from bot import Embed, Korii
 
 
-class EmbedCog(commands.Cog):
+class IntroductionsCog(commands.Cog):
     def __init__(self, bot: Korii):
         self.bot = bot
 
-    @app_commands.command(description="A command to create custom embeds.")
-    @app_commands.describe(title="The title of the embed.")
-    @app_commands.describe(description="The description of the embed.")
-    @app_commands.describe(color="The color of the embed.")
-    async def embed(
-        self,
-        interaction: discord.Interaction,
-        title: str,
-        description: Optional[str] = None,
-        color: Optional[str] = None,
-    ):
-        embed = Embed(
-            title=title,
-            description=description,
-            color=color,
-        )
+    @commands.command()
+    @commands.is_owner()
+    async def introductions(self, ctx: commands.Context):
+        if not ctx.message.reference:
+            return await ctx.send("No reply.")
+        
+        message = ctx.message.reference.resolved
 
-        await interaction.response.send_message(embed=embed)
+        if not isinstance(message, discord.Message):
+            return await ctx.send("Invalid reply.")
+
+        embed = Embed(
+            title="🎭 Introductions",
+            description="Here you can introduce yourself to the rest of the server.",
+            color=0x10b981,
+        )
+        
+        return await message.edit(content=None, embed=embed, view=IntroductionsView())
