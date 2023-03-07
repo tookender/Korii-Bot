@@ -47,9 +47,28 @@ class FAQView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    @discord.ui.button(emoji="🤖", label="Create Ticket", style=discord.ButtonStyle.green, custom_id="world:verify")
-    async def create(self, interaction: discord.Interaction, button: discord.ui.Button):
-        return await interaction.response.send_modal(TicketModal())
+    @discord.ui.button(emoji="⚡", label="Levelling Rewards", style=discord.ButtonStyle.blurple, custom_id="world:levelling_rewards")
+    async def levelling_rewards(self, interaction: discord.Interaction, button: discord.ui.Button):
+        embed = Embed(
+            title="⚡ Levelling Rewards",
+            description="",
+        )
+
+        # server booster - 
+        # legend - custom color role
+        # master - host your own events/giveaways
+        # professional - more color roles, higher chance of simon in simon says
+        # experienced - create private threads, color roles
+        # apprentice - start activites, use stickers
+        # intermediate - send links, stream, create public threads
+        # beginner - change nickname, add reactions
+
+        return await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @discord.ui.button(emoji="🎫", label="Create Ticket", style=discord.ButtonStyle.green, custom_id="world:verify")
+    async def create_ticket(self, interaction: discord.Interaction, button: discord.ui.Button):
+        return await interaction.response.send_message("This feature is coming soon, for the time being, you can contact the server owner.")
+        #return await interaction.response.send_modal(TicketModal())
 
 
 class FAQCog(commands.Cog):
@@ -74,13 +93,13 @@ class FAQCog(commands.Cog):
         
         embed.add_field(
             name="1️⃣ Where are the rules?",
-            value="You can find the rules at <#1069276775055638548> by clicking the **📜 Rules** button..",
+            value="You can find the rules at <#1069276775055638548> by clicking the **📜 Rules** button.",
             inline=False,
         )
 
         embed.add_field(
             name="2️⃣ How do I get reaction roles?",
-            value="You can get reaction roles at <#1069276775055638548> by clicking the **🎭 Reaction Roles** button..",
+            value="You can get reaction roles at <#1069276775055638548> by clicking the **🎭 Reaction Roles** button.",
             inline=False,        
         )
 
@@ -98,7 +117,13 @@ class FAQCog(commands.Cog):
 
         embed.add_field(
             name="5️⃣ My question was not answered here/I need help.",
-            value="Create a ticket by clicking the **🎫 Create Ticket** below.",
+            value="Create a ticket by clicking the **🎫 Create Ticket** button below.",
+            inline=False,
+        )
+
+        embed.add_field(
+            name="6️⃣ Are there any levelling rewards?",
+            value="Yes, for more info click the **⚡ Levelling Rewards** button below.",
             inline=False,
         )
         

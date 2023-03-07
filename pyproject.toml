@@ -28,6 +28,9 @@ jishaku = {git = "https://github.com/Gorialis/jishaku"}
 mystbin-py = "^5.1.0"
 playwright = "^1.30.0"
 multicolorcaptcha = "^1.2.0"
+pygit2 = "^1.11.1"
+psutil = "^5.9.4"
+humanize = "^4.6.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.12.0"

@@ -17,12 +17,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import datetime
+import itertools
 import logging
+import pathlib
 
 import aiohttp
 import asyncpg
 import discord
 import mystbin as mystbin_library
+import pygit2
 from discord.ext import commands
 
 from bot import CommandTree, LevellingCacheManager
@@ -54,7 +57,29 @@ class Korii(commands.AutoShardedBot):
         self.cache_logger = logging.getLogger("korino.cache")
         self.levelling_cache_logger = logging.getLogger("korino.cache.levelling")
 
+        self.files = self.lines = self.classes = self.functions = self.coroutines = self.comments = 0
+
     async def on_ready(self):
+        # Loading data about the bot's code
+        path = pathlib.Path("./")
+        for file in path.rglob("*.py"):
+            if str(file).startswith("venv"):
+                continue
+
+            self.files += 1
+            with file.open() as file:
+                for line in file.readlines():
+                    line = line.strip()
+                    self.lines += 1
+                    if line.startswith("class"):
+                        self.classes += 1
+                    if line.startswith("def"):
+                        self.functions += 1
+                    if line.startswith("async def"):
+                        self.coroutines += 1
+                    if "#" in line:
+                        self.comments += 1
+
         # Loading all emojis into the emoji cache
 
         emoji_guilds = [1036756543917527161, 1040293187354361857]
@@ -104,6 +129,27 @@ class Korii(commands.AutoShardedBot):
             return f"```{code}\n{text}```[...]({url} 'But wait, there is more!')"
 
         return f"{text}[...]({url} 'But wait, there is more!')"
+
+
+    def format_commit(self, commit: pygit2.Commit) -> str:
+        short, _, _ = commit.message.partition('\n')
+        short_sha2 = commit.hex[0:6]
+        commit_tz = datetime.timezone(datetime.timedelta(minutes=commit.commit_time_offset))
+        commit_time = datetime.datetime.fromtimestamp(commit.commit_time).astimezone(commit_tz)
+
+        # [`hash`](url) message (offset)
+        offset = discord.utils.format_dt(commit_time.astimezone(datetime.timezone.utc), style="R")
+        short = short.split(" ")
+        emoji = short[0]
+        short.pop(0)
+        short = " ".join(short)
+        return f'[`{short_sha2}`](https://github.com/Korino-Development/Korii-Bot/commit/{commit.hex}) {short}'
+
+
+    def get_latest_commits(self, count=5):
+        repo = pygit2.Repository('.git')
+        commits = list(itertools.islice(repo.walk(repo.head.target, pygit2.GIT_SORT_TOPOLOGICAL), count))
+        return '\n'.join(self.format_commit(c) for c in commits)
 
     def yes_no(self, bool: bool):
         """ Returns yes if the value is True and no if the value is False """

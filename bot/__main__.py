@@ -26,7 +26,7 @@ import discord
 import jishaku
 import mystbin
 
-from bot import BOT_TOKEN, DATABASE, Korii, clear, LevellingCacheManager
+from bot import BOT_TOKEN, DATABASE, Korii, LevellingCacheManager
 
 jishaku.Flags.HIDE = True
 jishaku.Flags.NO_UNDERSCORE = True
@@ -61,8 +61,6 @@ async def main():
     discord.utils.setup_logging(level=logging.INFO)
 
     async with Korii() as bot, aiohttp.ClientSession() as session, asyncpg.create_pool(DATABASE) as pool, LevellingCacheManager(pool) as level_cache:
-        clear()
-
         bot.pool = pool
         bot.session = session
         bot.uptime = discord.utils.utcnow()

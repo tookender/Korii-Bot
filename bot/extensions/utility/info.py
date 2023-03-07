@@ -16,13 +16,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import time
 from typing import List, Optional
 
 import discord
-from bot import Korii
+import pkg_resources
+import psutil
 from discord import app_commands
 from discord.ext import commands
-from bot import Embed
+import sys
+
+from bot import Embed, Korii
 
 
 class UserInfoView(discord.ui.View):
@@ -108,6 +112,7 @@ class InfoCog(commands.Cog):
     group = app_commands.Group(name="info", description="Informative commands.")
 
     @group.command(description="View information on the current server.")
+    @app_commands.checks.cooldown(1, 5)
     async def server(self, interaction: discord.Interaction):
         assert interaction.guild and interaction.guild.owner
 
@@ -145,6 +150,7 @@ class InfoCog(commands.Cog):
         return await interaction.response.send_message(embed=embed)
 
     @group.command(description="View information on the specified user.")
+    @app_commands.checks.cooldown(1, 5)
     async def user(
         self,
         interaction: discord.Interaction,
@@ -221,3 +227,81 @@ class InfoCog(commands.Cog):
             embed=embed,
             view=UserInfoView(user=user, fetched_user=fetched_user),
         )
+    
+    @group.command(name="bot", description="View information about the bot.")
+    @app_commands.checks.cooldown(1, 5)
+    async def bot_command(self, interaction: discord.Interaction):
+        github = "https://github.com/Korino-Development/Korii-Bot"
+        invite = "https://bot.spooki.xyz"
+        website = "https://spooki.xyz/bot"
+
+        links = f"{self.bot.E['github']} [`Source`]({github}) | {self.bot.E['invite']} [`Invite`]({invite}) | {self.bot.E['globe']} [`Website`]({website})"
+
+        users = [
+            f"**Total:** `{len(self.bot.users):,}`",
+            f"**Humans:** `{len([user for user in self.bot.users if not user.bot]):,}`",
+            f"**Robots:** `{len([user for user in self.bot.users if user.bot]):,}`",
+        ]
+
+        total_channels = 0
+        text_channels = 0
+        voice_channels = 0
+
+        for guild in self.bot.guilds:
+            for channel in guild.channels:
+                total_channels += 1
+                if isinstance(channel, discord.TextChannel):
+                    text_channels += 1
+
+                elif isinstance(channel, discord.VoiceChannel):
+                    voice_channels += 1
+
+        channels = [
+            f"**Total:** `{total_channels:,}`",
+            f"**Text:** `{text_channels:,}`",
+            f"**Voice:** `{voice_channels:,}`",
+        ]
+
+        system = [
+            f"**CPU:** `{psutil.cpu_percent()}%`",
+            f"**RAM:** `{psutil.virtual_memory().percent}%`",
+            "`/neofetch` for more.",
+        ]
+
+        pool_start = time.perf_counter()
+        await self.bot.pool.fetch("SELECT 1")
+        pool_end = time.perf_counter()
+        total_pool = (pool_end - pool_start) * 1000
+        
+        pings = [
+            f"**Websocket:** `{round(self.bot.latency * 1000, 2)}ms`",
+            f"**Database:** `{round(total_pool, 2)}ms`",
+            "`/ping` for more.",
+        ]
+
+        code = [
+            f"**Lines:** `{self.bot.lines:,}`",
+            f"**Classes:** `{self.bot.classes:,}`",
+            f"**Functions:** `{self.bot.functions:,}`",
+        ]
+
+        postgresql_version = await self.bot.pool.fetchval("SELECT VERSION();")
+
+        versions = [
+            f"**Python:** `{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}`",
+            f"**discord.py:** `{pkg_resources.get_distribution('discord.py').version}`",
+            f"**PostgreSQL:** `{postgresql_version.split()[1]}`",
+        ]
+        
+        embed = Embed(description=f"{links}\n_ _╰ Try `/source <command>`\n\n** Latest Commits**\n{self.bot.get_latest_commits()}")
+        embed.add_field(name="Users", value="\n".join(users))
+        embed.add_field(name="Channels", value="\n".join(channels))
+        embed.add_field(name="Code", value="\n".join(code))
+        embed.add_field(name="System", value="\n".join(system))
+        embed.add_field(name="Pings", value="\n".join(pings))
+        embed.add_field(name="Versions", value="\n".join(versions))
+        embed.set_footer(text="Thank you for choosing Korii 💖")
+
+        return await interaction.response.send_message(embed=embed)
+
+

@@ -16,11 +16,26 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import os
+import subprocess
+
+import discord
+from discord import app_commands
+from discord.ext import commands
+
+from bot import Embed, Korii
 
 
-def clear():
-    if os.name == "nt":
-        return os.system("cls")
-        
-    os.system("clear")
+class NeofetchCog(commands.Cog):
+    def __init__(self, bot: Korii):
+        self.bot: Korii = bot
+
+    @app_commands.command(description="Neofetch but in Discord.")
+    @app_commands.checks.cooldown(1, 5)
+    async def neofetch(self, interaction: discord.Interaction):
+        output = subprocess.check_output(["neofetch", "--off"])
+
+        return await interaction.response.send_message(
+            "```ansi\n"
+            f"{output.decode()[:-311][11:]}\n"
+            "```",
+        )

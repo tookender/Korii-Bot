@@ -17,6 +17,5 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 from .embed import *
-from .clear import *
 from .tree import *
 from .cache import *
