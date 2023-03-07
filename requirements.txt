@@ -8,3 +8,4 @@ playwright
 aggdraw
 black
 isort
+pygit2
