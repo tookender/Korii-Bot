@@ -9,3 +9,6 @@ aggdraw
 black
 isort
 pygit2
+multicolorcaptcha
+humanize
+psutil
