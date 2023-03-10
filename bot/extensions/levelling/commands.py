@@ -23,7 +23,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from bot import Embed, Korii
+from bot import Embed, Korii, Interaction
 
 
 class CommandsCog(commands.Cog):
@@ -33,7 +33,7 @@ class CommandsCog(commands.Cog):
     @app_commands.command(description="View the level of the specified member.")
     @app_commands.describe(user="The user you want to view the level of.")
     @app_commands.guild_only()
-    async def level(self, interaction: discord.Interaction, user: Optional[discord.Member] = None):
+    async def level(self, interaction: Interaction, user: Optional[discord.Member] = None):
         if not interaction.guild or isinstance(interaction.user, discord.User):
             return
         

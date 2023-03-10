@@ -21,10 +21,10 @@ import random
 from typing import Optional
 
 import discord
-from bot import Korii
 from discord import app_commands
 from discord.ext import commands
-from bot import Embed
+
+from bot import Embed, Interaction, Korii
 
 
 class RandomCog(commands.Cog):
@@ -34,7 +34,7 @@ class RandomCog(commands.Cog):
     fun = app_commands.Group(name="fun", description="General entertainment commands.")
 
     async def wait_and_send(
-        self, interaction: discord.Interaction, content: str, wait: int = 2
+        self, interaction: Interaction, content: str, wait: int = 2
     ):
         split = content.split("...")
 
@@ -49,7 +49,7 @@ class RandomCog(commands.Cog):
         user="The user's profile picture you wish to turn into emojis."
     )
     @app_commands.guild_only()
-    async def emojify(self, interaction: discord.Interaction, user: Optional[discord.Member] = None):
+    async def emojify(self, interaction: Interaction, user: Optional[discord.Member] = None):
         assert isinstance(interaction.user, discord.Member)
 
         if not user:
@@ -64,7 +64,7 @@ class RandomCog(commands.Cog):
 
     @fun.command(description="Ask the eightball a question!")
     @app_commands.describe(question="The question you wish to ask the magic eightball.")
-    async def eightball(self, interaction: discord.Interaction, question: str):
+    async def eightball(self, interaction: Interaction, question: str):
         answers = [
             "it is certain",
             "it is decidedly so",
@@ -97,7 +97,7 @@ class RandomCog(commands.Cog):
     @app_commands.describe(user="The user of which you want to measure the banana.")
     @app_commands.guild_only()
     async def banana(
-        self, interaction: discord.Interaction, user: Optional[discord.Member] = None
+        self, interaction: Interaction, user: Optional[discord.Member] = None
     ):
         assert isinstance(interaction.user, discord.Member)
 
@@ -118,7 +118,7 @@ class RandomCog(commands.Cog):
     @app_commands.describe(maximum="The max random number.")
     async def random_number(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         minimum: Optional[int] = None,
         maximum: Optional[int] = None,
     ):
@@ -142,7 +142,7 @@ class RandomCog(commands.Cog):
         )
 
     @fun.command(description="Flip a virtual coin.")
-    async def coinflip(self, interaction: discord.Interaction):
+    async def coinflip(self, interaction: Interaction):
         answers = ["heads", "tails"]
 
         return await self.wait_and_send(
@@ -150,12 +150,12 @@ class RandomCog(commands.Cog):
         )
 
     @fun.command(description="Roll a virtual dice.")
-    async def dice(self, interaction: discord.Interaction):
+    async def dice(self, interaction: Interaction):
         return await self.wait_and_send(
             interaction,
             f"🎲 **|** The dice landed on the number... {random.randint(1, 6)}!",
         )
 
     @fun.command(description="Try it and see.")
-    async def tias(self, interaction: discord.Interaction):
+    async def tias(self, interaction: Interaction):
         return await interaction.response.send_message("https://tryitands.ee/")

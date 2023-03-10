@@ -20,7 +20,7 @@ import discord
 from discord.ext import commands
 from multicolorcaptcha import CaptchaGenerator
 
-from bot import Embed, Korii
+from bot import Embed, Korii, Interaction
 
 
 class AnswerModal(discord.ui.Modal, title="🤖 Human Verification"):
@@ -37,7 +37,7 @@ class AnswerModal(discord.ui.Modal, title="🤖 Human Verification"):
         style=discord.TextStyle.paragraph,
     )
 
-    async def on_submit(self, interaction: discord.Interaction):
+    async def on_submit(self, interaction: Interaction):
         if not interaction.guild or isinstance(interaction.user, discord.User):
             return
 
@@ -48,12 +48,12 @@ class AnswerModal(discord.ui.Modal, title="🤖 Human Verification"):
                 return
 
             await interaction.user.add_roles(role)
-            return await interaction.response.edit_message(content="✅ | You have been verified! Go check out <#1069276775055638548>.", view=None, attachments=[])
+            return await interaction.response.edit_message(content=f"{interaction.client.E['yes']} | You have been verified! Go check out <#1069276775055638548>.", view=None, attachments=[])
         
-        return await interaction.response.edit_message(content="❌ | Wrong! Try again.", view=None, attachments=[])
+        return await interaction.response.edit_message(content=f"{interaction.client.E['no']} | Wrong! Try again.", view=None, attachments=[])
 
 
-    async def on_error(self, interaction: discord.Interaction, error: Exception) -> None:
+    async def on_error(self, interaction: Interaction, error: Exception) -> None:
         return
         
 
@@ -62,7 +62,7 @@ class AnswerView(discord.ui.View):
         super().__init__(timeout=360)
         self.answer = answer
     
-    async def on_timeout(self, interaction: discord.Interaction):
+    async def on_timeout(self, interaction: Interaction):
         for child in self.children:
             if isinstance(child, discord.ui.Button):
                 child.disabled = True
@@ -70,7 +70,7 @@ class AnswerView(discord.ui.View):
         return await interaction.response.edit_message(view=self)
 
     @discord.ui.button(emoji="❓", label="Answer", style=discord.ButtonStyle.green)
-    async def answer_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def answer_button(self, interaction: Interaction, button: discord.ui.Button):
         return await interaction.response.send_modal(AnswerModal(self.answer))
 
 
@@ -79,7 +79,7 @@ class VerifyView(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(emoji="🤖", label="Verify", style=discord.ButtonStyle.green, custom_id="world:verify")
-    async def verify(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def verify(self, interaction: Interaction, button: discord.ui.Button):
         captcha = CaptchaGenerator(6).gen_captcha_image(chars_mode="ascii")
         image = captcha.image
         answer = captcha.characters
@@ -87,6 +87,7 @@ class VerifyView(discord.ui.View):
         image.save("bot/assets/captcha.png", "png")
 
         return await interaction.response.send_message(
+            f"{interaction.client.E['warning']} | Captcha too hard? Click **🤖 Verify** again to generate a new captcha.",
             file=discord.File("bot/assets/captcha.png", filename="captcha.png", description="Captcha image."),
             ephemeral=True,
             view=AnswerView(answer=answer),

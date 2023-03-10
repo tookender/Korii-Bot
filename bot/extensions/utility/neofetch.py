@@ -22,7 +22,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from bot import Embed, Korii
+from bot import Embed, Korii, Interaction
 
 
 class NeofetchCog(commands.Cog):
@@ -31,7 +31,7 @@ class NeofetchCog(commands.Cog):
 
     @app_commands.command(description="Neofetch but in Discord.")
     @app_commands.checks.cooldown(1, 5)
-    async def neofetch(self, interaction: discord.Interaction):
+    async def neofetch(self, interaction: Interaction):
         output = subprocess.check_output(["neofetch", "--off"])
 
         return await interaction.response.send_message(

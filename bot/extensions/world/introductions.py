@@ -19,8 +19,30 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import discord
 from discord.ext import commands
 
-from bot import Embed, Korii
+from bot import Embed, Korii, Interaction
 
+
+class IntroductionsView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(label="Template", emoji="📋", custom_id="world:view_example", style=discord.ButtonStyle.blurple)
+    async def template(self, interaction: Interaction, button: discord.ui.Button):
+        template = [
+            "👋 Hello my name is **[name]**",
+            "⏰ I am **[age]** years old.",
+            "🌎 I am from **[country]**.",
+            "🎮 My hobbies are **[hobbies]**.",
+        ]
+        
+        embed = Embed(
+            title="🎭 Template",
+            description="\n".join(template),
+        )
+
+        embed.set_footer(text="You can modify this template as much as you like. You also don't have to use it, and you can just make your own.")
+
+        return await interaction.response.send_message(embed=embed, ephemeral=True)
 
 class IntroductionsCog(commands.Cog):
     def __init__(self, bot: Korii):
@@ -39,7 +61,8 @@ class IntroductionsCog(commands.Cog):
 
         embed = Embed(
             title="🎭 Introductions",
-            description="Here you can introduce yourself to the rest of the server.",
+            description="Here you can introduce yourself to the rest of the server.\n"
+                        "Click the button below for a template you can use, you can also make your own if you wanna get creative.",
             color=0x10b981,
         )
         

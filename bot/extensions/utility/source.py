@@ -24,7 +24,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from bot import Embed, Korii
+from bot import Embed, Korii, Interaction
 
 
 class SourceCog(commands.Cog):
@@ -33,7 +33,7 @@ class SourceCog(commands.Cog):
 
     @app_commands.command(description="Get the source code of a command or the bot.")
     @app_commands.checks.cooldown(1, 5)
-    async def source(self, interaction: discord.Interaction, command: Optional[str] = None):
+    async def source(self, interaction: Interaction, command: Optional[str] = None):
         url = "https://github.com/Korino-Development/Korii-Bot"
 
         if not command:

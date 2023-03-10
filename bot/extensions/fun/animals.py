@@ -18,11 +18,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import random
 
-import discord
-from bot import Korii, Embed
+from bot import Korii, Embed, Interaction
 from discord import app_commands
 from discord.ext import commands
-from typing import Literal
 from discord.app_commands import Choice
 
 
@@ -46,7 +44,7 @@ class AnimalsCog(commands.Cog):
             Choice(name="🐼 Red Panda", value="red_panda")
         ]
     )
-    async def animal(self, interaction: discord.Interaction, animal: Choice[str], ephemeral: bool = False):
+    async def animal(self, interaction: Interaction, animal: Choice[str], ephemeral: bool = False):
         phrases = ["A very cute", "An adorable", "Very cute and adorable"]
 
         request = await self.bot.session.get(

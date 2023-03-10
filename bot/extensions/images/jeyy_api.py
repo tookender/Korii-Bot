@@ -20,7 +20,7 @@ import io
 from typing import Optional
 
 import discord
-from bot import Korii
+from bot import Korii, Interaction
 from discord import app_commands
 from discord.ext import commands
 
@@ -35,7 +35,7 @@ class JeyyAPICog(commands.Cog):
 
     async def send_embed(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         endpoint: str,
         url: str,
         ephemeral: bool = False,
@@ -59,7 +59,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def pyramid(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -80,7 +80,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def glitch(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -105,7 +105,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def earthquake(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -126,7 +126,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def patpat(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -147,7 +147,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def burn(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -168,7 +168,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def bomb(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -193,7 +193,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def explicit(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -214,7 +214,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def bonk(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -235,7 +235,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def rain(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -256,7 +256,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def shoot(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -277,7 +277,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def print(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -302,7 +302,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def matrix(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -323,7 +323,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def tv(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -348,7 +348,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def laundry(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -373,7 +373,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def pizza(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -394,7 +394,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def shred(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -417,7 +417,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def balls(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -442,7 +442,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def equations(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):
@@ -465,7 +465,7 @@ class JeyyAPICog(commands.Cog):
     @app_commands.guild_only()
     async def cow(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
         ephemeral: bool = False,
     ):

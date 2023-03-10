@@ -16,29 +16,27 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from typing import List, Set, Any
+from typing import List, Set, Any, Optional
 
 import discord
-from discord.ext import commands
 
-from bot import Embed
-            
+from bot import Embed, Interaction
+
 
 class RoleSelector(discord.ui.Select[discord.ui.View]):
-    def __init__(self, available_roles: List[discord.Role], thing: str, max_valuess: int):
+    def __init__(self, available_roles: List[discord.Role], thing: str, max_roles: int):
         options = [discord.SelectOption(label=role.name, value=str(role.id)) for role in available_roles]
 
         super().__init__(
-            placeholder=f"Choose your {thing}...", min_values=0, max_values=len(available_roles), options=options
+            placeholder=f"Choose your {thing}...", min_values=1, max_values=max_roles, options=options
         )
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: Interaction):
         if not interaction.guild or isinstance(interaction.user, discord.User):
             return
 
         def _id_getter(option: discord.SelectOption) -> int:
             role_id = option.value
-            print(f'returning role: {role_id}')
             return int(role_id)
 
         role_ids = list(map(_id_getter, self.options))
@@ -65,78 +63,60 @@ class RoleSelector(discord.ui.Select[discord.ui.View]):
             await interaction.response.send_message(str(e), ephemeral=True)
 
 
-class PronounsView(discord.ui.View):
-    def __init__(self, roles: List[discord.Role]):
+class RoleView(discord.ui.View):
+    def __init__(self, roles: List[discord.Role], max_values: Optional[int] = None):
         super().__init__()
-        self.add_item(RoleSelector(roles, "pronouns", 1))
-
-
-class ContinentsView(discord.ui.View):
-    def __init__(self, roles: List[discord.Role]):
-        super().__init__()
-        self.add_item(RoleSelector(roles, "continent", 1))
-
-
-class PlatformsView(discord.ui.View):
-    def __init__(self, roles: List[discord.Role]):
-        super().__init__()
-        self.add_item(RoleSelector(roles, "platforms", 3))
-
-
-class PingsView(discord.ui.View):
-    def __init__(self, roles: List[discord.Role]):
-        super().__init__()
-        self.add_item(RoleSelector(roles, "pings", len(roles)))
+        self.add_item(RoleSelector(roles, "pronouns", max_values if max_values else len(roles)))
 
 
 class ReactionRoleView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=360)
     
-    @discord.ui.button(label="Pronouns", emoji="🎭", style=discord.ButtonStyle.blurple)
-    async def pronouns(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(label="Pronouns", emoji="🎭", style=discord.ButtonStyle.green)
+    async def pronouns(self, interaction: Interaction, button: discord.ui.Button):
         if not interaction.guild:
             return
 
         role_ids = [1069280060659486742, 1069280196160671765, 1069280245770887348, 1069280277383352360, 1069280309570449479]
         roles: List[discord.Role | Any] = [interaction.guild.get_role(role) for role in role_ids]
 
-        embed = Embed(title="🎭 Select your pronouns!")
+        embed = Embed(title="🎭 Select your pronouns")
 
-        return await interaction.response.send_message(embed=embed, view=PronounsView(roles), ephemeral=True)
+        return await interaction.response.send_message(embed=embed, view=RoleView(roles, 1), ephemeral=True)
 
-    @discord.ui.button(label="Continents", emoji="🌍", style=discord.ButtonStyle.blurple)
-    async def continents(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(label="Continents", emoji="🌍", style=discord.ButtonStyle.green)
+    async def continents(self, interaction: Interaction, button: discord.ui.Button):
         if not interaction.guild:
             return
 
         role_ids = [1069280591142465638, 1069280657974501396, 1069280470858219561, 1069280630929637486, 1069280543851675709, 1069280570875580466]
         roles: List[discord.Role | Any] = [interaction.guild.get_role(role) for role in role_ids]
 
-        embed = Embed(title="🌍 Select your continents!")
+        embed = Embed(title="🌍 Select your continent")
 
-        return await interaction.response.send_message(embed=embed, view=PronounsView(roles), ephemeral=True)
+        return await interaction.response.send_message(embed=embed, view=RoleView(roles, 1), ephemeral=True)
 
-    @discord.ui.button(label="Platforms", emoji="🎮", style=discord.ButtonStyle.blurple)
-    async def platforms(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(label="Platforms", emoji="🎮", style=discord.ButtonStyle.green)
+    async def platforms(self, interaction: Interaction, button: discord.ui.Button):
         if not interaction.guild:
             return
 
         role_ids = [1069280895627964416, 1069280851608735785, 1069280927521460234]
         roles: List[discord.Role | Any] = [interaction.guild.get_role(role) for role in role_ids]
 
-        embed = Embed(title="🎮 Select your platforms!")
+        embed = Embed(title="🎮 Select your platforms")
 
-        return await interaction.response.send_message(embed=embed, view=PronounsView(roles), ephemeral=True)
+        return await interaction.response.send_message(embed=embed, view=RoleView(roles), ephemeral=True)
 
-    @discord.ui.button(label="Pings", emoji="🏓", style=discord.ButtonStyle.blurple)
-    async def pings(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(label="Pings", emoji="🏓", style=discord.ButtonStyle.green)
+    async def pings(self, interaction: Interaction, button: discord.ui.Button):
         if not interaction.guild:
             return
 
         role_ids = [1069281116651008000, 1069281033809309767, 1069281133805711401, 1069281155297325249]
         roles: List[discord.Role | Any] = [interaction.guild.get_role(role) for role in role_ids]
 
-        embed = Embed(title="🏓 Select your pings!")
+        embed = Embed(title="🏓 Select your pings")
 
-        return await interaction.response.send_message(embed=embed, view=PronounsView(roles), ephemeral=True)
+        return await interaction.response.send_message(embed=embed, view=RoleView(roles), ephemeral=True)

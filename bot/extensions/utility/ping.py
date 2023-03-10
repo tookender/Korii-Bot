@@ -16,13 +16,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import asyncio
 import time
+from typing import Coroutine
 
-import discord
 from discord import app_commands
 from discord.ext import commands
 
-from bot import Embed, Korii
+from bot import Embed, Interaction, Korii
 
 
 class PingCog(commands.Cog):
@@ -34,34 +35,21 @@ class PingCog(commands.Cog):
 
     @app_commands.command(description="Pong.")
     @app_commands.checks.cooldown(1, 5)
-    async def ping(self, interaction: discord.Interaction):
+    async def ping(self, interaction: Interaction):
         pings = []
 
-        start_typing = time.perf_counter()
-        await interaction.response.defer(thinking=True)
-        end_typing = time.perf_counter()
-        total_typing = (end_typing - start_typing) * 1000
+        typing = await self.bot.timeit(interaction.response.defer(thinking=True))
+        message = await self.bot.timeit(interaction.followup.send("🏓 | Pong!"))
+        pool = await self.bot.timeit(self.bot.pool.fetch("SELECT 1"))
+        latency = self.bot.latency * 1000
 
-        start_message = time.perf_counter()
-        await interaction.followup.send("🏓 | Pong!")
-        end_message = time.perf_counter()
-        total_message = (end_message - start_message) * 1000
-
-        pool_start = time.perf_counter()
-        await self.bot.pool.fetch("SELECT 1")
-        pool_end = time.perf_counter()
-        total_pool = (pool_end - pool_start) * 1000
-
-        total_latency = self.bot.latency * 1000
-
-        pings.extend([total_typing, total_message, total_pool, total_latency])
+        pings.extend([typing, message, pool, latency])
         total_average = sum(pings) / len(pings)
 
         return await interaction.edit_original_response(
-            content=f"🌐 | `Websocket  `**`{round(total_latency, 2)}ms{self.spaces(total_latency)}`**\n"
-                    f"⌨️ | `Typing     `**`{round(total_typing, 2)}ms{self.spaces(total_typing)}`**\n"
-                    f"💬 | `Message    `**`{round(total_message, 2)}ms{self.spaces(total_message)}`**\n" 
-                    f"🐘 | `Database   `**`{round(total_pool, 2)}ms{self.spaces(total_pool)}`**\n"
+            content=f"🌐 | `Websocket  `**`{round(latency, 2)}ms{self.spaces(latency)}`**\n"
+                    f"⌨️ | `Typing     `**`{round(typing, 2)}ms{self.spaces(typing)}`**\n"
+                    f"💬 | `Message    `**`{round(message, 2)}ms{self.spaces(message)}`**\n" 
+                    f"🐘 | `Database   `**`{round(pool, 2)}ms{self.spaces(pool)}`**\n"
                     f"⚙️ | `Average    `**`{round(total_average, 2)}ms{self.spaces(total_average)}`**"
         )
-

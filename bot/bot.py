@@ -20,6 +20,8 @@ import datetime
 import itertools
 import logging
 import pathlib
+import time
+from typing import Coroutine
 
 import aiohttp
 import asyncpg
@@ -129,7 +131,13 @@ class Korii(commands.AutoShardedBot):
             return f"```{code}\n{text}```[...]({url} 'But wait, there is more!')"
 
         return f"{text}[...]({url} 'But wait, there is more!')"
-
+    
+    async def timeit(self, coro: Coroutine) -> float:
+        start = time.perf_counter()
+        await coro
+        end = time.perf_counter()
+        
+        return (end - start) * 1000
 
     def format_commit(self, commit: pygit2.Commit) -> str:
         short, _, _ = commit.message.partition('\n')
@@ -144,7 +152,6 @@ class Korii(commands.AutoShardedBot):
         short.pop(0)
         short = " ".join(short)
         return f'[`{short_sha2}`](https://github.com/Korino-Development/Korii-Bot/commit/{commit.hex}) {short}'
-
 
     def get_latest_commits(self, count=5):
         repo = pygit2.Repository('.git')

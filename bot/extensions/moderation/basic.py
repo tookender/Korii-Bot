@@ -20,7 +20,7 @@ import contextlib
 from typing import Optional
 
 import discord
-from bot import Korii, Embed
+from bot import Korii, Embed, Interaction
 from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
@@ -41,7 +41,7 @@ class BasicCog(commands.Cog):
     @app_commands.describe(notify="If we should DM the user before we kick them.")
     async def kick(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         member: discord.Member,
         reason: Optional[str],
         silent: bool = False,
@@ -108,7 +108,7 @@ class BasicCog(commands.Cog):
     )
     async def ban(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         member: discord.Member,
         delete_messages: Choice[int],
         reason: Optional[str] = "No reason provided.",
@@ -163,7 +163,7 @@ class BasicCog(commands.Cog):
     )
     async def unban(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: discord.User,
         reason: Optional[str] = "No reason provided.",
         silent: bool = False,

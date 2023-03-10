@@ -26,7 +26,7 @@ from discord import app_commands
 from discord.ext import commands
 import sys
 
-from bot import Embed, Korii
+from bot import Embed, Korii, Interaction
 
 
 class UserInfoView(discord.ui.View):
@@ -36,7 +36,7 @@ class UserInfoView(discord.ui.View):
         self.fetched_user = fetched_user
 
     @discord.ui.button(label="Avatar", style=discord.ButtonStyle.grey)
-    async def avatar(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def avatar(self, interaction: Interaction, button: discord.ui.Button):
         embed = Embed(
             title=f"<:owo:1036761720447828030> {self.user.display_name}'s Avatar"
         )
@@ -46,7 +46,7 @@ class UserInfoView(discord.ui.View):
         return await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="Banner", style=discord.ButtonStyle.grey)
-    async def banner(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def banner(self, interaction: Interaction, button: discord.ui.Button):
         if not self.fetched_user or not self.fetched_user.banner:
             return await interaction.response.send_message(
                 f"{self.user.display_name} doesn't have a banner.", ephemeral=True
@@ -61,7 +61,7 @@ class UserInfoView(discord.ui.View):
         return await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="🗑️", style=discord.ButtonStyle.red)
-    async def delete(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def delete(self, interaction: Interaction, button: discord.ui.Button):
         assert interaction.message
 
         await interaction.message.delete()
@@ -113,7 +113,7 @@ class InfoCog(commands.Cog):
 
     @group.command(description="View information on the current server.")
     @app_commands.checks.cooldown(1, 5)
-    async def server(self, interaction: discord.Interaction):
+    async def server(self, interaction: Interaction):
         assert interaction.guild and interaction.guild.owner
 
         embed = Embed(title="Server Information")
@@ -153,7 +153,7 @@ class InfoCog(commands.Cog):
     @app_commands.checks.cooldown(1, 5)
     async def user(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         user: Optional[discord.Member] = None,
     ):
         assert isinstance(interaction.user, discord.Member) and interaction.guild
@@ -230,7 +230,7 @@ class InfoCog(commands.Cog):
     
     @group.command(name="bot", description="View information about the bot.")
     @app_commands.checks.cooldown(1, 5)
-    async def bot_command(self, interaction: discord.Interaction):
+    async def bot_command(self, interaction: Interaction):
         github = "https://github.com/Korino-Development/Korii-Bot"
         invite = "https://bot.spooki.xyz"
         website = "https://spooki.xyz/bot"

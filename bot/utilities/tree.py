@@ -24,9 +24,11 @@ from discord import app_commands
 if TYPE_CHECKING:
     from bot import Korii
     from bot import Embed as CustomEmbed
+    from bot import Interaction as Interaction
 else:
     from discord.ext.commands import AutoShardedBot as Korii
     from discord import Embed as CustomEmbed
+    from discord import Interaction
 
 
 class CommandTree(app_commands.CommandTree):
@@ -34,7 +36,7 @@ class CommandTree(app_commands.CommandTree):
 
     async def on_error(
         self,
-        interaction: discord.Interaction,
+        interaction: Interaction,
         error: app_commands.AppCommandError,
     ) -> None:
         embed = CustomEmbed(
