@@ -20,9 +20,9 @@ import contextlib
 import random
 
 import discord
-from bot import Korii
 from discord.ext import commands
-from bot import Embed
+
+from bot import Embed, Korii
 
 
 class GuildCog(commands.Cog):
@@ -31,7 +31,8 @@ class GuildCog(commands.Cog):
 
     @commands.Cog.listener("on_guild_join")
     async def smash_or_pass(self, guild: discord.Guild):
-        assert guild.owner
+        if not guild.owner:
+            return
 
         if len([member for member in guild.members if member.bot]) > 20:
             embed = Embed(
@@ -41,7 +42,7 @@ class GuildCog(commands.Cog):
             )
 
             try:
-                await guild.owner.send(embed=embed)
+                return await guild.owner.send(embed=embed)
 
             except:
                 with contextlib.suppress(discord.HTTPException, discord.Forbidden):
@@ -52,8 +53,7 @@ class GuildCog(commands.Cog):
 
         embed = Embed(
             title=f"💖 Thanks for choosing Korii",
-            description="Thank you for choosing **Korii**. We promise to not let you down.\n"
-            "For more information, use the `/help` command.",
+            description="Thank you for choosing **Korii**. We promise to not let you down.\n" "For more information, use the `/help` command.",
         )
 
         try:

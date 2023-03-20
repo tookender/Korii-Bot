@@ -20,10 +20,11 @@ import contextlib
 from typing import Optional
 
 import discord
-from bot import Korii, Embed, Interaction
 from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
+
+from bot import Embed, Interaction, Korii
 
 
 class BasicCog(commands.Cog):
@@ -35,9 +36,7 @@ class BasicCog(commands.Cog):
     @app_commands.default_permissions(moderate_members=True)
     @app_commands.describe(member="The member to kick.")
     @app_commands.describe(reason="The reason we are kicking this member.")
-    @app_commands.describe(
-        silent="If we should send the kick message privately meaning only you can see it."
-    )
+    @app_commands.describe(silent="If we should send the kick message privately meaning only you can see it.")
     @app_commands.describe(notify="If we should DM the user before we kick them.")
     async def kick(
         self,
@@ -85,15 +84,9 @@ class BasicCog(commands.Cog):
     @app_commands.checks.bot_has_permissions(ban_members=True)
     @app_commands.describe(member="The member to ban.")
     @app_commands.describe(reason="The reason we are banning this member.")
-    @app_commands.describe(
-        delete_messages="How much of their recent message history we should delete. Must be between 0 and 7."
-    )
-    @app_commands.describe(
-        silent="If we should send the ban message privately meaning only you can see it."
-    )
-    @app_commands.describe(
-        soft="If we should we instantly unban the member. This deletes the previous messages if specified."
-    )
+    @app_commands.describe(delete_messages="How much of their recent message history we should delete. Must be between 0 and 7.")
+    @app_commands.describe(silent="If we should send the ban message privately meaning only you can see it.")
+    @app_commands.describe(soft="If we should we instantly unban the member. This deletes the previous messages if specified.")
     @app_commands.describe(notify="If we should DM the user before we ban them.")
     @app_commands.choices(
         delete_messages=[
@@ -134,9 +127,7 @@ class BasicCog(commands.Cog):
                 notified = True
                 await member.send(embed=embed)
 
-        await interaction.guild.ban(
-            member, reason=reason, delete_message_days=delete_messages.value
-        )
+        await interaction.guild.ban(member, reason=reason, delete_message_days=delete_messages.value)
 
         if soft:
             await interaction.guild.unban(member, reason=reason)
@@ -158,9 +149,7 @@ class BasicCog(commands.Cog):
     @app_commands.checks.bot_has_permissions(ban_members=True)
     @app_commands.describe(user="The user to unban.")
     @app_commands.describe(reason="The reason we are unbanning this user.")
-    @app_commands.describe(
-        silent="If we should send the unban message privately meaning only you can see it."
-    )
+    @app_commands.describe(silent="If we should send the unban message privately meaning only you can see it.")
     async def unban(
         self,
         interaction: Interaction,

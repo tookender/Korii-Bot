@@ -33,21 +33,15 @@ class RandomCog(commands.Cog):
 
     fun = app_commands.Group(name="fun", description="General entertainment commands.")
 
-    async def wait_and_send(
-        self, interaction: Interaction, content: str, wait: int = 2
-    ):
+    async def wait_and_send(self, interaction: Interaction, content: str, wait: int = 2):
         split = content.split("...")
 
-        await interaction.response.send_message(
-            f"{split[0]}... {self.bot.E['loading']}"
-        )
+        await interaction.response.send_message(f"{split[0]}... {self.bot.E['loading']}")
         await asyncio.sleep(wait)
         return await interaction.edit_original_response(content=content)
 
     @fun.command(description="Turn a user's profile picture into emojis.")
-    @app_commands.describe(
-        user="The user's profile picture you wish to turn into emojis."
-    )
+    @app_commands.describe(user="The user's profile picture you wish to turn into emojis.")
     @app_commands.guild_only()
     async def emojify(self, interaction: Interaction, user: Optional[discord.Member] = None):
         assert isinstance(interaction.user, discord.Member)
@@ -96,9 +90,7 @@ class RandomCog(commands.Cog):
     @fun.command(description="Measures the specified person's banana.")
     @app_commands.describe(user="The user of which you want to measure the banana.")
     @app_commands.guild_only()
-    async def banana(
-        self, interaction: Interaction, user: Optional[discord.Member] = None
-    ):
+    async def banana(self, interaction: Interaction, user: Optional[discord.Member] = None):
         assert isinstance(interaction.user, discord.Member)
 
         if not user:
@@ -145,9 +137,7 @@ class RandomCog(commands.Cog):
     async def coinflip(self, interaction: Interaction):
         answers = ["heads", "tails"]
 
-        return await self.wait_and_send(
-            interaction, f"🪙 **|** The coin landed on... {random.choice(answers)}!"
-        )
+        return await self.wait_and_send(interaction, f"🪙 **|** The coin landed on... {random.choice(answers)}!")
 
     @fun.command(description="Roll a virtual dice.")
     async def dice(self, interaction: Interaction):

@@ -20,14 +20,14 @@ import discord
 from discord.ext import commands
 from multicolorcaptcha import CaptchaGenerator
 
-from bot import Embed, Korii, Interaction
+from bot import Embed, Interaction, Korii
 
 
 class AnswerModal(discord.ui.Modal, title="🤖 Human Verification"):
     def __init__(self, answer: str):
         super().__init__(timeout=360)
         self.answer = answer
-    
+
     code = discord.ui.TextInput(
         label="Code",
         placeholder="The code here...",
@@ -48,25 +48,28 @@ class AnswerModal(discord.ui.Modal, title="🤖 Human Verification"):
                 return
 
             await interaction.user.add_roles(role)
-            return await interaction.response.edit_message(content=f"{interaction.client.E['yes']} | You have been verified! Go check out <#1069276775055638548>.", view=None, attachments=[])
-        
-        return await interaction.response.edit_message(content=f"{interaction.client.E['no']} | Wrong! Try again.", view=None, attachments=[])
+            return await interaction.response.edit_message(
+                content=f"{interaction.client.E['yes']} | You have been verified! Go check out <#1069276775055638548>.",
+                view=None,
+                attachments=[],
+            )
 
+        return await interaction.response.edit_message(content=f"{interaction.client.E['no']} | Wrong! Try again.", view=None, attachments=[])
 
     async def on_error(self, interaction: Interaction, error: Exception) -> None:
         return
-        
+
 
 class AnswerView(discord.ui.View):
     def __init__(self, answer: str):
         super().__init__(timeout=360)
         self.answer = answer
-    
+
     async def on_timeout(self, interaction: Interaction):
         for child in self.children:
             if isinstance(child, discord.ui.Button):
                 child.disabled = True
-        
+
         return await interaction.response.edit_message(view=self)
 
     @discord.ui.button(emoji="❓", label="Answer", style=discord.ButtonStyle.green)
@@ -103,7 +106,7 @@ class VerifyCog(commands.Cog):
     async def verify(self, ctx: commands.Context):
         if not ctx.message.reference:
             return await ctx.send("No reply.")
-        
+
         message = ctx.message.reference.resolved
 
         if not isinstance(message, discord.Message):
@@ -112,6 +115,7 @@ class VerifyCog(commands.Cog):
         embed = Embed(
             title="🤖 Human verification",
             description="Click the **✅ Verify** button below and solve the captcha to verify.",
-            color=0x10b981)
-        
+            color=0x10B981,
+        )
+
         return await message.edit(content=None, embed=embed, view=VerifyView())

@@ -16,24 +16,30 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import subprocess
+import contextlib
+import random
 
 import discord
-from discord import app_commands
 from discord.ext import commands
 
-from bot import Embed, Interaction, Korii
+from bot import Embed, Korii
 
 
-class NeofetchCog(commands.Cog):
+class PingCog(commands.Cog):
     def __init__(self, bot: Korii):
-        self.bot: Korii = bot
+        self.bot = bot
+        self.cooldown: commands.CooldownMapping = commands.CooldownMapping.from_cooldown(1, 30, commands.BucketType.guild)
 
-    @app_commands.command(description="Neofetch but in Discord.")
-    @app_commands.checks.cooldown(1, 5)
-    async def neofetch(self, interaction: Interaction):
-        output = subprocess.check_output(["neofetch", "--off"])
+    @commands.Cog.listener("on_message")
+    async def ping(self, message: discord.Message):
+        bucket = self.cooldown.get_bucket(message)
+        if bucket:
+            retry_after = bucket.update_rate_limit()
+        else:
+            retry_after = None
 
-        return await interaction.response.send_message(
-            "```ansi\n" f"{output.decode()[:-311][11:]}\n" "```",
-        )
+        if retry_after:
+            return
+
+        if self.bot.user.mentioned_in(message):
+            return await message.reply("fuck off")

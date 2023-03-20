@@ -19,13 +19,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import discord
 from discord.ext import commands
 
-from bot import Embed, Korii, Interaction
+from bot import Embed, Interaction, Korii
 
 
 class TicketModal(discord.ui.Modal, title="🎫 Create Ticket"):
     def __init__(self):
         super().__init__(timeout=360)
-    
+
     code = discord.ui.TextInput(
         label="Code",
         placeholder="The code here...",
@@ -38,7 +38,6 @@ class TicketModal(discord.ui.Modal, title="🎫 Create Ticket"):
     async def on_submit(self, interaction: Interaction):
         return
 
-
     async def on_error(self, interaction: Interaction, error: Exception) -> None:
         return
 
@@ -47,7 +46,12 @@ class FAQView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    @discord.ui.button(emoji="⚡", label="Levelling Rewards", style=discord.ButtonStyle.blurple, custom_id="world:levelling_rewards")
+    @discord.ui.button(
+        emoji="⚡",
+        label="Levelling Rewards",
+        style=discord.ButtonStyle.blurple,
+        custom_id="world:levelling_rewards",
+    )
     async def levelling_rewards(self, interaction: Interaction, button: discord.ui.Button):
         rewards = [
             "**` - `** <@&1069284713056977006> Custom color roles",
@@ -58,7 +62,7 @@ class FAQView(discord.ui.View):
             "**` - `** <@&1069284720086634637> Send links, stream, create public threads",
             "**` - `** <@&1069284769000587336> Change your nickname, add reactions",
         ]
-        
+
         embed = Embed(
             title="⚡ Levelling Rewards",
             description="\n".join(rewards),
@@ -68,8 +72,11 @@ class FAQView(discord.ui.View):
 
     @discord.ui.button(emoji="🎫", label="Create Ticket", style=discord.ButtonStyle.green, custom_id="world:verify")
     async def create_ticket(self, interaction: Interaction, button: discord.ui.Button):
-        return await interaction.response.send_message("This feature is coming soon, for the time being, you can contact the server owner.", ephemeral=True)
-        #return await interaction.response.send_modal(TicketModal())
+        return await interaction.response.send_message(
+            "This feature is coming soon, for the time being, you can contact the server owner.",
+            ephemeral=True,
+        )
+        # return await interaction.response.send_modal(TicketModal())
 
 
 class FAQCog(commands.Cog):
@@ -81,7 +88,7 @@ class FAQCog(commands.Cog):
     async def faq(self, ctx: commands.Context):
         if not ctx.message.reference:
             return await ctx.send("No reply.")
-        
+
         message = ctx.message.reference.resolved
 
         if not isinstance(message, discord.Message):
@@ -90,8 +97,9 @@ class FAQCog(commands.Cog):
         embed = Embed(
             title="❓ Frequently Asked Questions",
             description="Here are some frequently asked questions.",
-            color=0x10b981)
-        
+            color=0x10B981,
+        )
+
         embed.add_field(
             name="1️⃣ Where are the rules?",
             value="You can find the rules at <#1069276775055638548> by clicking the **📜 Rules** button.",
@@ -101,7 +109,7 @@ class FAQCog(commands.Cog):
         embed.add_field(
             name="2️⃣ How do I get reaction roles?",
             value="You can get reaction roles at <#1069276775055638548> by clicking the **🎭 Reaction Roles** button.",
-            inline=False,        
+            inline=False,
         )
 
         embed.add_field(
@@ -134,5 +142,5 @@ class FAQCog(commands.Cog):
             value="Create a ticket by clicking the **🎫 Create Ticket** button below.",
             inline=False,
         )
-        
+
         return await message.edit(content=None, embed=embed, view=FAQView())

@@ -29,5 +29,5 @@ CREATE TABLE IF NOT EXISTS role_rewards (
 
 CREATE TABLE IF NOT EXISTS guilds (
     guild_id          BIGINT  PRIMARY KEY,
-    levelling_enabled BOOLEAN DEFAULT FALSE
+    levelling_enabled BOOLEAN DEFAULT NULL
 );

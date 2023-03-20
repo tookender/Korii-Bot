@@ -17,9 +17,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 from .guild import GuildCog
+from .ping import PingCog
 
 
-class Events(GuildCog):
+class Events(GuildCog, PingCog):
     pass
 
 

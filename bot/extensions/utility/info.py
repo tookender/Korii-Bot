@@ -16,6 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import sys
 import time
 from typing import List, Optional
 
@@ -24,9 +25,8 @@ import pkg_resources
 import psutil
 from discord import app_commands
 from discord.ext import commands
-import sys
 
-from bot import Embed, Korii, Interaction
+from bot import Embed, Interaction, Korii
 
 
 class UserInfoView(discord.ui.View):
@@ -37,9 +37,7 @@ class UserInfoView(discord.ui.View):
 
     @discord.ui.button(label="Avatar", style=discord.ButtonStyle.grey)
     async def avatar(self, interaction: Interaction, button: discord.ui.Button):
-        embed = Embed(
-            title=f"<:owo:1036761720447828030> {self.user.display_name}'s Avatar"
-        )
+        embed = Embed(title=f"<:owo:1036761720447828030> {self.user.display_name}'s Avatar")
 
         embed.set_image(url=self.user.display_avatar)
 
@@ -48,13 +46,9 @@ class UserInfoView(discord.ui.View):
     @discord.ui.button(label="Banner", style=discord.ButtonStyle.grey)
     async def banner(self, interaction: Interaction, button: discord.ui.Button):
         if not self.fetched_user or not self.fetched_user.banner:
-            return await interaction.response.send_message(
-                f"{self.user.display_name} doesn't have a banner.", ephemeral=True
-            )
+            return await interaction.response.send_message(f"{self.user.display_name} doesn't have a banner.", ephemeral=True)
 
-        embed = Embed(
-            title=f"<:owo:1036761720447828030> {self.user.display_name}'s Banner"
-        )
+        embed = Embed(title=f"<:owo:1036761720447828030> {self.user.display_name}'s Banner")
 
         embed.set_image(url=self.fetched_user.banner.url)
 
@@ -73,21 +67,12 @@ class InfoCog(commands.Cog):
         self.bot: Korii = bot
 
     async def format_permissions(self, permissions: discord.Permissions):
-        staff_permissions = dict(
-            {x for x in permissions if x[1] is True}
-            - set(discord.Permissions(521942715969))
-        )
+        staff_permissions = dict({x for x in permissions if x[1] is True} - set(discord.Permissions(521942715969)))
 
         formatted_permissions = []
 
         for x in staff_permissions:
-            formatted_permissions.append(
-                x.replace("_", " ")
-                .replace("guild", "server")
-                .replace("tts", "TTS")
-                .replace("log", "logs")
-                .title()
-            )
+            formatted_permissions.append(x.replace("_", " ").replace("guild", "server").replace("tts", "TTS").replace("log", "logs").title())
 
         if len(formatted_permissions) > 5:
             joined_permissions = ", ".join(formatted_permissions)
@@ -195,7 +180,7 @@ class InfoCog(commands.Cog):
             f"\n"
             f"{self.bot.E['date']} **Joined:** {discord.utils.format_dt(user.joined_at, style='R')}\n"
             f"{self.bot.E['text2']} **Position:** `{sorted(interaction.guild.members, key=lambda m: m.joined_at or discord.utils.utcnow()).index(user) + 1}`\n"
-            f"{self.bot.E['text1']} **Full date:** {discord.utils.format_dt(user.joined_at, style='f')}"
+            f"{self.bot.E['text1']} **Full date:** {discord.utils.format_dt(user.joined_at, style='f')}",
         )
 
         if user.voice and user.voice.channel:
@@ -227,7 +212,7 @@ class InfoCog(commands.Cog):
             embed=embed,
             view=UserInfoView(user=user, fetched_user=fetched_user),
         )
-    
+
     @group.command(name="bot", description="View information about the bot.")
     @app_commands.checks.cooldown(1, 5)
     async def bot_command(self, interaction: Interaction):
@@ -272,7 +257,7 @@ class InfoCog(commands.Cog):
         await self.bot.pool.fetch("SELECT 1")
         pool_end = time.perf_counter()
         total_pool = (pool_end - pool_start) * 1000
-        
+
         pings = [
             f"**Websocket:** `{round(self.bot.latency * 1000, 2)}ms`",
             f"**Database:** `{round(total_pool, 2)}ms`",
@@ -292,7 +277,7 @@ class InfoCog(commands.Cog):
             f"**discord.py:** `{pkg_resources.get_distribution('discord.py').version}`",
             f"**PostgreSQL:** `{postgresql_version.split()[1]}`",
         ]
-        
+
         embed = Embed(description=f"{links}\n_ _╰ Try `/source <command>`\n\n** Latest Commits**\n{self.bot.get_latest_commits()}")
         embed.add_field(name="Users", value="\n".join(users))
         embed.add_field(name="Channels", value="\n".join(channels))
@@ -303,5 +288,3 @@ class InfoCog(commands.Cog):
         embed.set_footer(text="Thank you for choosing Korii 💖")
 
         return await interaction.response.send_message(embed=embed)
-
-

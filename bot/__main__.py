@@ -49,11 +49,11 @@ async def load_extensions(bot: Korii) -> None:
             await bot.load_extension(extension)
             bot.ext_logger.info(f"Loaded {extension}")
             success += 1
-        
+
         except Exception as error:
             bot.ext_logger.error(f"Failed to load {extension}", exc_info=error)
             failed += 1
-    
+
     return bot.ext_logger.info(f"Loaded {success} out of {success + failed} extensions")
 
 
@@ -72,7 +72,12 @@ async def main():
 
         await load_extensions(bot)
 
-        await bot.start(BOT_TOKEN)
+        try:
+            await bot.start(BOT_TOKEN)
+
+        except KeyboardInterrupt:
+            return
+
 
 if __name__ == "__main__":
     asyncio.run(main())

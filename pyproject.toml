@@ -1,9 +1,9 @@
 [tool.black]
-line-length = 100
+line-length = 150
 
 [tool.isort]
 profile = "black"
-line_length = 100
+line_length = 150
 combine_as_imports = true
 combine_star = true
 

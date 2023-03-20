@@ -21,26 +21,15 @@ from typing import TYPE_CHECKING
 import discord
 from discord import app_commands
 
-if TYPE_CHECKING:
-    from bot import Korii
-    from bot import Embed as CustomEmbed
-    from bot import Interaction as Interaction
-else:
-    from discord.ext.commands import AutoShardedBot as Korii
-    from discord import Embed as CustomEmbed
-    from discord import Interaction
-
 
 class CommandTree(app_commands.CommandTree):
-    client: Korii
-
     async def on_error(
         self,
-        interaction: Interaction,
+        interaction: discord.Interaction,
         error: app_commands.AppCommandError,
     ) -> None:
-        embed = CustomEmbed(
-            title=f"{self.client.E['warning']} Error",
+        embed = discord.Embed(
+            title=f"{self.client.E['warning']} Error",  # type: ignore
             color=discord.Color.red(),
         )
 

@@ -16,9 +16,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from .utilities import *
+from typing import TypeAlias
+
+import discord
+
 from .bot import Korii
 from .config import *
-from typing import TypeAlias
-import discord
+from .utilities import *
+
 Interaction: TypeAlias = discord.Interaction[Korii]

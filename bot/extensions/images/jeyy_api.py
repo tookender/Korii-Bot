@@ -20,18 +20,17 @@ import io
 from typing import Optional
 
 import discord
-from bot import Korii, Interaction
 from discord import app_commands
 from discord.ext import commands
+
+from bot import Interaction, Korii
 
 
 class JeyyAPICog(commands.Cog):
     def __init__(self, bot: Korii):
         self.bot: Korii = bot
 
-    images = app_commands.Group(
-        name="images", description="Commands to manipulate images and more."
-    )
+    images = app_commands.Group(name="images", description="Commands to manipulate images and more.")
 
     async def send_embed(
         self,
@@ -42,20 +41,14 @@ class JeyyAPICog(commands.Cog):
     ):
         await interaction.response.defer(ephemeral=ephemeral)
 
-        request = await self.bot.session.get(
-            f"https://api.jeyy.xyz/image/{endpoint}", params={"image_url": url}
-        )
+        request = await self.bot.session.get(f"https://api.jeyy.xyz/image/{endpoint}", params={"image_url": url})
         buffer = io.BytesIO(await request.read())
         file = discord.File(buffer, filename=f"{endpoint}.gif")
 
         return await interaction.followup.send(file=file, ephemeral=ephemeral)
 
-    @images.command(
-        description="Turn the specified user's profile picture into a pyramid."
-    )
-    @app_commands.describe(
-        user="The user's profile picture you want to turn into a pyramid."
-    )
+    @images.command(description="Turn the specified user's profile picture into a pyramid.")
+    @app_commands.describe(user="The user's profile picture you want to turn into a pyramid.")
     @app_commands.guild_only()
     async def pyramid(
         self,
@@ -96,12 +89,8 @@ class JeyyAPICog(commands.Cog):
             ephemeral=ephemeral,
         )
 
-    @images.command(
-        description="Put an earthquake over the specified user's profile picture."
-    )
-    @app_commands.describe(
-        user="The user's profile picture you want to add an earthquake effect on."
-    )
+    @images.command(description="Put an earthquake over the specified user's profile picture.")
+    @app_commands.describe(user="The user's profile picture you want to add an earthquake effect on.")
     @app_commands.guild_only()
     async def earthquake(
         self,
@@ -184,12 +173,8 @@ class JeyyAPICog(commands.Cog):
             ephemeral=ephemeral,
         )
 
-    @images.command(
-        description="Add an explicit caption over the specified user's profile picture."
-    )
-    @app_commands.describe(
-        user="The user's profile picture you want to add an explicit caption over."
-    )
+    @images.command(description="Add an explicit caption over the specified user's profile picture.")
+    @app_commands.describe(user="The user's profile picture you want to add an explicit caption over.")
     @app_commands.guild_only()
     async def explicit(
         self,
@@ -293,12 +278,8 @@ class JeyyAPICog(commands.Cog):
             ephemeral=ephemeral,
         )
 
-    @images.command(
-        description="Turn the specified user's profile picture into a matrix."
-    )
-    @app_commands.describe(
-        user="The user's profile picture you want to turn into a matrix."
-    )
+    @images.command(description="Turn the specified user's profile picture into a matrix.")
+    @app_commands.describe(user="The user's profile picture you want to turn into a matrix.")
     @app_commands.guild_only()
     async def matrix(
         self,
@@ -339,12 +320,8 @@ class JeyyAPICog(commands.Cog):
             ephemeral=ephemeral,
         )
 
-    @images.command(
-        description="Put the specified user's profile picture in a laundry machine."
-    )
-    @app_commands.describe(
-        user="The user's profile picture you want to put in a laundry machine."
-    )
+    @images.command(description="Put the specified user's profile picture in a laundry machine.")
+    @app_commands.describe(user="The user's profile picture you want to put in a laundry machine.")
     @app_commands.guild_only()
     async def laundry(
         self,
@@ -364,12 +341,8 @@ class JeyyAPICog(commands.Cog):
             ephemeral=ephemeral,
         )
 
-    @images.command(
-        description="Turn the specified user's profile picture into a pizza."
-    )
-    @app_commands.describe(
-        user="The user's profile picture you want to turn into a pizza."
-    )
+    @images.command(description="Turn the specified user's profile picture into a pizza.")
+    @app_commands.describe(user="The user's profile picture you want to turn into a pizza.")
     @app_commands.guild_only()
     async def pizza(
         self,
@@ -411,9 +384,7 @@ class JeyyAPICog(commands.Cog):
         )
 
     @images.command(description="Turn the specified user's profile picture into balls.")
-    @app_commands.describe(
-        user="The user's profile picture you want to turn into balls."
-    )
+    @app_commands.describe(user="The user's profile picture you want to turn into balls.")
     @app_commands.guild_only()
     async def balls(
         self,
@@ -433,12 +404,8 @@ class JeyyAPICog(commands.Cog):
             ephemeral=ephemeral,
         )
 
-    @images.command(
-        description="Make the specified user's profile picture do complex equations."
-    )
-    @app_commands.describe(
-        user="The user's profile picture you want to do complex equations."
-    )
+    @images.command(description="Make the specified user's profile picture do complex equations.")
+    @app_commands.describe(user="The user's profile picture you want to do complex equations.")
     @app_commands.guild_only()
     async def equations(
         self,
@@ -459,9 +426,7 @@ class JeyyAPICog(commands.Cog):
         )
 
     @images.command(description="Turn the specified user's profile picture into a cow.")
-    @app_commands.describe(
-        user="The user's profile picture you want to turn into a cow."
-    )
+    @app_commands.describe(user="The user's profile picture you want to turn into a cow.")
     @app_commands.guild_only()
     async def cow(
         self,

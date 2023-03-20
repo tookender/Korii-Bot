@@ -1,4 +1,3 @@
 [bot.settings]
 token = ""
 database = "postgresql://user:password@host/database"
-extensions = [ "jishaku", "extensions.events", "extensions.fun", "extensions.images", "extensions.utility" ]

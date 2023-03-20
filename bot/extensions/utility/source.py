@@ -24,7 +24,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from bot import Embed, Korii, Interaction
+from bot import Embed, Interaction, Korii
 
 
 class SourceCog(commands.Cog):
@@ -41,24 +41,24 @@ class SourceCog(commands.Cog):
                 title="Here is my source code.",
                 url=url,
                 description="This source code is licensed under the **[`AGPLv3`](https://www.gnu.org/licenses/agpl-3.0.de.html) license**.\n"
-                            "Read more in the **[`README.md`](https://github.com/Korino-Development/Korii-Bot/README.md)**"
+                "Read more in the **[`README.md`](https://github.com/Korino-Development/Korii-Bot/README.md)**",
             )
 
             return await interaction.response.send_message(embed=embed)
-        
+
         object = self.bot.tree.get_command(command)
-        
+
         if not object:
             embed = Embed(
                 title="Here is my source code.",
                 url=url,
                 description="This source code is licensed under the **[`AGPLv3`](https://www.gnu.org/licenses/agpl-3.0.de.html) license**.\n"
-                            "Read more in the **[`README.md`](https://github.com/Korino-Development/Korii-Bot/README.md)**"
+                "Read more in the **[`README.md`](https://github.com/Korino-Development/Korii-Bot/README.md)**",
             )
             embed.set_author(name="Invalid command.")
 
             return await interaction.response.send_message(embed=embed)
-        
+
         source = object.callback.__code__
         module = object.callback.__module__
         filename = source.co_filename
@@ -70,24 +70,24 @@ class SourceCog(commands.Cog):
                     title="Here is my source code.",
                     url=url,
                     description="This source code is licensed under the **[`AGPLv3`](https://www.gnu.org/licenses/agpl-3.0.de.html) license**.\n"
-                                "Read more in the **[`README.md`](https://github.com/Korino-Development/Korii-Bot/README.md)**"
+                    "Read more in the **[`README.md`](https://github.com/Korino-Development/Korii-Bot/README.md)**",
                 )
                 embed.set_author(name="Invalid command.")
 
                 return await interaction.response.send_message(embed=embed)
-            
+
             location = os.path.relpath(filename).replace("\\", "/")
-        
+
         else:
             location = module.replace(".", "/") + ".py"
             url = "https://github.com/Rapptz/discord.py"
-        
+
         final_url = f"{url}/blob/master/{location}#L{first_line_number}-L{first_line_number + len(lines) - 1}"
         embed = Embed(
             title=f"Here is {command}.",
             url=final_url,
             description="This source code is licensed under the **[`AGPLv3`](https://www.gnu.org/licenses/agpl-3.0.de.html) license**.\n"
-                        "Read more in the **[`README.md`](https://github.com/Korino-Development/Korii-Bot/README.md)**."
+            "Read more in the **[`README.md`](https://github.com/Korino-Development/Korii-Bot/README.md)**.",
         )
 
         return await interaction.response.send_message(embed=embed)

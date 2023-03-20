@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import discord
 
@@ -26,7 +26,7 @@ class Embed(discord.Embed):
         self,
         executed: Optional[str] = None,
         requested: Optional[str] = None,
-        colour = 0x10B981,
+        colour=0x10B981,
         **kwargs,
     ) -> None:
         super().__init__(colour=colour, **kwargs)
@@ -45,6 +45,4 @@ class Embed(discord.Embed):
         inline: bool = True,
         title: bool = True,
     ) -> None:
-        super().add_field(
-            name=name.title() if title else name, value=value, inline=inline
-        )
+        super().add_field(name=name.title() if title else name, value=value, inline=inline)

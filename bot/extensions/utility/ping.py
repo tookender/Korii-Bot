@@ -48,8 +48,8 @@ class PingCog(commands.Cog):
 
         return await interaction.edit_original_response(
             content=f"🌐 | `Websocket  `**`{round(latency, 2)}ms{self.spaces(latency)}`**\n"
-                    f"⌨️ | `Typing     `**`{round(typing, 2)}ms{self.spaces(typing)}`**\n"
-                    f"💬 | `Message    `**`{round(message, 2)}ms{self.spaces(message)}`**\n" 
-                    f"🐘 | `Database   `**`{round(pool, 2)}ms{self.spaces(pool)}`**\n"
-                    f"⚙️ | `Average    `**`{round(total_average, 2)}ms{self.spaces(total_average)}`**"
+            f"⌨️ | `Typing     `**`{round(typing, 2)}ms{self.spaces(typing)}`**\n"
+            f"💬 | `Message    `**`{round(message, 2)}ms{self.spaces(message)}`**\n"
+            f"🐘 | `Database   `**`{round(pool, 2)}ms{self.spaces(pool)}`**\n"
+            f"⚙️ | `Average    `**`{round(total_average, 2)}ms{self.spaces(total_average)}`**"
         )
