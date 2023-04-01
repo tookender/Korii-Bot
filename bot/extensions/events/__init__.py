@@ -20,7 +20,7 @@ from .guild import GuildCog
 from .ping import PingCog
 
 
-class Events(GuildCog, PingCog):
+class Events(PingCog, GuildCog): # PingCog needs to be first, it adds attributes
     pass
 
 

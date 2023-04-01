@@ -10,13 +10,13 @@ BEGIN
 END
 $$;
 
-DROP TABLE levels;
-DROP TABLE guilds;
-DROP TABLE role_rewards;
+DROP TABLE IF EXISTS levels;
+DROP TABLE IF EXISTS guilds;
+DROP TABLE IF EXISTS role_rewards;
 
 CREATE TABLE IF NOT EXISTS levels (
-    guild_id BIGINT PRIMARY KEY,
-    user_id  BIGINT NOT NULL,
+    guild_id BIGINT NOT NULL,
+    user_id  BIGINT PRIMARY KEY,
     level    BIGINT NOT NULL,
     xp       BIGINT NOT NULL DEFAULT 0
 );
@@ -28,6 +28,11 @@ CREATE TABLE IF NOT EXISTS role_rewards (
 );
 
 CREATE TABLE IF NOT EXISTS guilds (
-    guild_id          BIGINT  PRIMARY KEY,
-    levelling_enabled BOOLEAN DEFAULT NULL
+    guild_id               BIGINT  PRIMARY KEY,
+    levelling_enabled      BOOLEAN DEFAULT FALSE,
+    levelling_announce     BOOLEAN DEFAULT TRUE,
+    levelling_channel      BIGINT,
+    levelling_message      TEXT DEFAULT '**GG**, **{user}** has reached level **{level}**!',
+    levelling_double_xp    BOOLEAN DEFAULT FALSE,
+    levelling_delete_after INT DEFAULT NULL
 );

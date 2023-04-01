@@ -16,13 +16,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+from .config import ConfigCog
 from .info import InfoCog
 from .neofetch import NeofetchCog
 from .ping import PingCog
 from .source import SourceCog
 
 
-class Utility(InfoCog, NeofetchCog, PingCog, SourceCog):
+class Utility(ConfigCog, InfoCog, NeofetchCog, PingCog, SourceCog):
     pass
 
 

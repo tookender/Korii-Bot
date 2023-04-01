@@ -52,6 +52,11 @@ class Korii(commands.AutoShardedBot):
 
         self.owner_ids = {1022842005920940063, 555818548291829792}
         self.E: dict = {}  # Dictionary of all bot emojis
+        self.bool_emojis = {
+            True: "🟩",
+            False: "🟥",
+            None: "⬜",
+        }
 
         self.ext_logger = logging.getLogger("korino.ext")
         self.cache_logger = logging.getLogger("korino.cache")

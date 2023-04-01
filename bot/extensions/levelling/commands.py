@@ -42,7 +42,7 @@ class CommandsCog(commands.Cog):
         if not guild_levelling:
             embed = Embed(
                 title="⚡ | Levelling disabled!",
-                description="This guild has levelling disabled, to enable it use the `/config` command.",
+                description="This guild has levelling disabled, to enable it use the `/config levelling` command.",
             )
 
             return await interaction.response.send_message(embed=embed)

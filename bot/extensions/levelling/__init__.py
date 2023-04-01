@@ -22,7 +22,7 @@ from .commands import CommandsCog
 from .events import EventsCog
 
 
-class Levelling(EventsCog, CommandsCog):
+class Levelling(EventsCog, CommandsCog): # EventsCog needs to be first, it adds attributes
     pass
 
 

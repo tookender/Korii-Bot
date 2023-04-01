@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import math
 import random
-from typing import Optional
 
 import discord
 from discord.ext import commands
@@ -62,10 +61,15 @@ class EventsCog(commands.Cog):
 
         if retry_after:
             # If the user still has a message cooldown we return
-            return
+            pass
 
         # Amount of XP the user should get for the message
         random_xp = random.randint(24, 34) + (random.randint(4, 7) if len(message.content) > random.randint(34, 44) else 0)
+        
+        double_xp = await self.bot.pool.fetchval("SELECT levelling_double_xp FROM guilds WHERE guild_id = $1", message.guild.id)
+        if double_xp:
+            random_xp = random_xp * 2
+
         data = await self.bot.pool.fetchrow(
             "SELECT level, xp FROM levels WHERE guild_id = $1 AND user_id = $2",
             message.guild.id,
@@ -82,7 +86,6 @@ class EventsCog(commands.Cog):
                 random_xp,
             )
 
-        # This is the amount of required XP for the next level, each level is 300 XP more than the previous
         required_xp = math.floor(10 * (data[0] ^ 2) + (55 * data[0]) + 100)
 
         if (data[1] + random_xp) > required_xp:
@@ -111,10 +114,30 @@ class EventsCog(commands.Cog):
                     except Exception as error:
                         description = f"I couldn't give you the {role.mention} role.```prolog\n{error}\n```"
 
-            embed = Embed(title=f"⚡ Level {data[0]} → Level {data[0] + 1}", description=description)
+            embed = Embed(title=f"⚡ Level {data[0]} → Level {data[0] + 1}", description=f"\n\n{description}")
             embed.set_author(name=message.author.display_name, icon_url=message.author.display_avatar)
 
-            return await message.reply(embed=embed)
+            message_formats = {
+                "user": message.author.display_name,
+                "user_mention": message.author.mention,
+                "guild": message.guild.name,
+                "level": data[0] + 1,
+            }
+            message_format = await self.bot.pool.fetchval("SELECT levelling_message FROM guilds WHERE guild_id = $1", message.guild.id)
+            channel_id = await self.bot.pool.fetchval("SELECT levelling_channel FROM guilds WHERE guild_id = $1", message.guild.id)
+
+            if not channel_id:
+                channel = message.channel
+            else:
+                channel = message.guild.get_channel(channel_id)
+            
+            if channel == message.channel:
+                return await message.reply(content=message_format.format(**message_formats), embed=embed)
+
+            if not isinstance(channel, discord.TextChannel):
+                return
+
+            return await channel.send(content=message_format.format(**message_formats), embed=embed)
 
         return await self.bot.pool.execute(
             "UPDATE levels SET xp = $1 WHERE guild_id = $2 AND user_id = $3",
