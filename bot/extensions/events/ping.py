@@ -32,7 +32,11 @@ class PingCog(commands.Cog):
 
     @commands.Cog.listener("on_message")
     async def ping(self, message: discord.Message):
+        if message.reference and message.reference.resolved:
+            return
+
         bucket = self.cooldown.get_bucket(message)
+        
         if bucket:
             retry_after = bucket.update_rate_limit()
         else:

@@ -1,0 +1,20 @@
+default_stages: [commit]
+repos:
+-	repo: local
+	hooks:
+	-   id: post-checkout-local
+		name: poetry install
+        always_run: true
+        language: system
+        entry: poetry install
+        stages: [post-checkout]
+    -   id: isort
+		name: isort
+        language: system
+        entry: poetry run isort
+        files: \.pyi?$
+    -   id: black
+        name: black
+        language: system
+        entry: poetry run black
+        files: \.pyi?$

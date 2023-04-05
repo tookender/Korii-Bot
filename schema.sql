@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS guilds (
     levelling_enabled      BOOLEAN DEFAULT FALSE,
     levelling_announce     BOOLEAN DEFAULT TRUE,
     levelling_channel      BIGINT,
-    levelling_message      TEXT DEFAULT '**GG**, **{user}** has reached level **{level}**!',
+    levelling_message      TEXT    DEFAULT '**GG**, **{user}** has reached level **{level}**!',
     levelling_double_xp    BOOLEAN DEFAULT FALSE,
-    levelling_delete_after INT DEFAULT NULL
+    levelling_delete_after INT     DEFAULT NULL
 );

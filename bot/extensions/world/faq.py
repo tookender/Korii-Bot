@@ -54,18 +54,18 @@ class FAQView(discord.ui.View):
     )
     async def levelling_rewards(self, interaction: Interaction, button: discord.ui.Button):
         rewards = [
-            "**` - `** <@&1069284713056977006> Custom color roles",
-            "**` - `** <@&1069284714311057478> Host your own events",
-            "**` - `** <@&1069284715498053632> More color roles, higher chance of Simon",
-            "**` - `** <@&1069284717821710368> Create private threads, color roles",
-            "**` - `** <@&1069284719197442129> Start activities, use stickers",
-            "**` - `** <@&1069284720086634637> Send links, stream, create public threads",
-            "**` - `** <@&1069284769000587336> Change your nickname, add reactions",
+            "<@&1069284713056977006> Custom color roles",
+            "<@&1069284714311057478> Host your own events",
+            "<@&1069284715498053632> More color roles, higher chance of Simon",
+            "<@&1069284717821710368> Create private threads, color roles",
+            "<@&1069284719197442129> Start activities, use stickers",
+            "<@&1069284720086634637> Send links, stream, create public threads",
+            "<@&1069284769000587336> Change your nickname, add reactions",
         ]
 
         embed = Embed(
             title="⚡ Levelling Rewards",
-            description="\n".join(rewards),
+            description="\n".join([f"**` - `** {reward}" for reward in rewards]),
         )
 
         return await interaction.response.send_message(embed=embed, ephemeral=True)

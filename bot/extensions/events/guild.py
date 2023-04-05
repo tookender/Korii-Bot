@@ -38,11 +38,11 @@ class GuildCog(commands.Cog):
             embed = Embed(
                 title=f"💔 Too many robots",
                 description="Your server has more than 20 robots in it, which means it could be a bot farm.\n"
-                "So sadly I will have to leave your server until you have less than 20 robots in your server.",
+                "So sadly I will have to leave your server. Goodbye :(",
             )
 
             try:
-                return await guild.owner.send(embed=embed)
+                await guild.owner.send(embed=embed)
 
             except:
                 with contextlib.suppress(discord.HTTPException, discord.Forbidden):
@@ -53,7 +53,8 @@ class GuildCog(commands.Cog):
 
         embed = Embed(
             title=f"💖 Thanks for choosing Korii",
-            description="Thank you for choosing **Korii**. We promise to not let you down.\n" "For more information, use the `/help` command.",
+            description="Thank you for choosing **Korii**. We promise to not let you down.\n"
+            "For more information, use the `/help` command.",
         )
 
         try:
@@ -63,3 +64,5 @@ class GuildCog(commands.Cog):
             with contextlib.suppress(discord.HTTPException, discord.Forbidden):
                 channel = random.choice(guild.text_channels)
                 await channel.send(embed=embed)
+
+        return await self.bot.pool.execute("INSERT INTO guilds(guild_id) VALUES ($1)", guild.id)

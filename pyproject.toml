@@ -1,5 +1,30 @@
+[tool.poetry]
+name = "korii-bot"
+version = "1.0.0"
+description = "A multi-purpose Discord Bot with swag 😎"
+authors = ["Ender Yeeterson <ender.yeeterson@gmail.com>"]
+license = "GNU Affero General Public License v3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+discord-py = "^2.2.0"
+asyncpg = "^0.27.0"
+pillow = "^9.4.0"
+jishaku = {git = "https://github.com/Gorialis/jishaku"}
+mystbin-py = "^5.1.0"
+multicolorcaptcha = "^1.2.0"
+pygit2 = "^1.11.1"
+psutil = "^5.9.4"
+humanize = "^4.6.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.12.0"
+isort = "^5.11.4"
+
 [tool.black]
 line-length = 150
+target-version = ["py39", "py310", "py311"]
 
 [tool.isort]
 profile = "black"
@@ -10,31 +35,6 @@ combine_star = true
 [tool.pyright]
 typeCheckingMode = "basic"
 reportUnnecessaryTypeIgnoreComment = "warning"
-
-
-[tool.poetry]
-name = "korii-bot"
-version = "1.0.0"
-description = "A multi-purpose Discord Bot with swag 😎"
-authors = ["Ender Yeeterson <ender.yeeterson@gmail.com>"]
-readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10"
-discord-py = "^2.2.0"
-asyncpg = "^0.27.0"
-pillow = "^9.4.0"
-jishaku = {git = "https://github.com/Gorialis/jishaku"}
-mystbin-py = "^5.1.0"
-playwright = "^1.30.0"
-multicolorcaptcha = "^1.2.0"
-pygit2 = "^1.11.1"
-psutil = "^5.9.4"
-humanize = "^4.6.0"
-
-[tool.poetry.group.dev.dependencies]
-black = "^22.12.0"
-isort = "^5.11.4"
 
 
 [build-system]

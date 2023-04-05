@@ -12,8 +12,9 @@ Before trying to install and run the bot, make sure you have installed [`Python`
 
 ## Contributing 💁
 We appreciate you for wanting to contribute to the project. If you are going to contribute, please follow the guidelines listed below:
-1. Whenever you create a new file, you must paste the [`LICENSE SUMMARY`](https://github.com/Korino-Development/Korii-Bot/LICENSE_SUMMARY) at the top of the file. It must be in doc strings and have a line break at the end just like shown in other files.
-2. After you're done contributing, make sure to use `black` and `isort` to format the code. Run the following command to do so: `black bot ; isort bot`.
+1. Make sure you have [`Poetry`](https://python-poetry.org/) installed.
+2. Whenever you create a new file, you must paste the [`LICENSE SUMMARY`](https://github.com/Korino-Development/Korii-Bot/LICENSE_SUMMARY) at the top of the file. It must be in doc strings and have a line break at the end just like shown in other files.
+3. After you're done contributing, make sure to run `poetry run pre-commit install --hook-type pre-commit --hook-type post-checkout` to format all the files.
 
 ## License 📜
 This project is licensed under [`AGPLv3`](https://www.gnu.org/licenses/agpl-3.0.de.html) license. See the [`LICENSE`](https://github.com/Korino-Development/Korii-Bot/LICENSE) file for more information.

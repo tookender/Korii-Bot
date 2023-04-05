@@ -21,8 +21,6 @@ from discord.ext import commands
 
 from bot import Embed, Interaction
 
-from .reaction_roles import ReactionRoleView
-
 
 class WelcomeView(discord.ui.View):
     def __init__(self):
@@ -49,18 +47,6 @@ class WelcomeView(discord.ui.View):
 
         return await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @discord.ui.button(
-        label="Reaction Roles",
-        emoji="🎭",
-        style=discord.ButtonStyle.green,
-        custom_id="world:reaction_roles",
-    )
-    async def reaction_roles(self, interaction: Interaction, button: discord.ui.Button):
-        embed = Embed(title="🎭 Reaction Roles", description="", color=0x10B981)
-
-        return await interaction.response.send_message(embed=embed, ephemeral=True, view=ReactionRoleView())
-
-
 class WelcomeCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -82,10 +68,8 @@ class WelcomeCog(commands.Cog):
             "We offer a lot of stuff including giveaways, events, a Minecraft Server and more!\n\n"
             "Here are the top things to do:\n"
             "**` - `** 📖 Read the rules by clicking **📜 Rules**.\n"
-            "**` - `** 🎭 Grab some personal roles by clicking **🎭 Personal Roles**\n"
             "**` - `** 🛠️ Learn more about our projects and us by visiting [**our website**](https://spooki.xyz).\n"
-            "**` - `** 💬 Chat with other people and make friends in <#1063817144128766033>.",
-            color=0x10B981,
+            "**` - `** 💬 Chat with other people and make friends in <#1082039515067191397>.",
         )
 
         return await message.edit(content=None, embed=embed, view=WelcomeView())
