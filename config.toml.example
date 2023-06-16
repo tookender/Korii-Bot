@@ -1,3 +1,0 @@
-[bot.settings]
-token = ""
-database = "postgresql://user:password@host/database"

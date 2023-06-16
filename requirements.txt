@@ -1,4 +1,3 @@
-# I highly recommend using poetry instead
 discord.py
 asyncpg
 pillow
