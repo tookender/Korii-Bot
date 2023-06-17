@@ -5,7 +5,7 @@ For more information, you can visit the [Korii Bot website](https://korino.dev/b
 ## Installing & Running 📥
 Before trying to install and run the bot, make sure you have installed [`Python`](https://python.org) and create a [`virtual environment`](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/)
 1. Install the required dependencies from the `requirements.txt` file.
-2. Rename the `data/config.toml.example` to `config.toml`.
+2. Rename the `config.toml.example` file in the `data` directory to `config.toml`.
 3. Fill in all the required credentials in the `config.toml` file.
 4. Run the `bot.py` file.
 
@@ -15,4 +15,4 @@ We appreciate you for wanting to contribute to the project. If you are going to 
 2. After you're done contributing, make sure to run the black formatter and the isort formatter.
 
 ## License 📜
-This project is licensed under [`AGPLv3`](https://www.gnu.org/licenses/agpl-3.0.de.html) license. See the [`LICENSE`](https://github.com/Korino-Development/Korii-Bot/LICENSE) file for more information.
+This project is licensed under [`AGPLv3`](https://www.gnu.org/licenses/agpl-3.0.html) license. See the [`LICENSE`](https://github.com/Korino-Development/Korii-Bot/LICENSE) file for more information.
