@@ -9,7 +9,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: SSH into server and update the site
+      - name: SSH into server and update the bot
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_IP }}
