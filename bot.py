@@ -17,141 +17,37 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import asyncio
-import datetime
 import logging
-import pathlib
 
 import asyncpg
 import discord
-import mystbin as mystbin_library
 from aiohttp import ClientSession
-from asyncpg import Pool
-from discord.ext import commands
+from discord import app_commands
 
 import config
-from utils.subclasses.tree import CommandTree
+from utils.subclasses.bot import Korii
 
 
-class Korii(commands.AutoShardedBot):
-    user: discord.ClientUser
-    pool: Pool
-    session: ClientSession
-    uptime: datetime.datetime
-    mystbin: mystbin_library.Client
+discord.VoiceClient.warn_nacl = False
 
-    def __init__(self, *, session: ClientSession, pool: Pool, **kwargs) -> None:
-        intents = discord.Intents.all()
-        # intents.guild_messages = False
-        
-        super().__init__(
-            command_prefix=commands.when_mentioned_or("s!"),
-            case_insensitive=True,
-            strip_after_prefix=True,
-            description="A multi-purpose bot with swag 😎\n" "**Website:** https://bot.korino.xyz\n" "**Docs:** https://bot.korino.xyz/docs",
-            intents=discord.Intents.all(),
-            allowed_mentions=discord.AllowedMentions.none(),
-            tree_cls=CommandTree,
-        )
 
-        self.pool: Pool = pool
-        self.session: ClientSession = session
+async def interaction_check(interaction: discord.Interaction[Korii]):
+    if interaction.client.maintenace:
+        return False
+    return True
 
-        self.owner_ids = {1022842005920940063, 555818548291829792}
-        self.E: dict = {}  # Dictionary of all bot emojis
-        self.bool_emojis = {
-            True: "🟩",
-            False: "🟥",
-            None: "⬜",
-        }
+async def on_error(interaction: discord.Interaction[Korii], error: app_commands.AppCommandError):
+    embed = discord.Embed(
+        title=f"{interaction.client.E['warning']} Error",
+        color=discord.Color.red(),
+    )
 
-        self.ext_logger = logging.getLogger("korii.ext")
-        self.cache_logger = logging.getLogger("korii.cache")
-        self.levelling_cache_logger = logging.getLogger("korii.cache.levelling")
+    embed.add_field(name="Reason", value=error)
 
-        self.files = self.lines = self.classes = self.functions = self.coroutines = self.comments = 0
-    
-    def bot_code(self):
-        """ Loading data about the bot's code """
+    if interaction.response.is_done():
+        return await interaction.followup.send(embed=embed, ephemeral=True)
 
-        path = pathlib.Path("./")
-        for file in path.rglob("*.py"):
-            if str(file).startswith("venv"):
-                continue
-
-            self.files += 1
-            with file.open(encoding="utf-8") as file:
-                for line in file.readlines():
-                    line = line.strip()
-                    self.lines += 1
-                    if line.startswith("class"):
-                        self.classes += 1
-                    if line.startswith("def"):
-                        self.functions += 1
-                    if line.startswith("async def"):
-                        self.coroutines += 1
-                    if "#" in line:
-                        self.comments += 1
-    
-    def emoji_cache(self):
-        """ Loading all emojis into the emoji cache """
-
-        emoji_guilds = [1036756543917527161, 1040293187354361857]
-
-        success = 0
-        failed = 0
-
-        for guild in emoji_guilds:
-            emoji_guild = self.get_guild(guild)
-
-            if not emoji_guild:
-                self.cache_logger.error(f"Emoji guild {guild} not found")
-                failed += 1
-
-            else:
-                for emoji in emoji_guild.emojis:
-                    self.E[emoji.name.lower()] = f"<{'a' if emoji.animated else ''}:owo:{emoji.id}>"
-
-                self.cache_logger.info(f"Emoji guild {guild} has been loaded")
-                success += 1
-
-        self.cache_logger.info(f"Loaded {success} out of {success + failed} emoji guilds")
-
-    async def load_extensions(self) -> None:
-        success = 0
-        failed = 0
-
-        await self.load_extension("jishaku")
-
-        for extension in pathlib.Path("./extensions").glob("*/__init__.py"):
-            extension = str(extension.parent).replace("/", ".").replace("\\", ".")
-            try:
-                await self.load_extension(extension)
-                self.ext_logger.info(f"Loaded {extension}")
-                success += 1
-
-            except Exception as error:
-                self.ext_logger.error(f"Failed to load {extension}", exc_info=error)
-                failed += 1
-
-        return self.ext_logger.info(f"Loaded {success} out of {success + failed} extensions")
-
-    async def on_ready(self):
-        # Establishing some variables
-        self.uptime = discord.utils.utcnow()
-        self.mystbin = mystbin_library.Client()
-
-        # Loading data about the bot's code
-        self.bot_code()
-
-        # Loading all emojis into the emoji cache
-        self.emoji_cache()
-
-        # Loading schemal.sql
-        with open("data/schema.sql") as file:
-            await self.pool.execute(file.read())
-        
-        # Loading all extensions
-        await self.load_extensions()
+    return await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 async def run_bot() -> None:
@@ -159,6 +55,9 @@ async def run_bot() -> None:
 
     async with ClientSession() as session, asyncpg.create_pool(config.DATABASE) as pool,\
         Korii(session=session, pool=pool) as bot:
+
+        bot.tree.interaction_check = interaction_check
+        bot.tree.on_error = on_error
 
         try:
             await bot.start(config.BOT_TOKEN)

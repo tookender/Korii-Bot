@@ -25,7 +25,7 @@ from discord.app_commands import Choice
 from discord.ext import commands
 
 from bot import Korii
-from utils import Embed, Interaction
+from utils import Embed, Interaction, utils
 
 
 class BasicCog(commands.Cog):
@@ -34,7 +34,9 @@ class BasicCog(commands.Cog):
 
     @app_commands.command(description="Kicks the specified member from the server.")
     @app_commands.guild_only()
-    @app_commands.default_permissions(moderate_members=True)
+    @app_commands.default_permissions(kick_members=True)
+    @app_commands.checks.has_permissions(kick_members=True)
+    @app_commands.checks.bot_has_permissions(kick_members=True)
     @app_commands.describe(member="The member to kick.")
     @app_commands.describe(reason="The reason we are kicking this member.")
     @app_commands.describe(silent="If we should send the kick message privately meaning only you can see it.")
@@ -68,7 +70,7 @@ class BasicCog(commands.Cog):
         embed = Embed(
             title=f"{self.bot.E['hammer']} Kicked {member.display_name}",
             color=discord.Color.orange(),
-            executed=f"{interaction.user.display_name} | Notified: {self.bot.yn(notified)}",
+            executed=f"{interaction.user.display_name} | Notified: {utils.yn(notified)}",
         )
 
         embed.add_field(
@@ -81,6 +83,7 @@ class BasicCog(commands.Cog):
 
     @app_commands.command(description="Ban the specified member from the server.")
     @app_commands.guild_only()
+    @app_commands.default_permissions(ban_members=True)
     @app_commands.checks.has_permissions(ban_members=True)
     @app_commands.checks.bot_has_permissions(ban_members=True)
     @app_commands.describe(member="The member to ban.")
@@ -122,7 +125,7 @@ class BasicCog(commands.Cog):
                     f"{self.bot.E['shield']} **Guild:** {interaction.guild.name}\n"
                     f"{self.bot.E['question']} **Reason:** {reason}",
                     color=discord.Color.red(),
-                    executed=f"{interaction.user.display_name} | Soft: {self.bot.yn(soft)}",
+                    executed=f"{interaction.user.display_name} | Soft: {utils.yn(soft)}",
                 )
 
                 notified = True
@@ -136,7 +139,7 @@ class BasicCog(commands.Cog):
         embed = Embed(
             title=f"{self.bot.E['hammer']} Banned {member.display_name}",
             color=discord.Color.red(),
-            executed=f"{interaction.user.display_name} | Soft: {self.bot.yn(soft)} | Notified: {self.bot.yn(notified)}",
+            executed=f"{interaction.user.display_name} | Soft: {utils.yn(soft)} | Notified: {utils.yn(notified)}",
         )
 
         embed.add_field(name=f"{self.bot.E['question']} Reason", value=reason)
@@ -146,6 +149,7 @@ class BasicCog(commands.Cog):
 
     @app_commands.command(description="Unban the specified member from the server.")
     @app_commands.guild_only()
+    @app_commands.default_permissions(ban_members=True)
     @app_commands.checks.has_permissions(ban_members=True)
     @app_commands.checks.bot_has_permissions(ban_members=True)
     @app_commands.describe(user="The user to unban.")

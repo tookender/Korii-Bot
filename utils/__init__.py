@@ -18,9 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from typing import TypeAlias
 
-from .subclasses.embed import *
-from .subclasses.tree import *
-
 from bot import Korii
+
+from .subclasses.embed import *
 
 Interaction: TypeAlias = discord.Interaction[Korii]

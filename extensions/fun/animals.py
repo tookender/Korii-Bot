@@ -46,9 +46,11 @@ class AnimalsCog(commands.Cog):
         ]
     )
     async def animal(self, interaction: Interaction, animal: Choice[str], ephemeral: bool = False):
+        return await interaction.response.send_message("API broke, coming soon.", ephemeral=True)
+
         phrases = ["A very cute", "An adorable", "Very cute and adorable"]
 
-        request = await self.bot.session.get(f"https://some-random-api.ml/animal/{animal.value}")
+        request = await self.bot.session.get(f"https://some-random-api.ml/endpoints/animal/{animal.value}")
         json = await request.json()
         image, fact = json["image"], json["fact"]
 
