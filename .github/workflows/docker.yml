@@ -21,5 +21,5 @@ jobs:
             docker rm korii-bot
             cd Korii-Bot
             git pull https://Korino-Development:${{ secrets.GIT_PASSWORD }}@github.com/Korino-Development/Korii-Bot.git
-            docker build -t Korii-Bot .
-            docker run --name korii-bot -d -p 8080:8080  Korii-Bot
+            docker build -t korii-bot .
+            docker run --name korii-bot -d -p 8080:8080  korii-bot
