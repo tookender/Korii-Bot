@@ -17,9 +17,9 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: |
-            docker stop Korii-Bot
-            docker rm Korii-Bot
+            docker stop korii-bot
+            docker rm korii-bot
             cd Korii-Bot
             git pull https://Korino-Development:${{ secrets.GIT_PASSWORD }}@github.com/Korino-Development/Korii-Bot.git
             docker build -t Korii-Bot .
-            docker run --name Korii-Bot -d -p 8080:8080  Korii-Bot
+            docker run --name korii-bot -d -p 8080:8080  Korii-Bot
