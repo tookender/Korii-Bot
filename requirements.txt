@@ -1,13 +1,8 @@
 discord.py
 asyncpg
-pillow
 git+https://github.com/Gorialis/jishaku
 mystbin-py
-playwright
-aggdraw
 black
 isort
 pygit2
-multicolorcaptcha
-humanize
 psutil
