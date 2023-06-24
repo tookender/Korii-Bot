@@ -89,3 +89,12 @@ def yes_no(bool: bool):
 @discord.utils.copy_doc(yes_no)
 def yn(bool: bool):
     return yes_no(bool)
+
+def to_boolean(argument: str) -> bool:
+    lowered = argument.lower()
+    if lowered in ("yes", "y", "true", "t", "1", "on", "truth", "ye", "yeah", "yup"):
+        return True
+    elif lowered in ("no", "n", "false", "f", "0", "off", "na", "nah", "nop", "nope"):
+        return False
+    else:
+        return True

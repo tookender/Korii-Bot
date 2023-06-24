@@ -32,10 +32,6 @@ class EmbedCog(commands.Cog):
     @app_commands.command(description="Create a custom embed.")
     @app_commands.describe(ephemeral="If the message should be sent ephemerally or not.")
     async def embed(self, interaction: Interaction, ephemeral: bool = False):
-        starter_embed = discord.Embed(
-            title="This is an example of a title",
-            description=f"This is an example of the description. It can be very long and wordy.\nIt can even have new lines, adding ` \\n` will add a new line.\nIt also has __**MARKDOWN SUPPORT**__.\nUnlike the title, you can also use custom emojis in here {interaction.client.E['star']}",
-            color=discord.Color.random()
-        )
+        view = EmbedView(interaction.user)
 
-        return await interaction.response.send_message(view=EmbedView(interaction.user), embed=starter_embed, ephemeral=ephemeral)
+        return await interaction.response.send_message(view=view, embed=view.default_embed(), ephemeral=ephemeral)
