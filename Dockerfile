@@ -2,5 +2,5 @@ FROM python:latest
 WORKDIR /main
 COPY . .
 RUN pip install -r requirements.txt
-RUN apt install neofetch
+RUN apt update && apt install -y neofetch
 CMD ["python", "bot.py"]
