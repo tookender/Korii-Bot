@@ -23,10 +23,10 @@ import asyncpg
 import discord
 from aiohttp import ClientSession
 from discord import app_commands
-from discord.ext import commands
 
 import config
 from utils.subclasses.bot import Korii
+
 
 discord.VoiceClient.warn_nacl = False
 
@@ -37,6 +37,10 @@ async def interaction_check(interaction: discord.Interaction[Korii]):
     return True
 
 async def on_error(interaction: discord.Interaction[Korii], error: app_commands.AppCommandError):
+    errors = {
+        
+    }
+
     embed = discord.Embed(
         title=f"{interaction.client.E['warning']} Error",
         color=discord.Color.red(),

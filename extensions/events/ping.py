@@ -44,6 +44,6 @@ class PingCog(commands.Cog):
 
         if retry_after:
             return
-
-        if self.bot.user.mentioned_in(message):
+        
+        if str(self.bot.user.id) in message.content.lower():
             return await message.reply("fuck off")
