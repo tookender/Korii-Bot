@@ -41,14 +41,8 @@ class BasicCog(commands.Cog):
     @app_commands.describe(reason="The reason we are kicking this member.")
     @app_commands.describe(silent="If we should send the kick message privately meaning only you can see it.")
     @app_commands.describe(notify="If we should DM the user before we kick them.")
-    async def kick(
-        self,
-        interaction: Interaction,
-        member: discord.Member,
-        reason: Optional[str],
-        silent: bool = False,
-        notify: bool = False,
-    ):
+    async def kick(self, interaction: Interaction, member: discord.Member,
+                   reason: Optional[str] = "No reason provided.", silent: bool = False, notify: bool = False):
         assert interaction.guild
 
         notified = False
@@ -56,10 +50,10 @@ class BasicCog(commands.Cog):
         if notify:
             with contextlib.suppress(discord.HTTPException, discord.Forbidden):
                 embed = Embed(
-                    title=f"{self.bot.E['hammer']} You have been kicked!",
-                    description=f"{self.bot.E['user']} **User:** {member}\n"
-                    f"{self.bot.E['shield']} **Guild:** {interaction.guild.name}\n"
-                    f"{self.bot.E['question']} **Reason:** {reason}",
+                    title=f"🛠️ You have been kicked!",
+                    description=f"💁 **User:** {member}\n"
+                    f"🛡️ **Guild:** {interaction.guild.name}\n"
+                    f"❓ **Reason:** {reason}",
                     color=discord.Color.orange(),
                     executed=interaction.user.display_name,
                 )
@@ -68,13 +62,13 @@ class BasicCog(commands.Cog):
                 await member.send(embed=embed)
 
         embed = Embed(
-            title=f"{self.bot.E['hammer']} Kicked {member.display_name}",
+            title=f"🛠️ Kicked {member.display_name}",
             color=discord.Color.orange(),
             executed=f"{interaction.user.display_name} | Notified: {utils.yn(notified)}",
         )
 
         embed.add_field(
-            name=f"{self.bot.E['question']} Reason",
+            name=f"❓ Reason",
             value=reason if reason else "No reason provided.",
         )
 
@@ -103,16 +97,8 @@ class BasicCog(commands.Cog):
             Choice(name="Past week", value=7),
         ]
     )
-    async def ban(
-        self,
-        interaction: Interaction,
-        member: discord.Member,
-        delete_messages: Choice[int],
-        reason: Optional[str] = "No reason provided.",
-        silent: bool = False,
-        soft: bool = False,
-        notify: bool = False,
-    ):
+    async def ban(self, interaction: Interaction, member: discord.Member, delete_messages: Choice[int],
+                  reason: Optional[str] = "No reason provided.", silent: bool = False, soft: bool = False, notify: bool = False):
         assert interaction.guild
 
         notified = False
@@ -120,10 +106,10 @@ class BasicCog(commands.Cog):
         if notify:
             with contextlib.suppress(discord.HTTPException, discord.Forbidden):
                 embed = Embed(
-                    title=f"{self.bot.E['hammer']} You have been banned!",
-                    description=f"{self.bot.E['user']} **User:** {member}\n"
-                    f"{self.bot.E['shield']} **Guild:** {interaction.guild.name}\n"
-                    f"{self.bot.E['question']} **Reason:** {reason}",
+                    title=f"🛠️ You have been banned!",
+                    description=f"💁 **User:** {member}\n"
+                    f"🛡️ **Guild:** {interaction.guild.name}\n"
+                    f"❓ **Reason:** {reason}",
                     color=discord.Color.red(),
                     executed=f"{interaction.user.display_name} | Soft: {utils.yn(soft)}",
                 )
@@ -137,12 +123,12 @@ class BasicCog(commands.Cog):
             await interaction.guild.unban(member, reason=reason)
 
         embed = Embed(
-            title=f"{self.bot.E['hammer']} Banned {member.display_name}",
+            title=f"🛠️ Banned {member.display_name}",
             color=discord.Color.red(),
             executed=f"{interaction.user.display_name} | Soft: {utils.yn(soft)} | Notified: {utils.yn(notified)}",
         )
 
-        embed.add_field(name=f"{self.bot.E['question']} Reason", value=reason)
+        embed.add_field(name=f"❓ Reason", value=reason)
         embed.add_field(name="Delete messages", value=delete_messages.name)
 
         return await interaction.response.send_message(embed=embed, ephemeral=silent)
@@ -155,23 +141,17 @@ class BasicCog(commands.Cog):
     @app_commands.describe(user="The user to unban.")
     @app_commands.describe(reason="The reason we are unbanning this user.")
     @app_commands.describe(silent="If we should send the unban message privately meaning only you can see it.")
-    async def unban(
-        self,
-        interaction: Interaction,
-        user: discord.User,
-        reason: Optional[str] = "No reason provided.",
-        silent: bool = False,
-    ):
+    async def unban(self, interaction: Interaction, user: discord.User, reason: Optional[str] = "No reason provided.", silent: bool = False):
         assert interaction.guild
 
         await interaction.guild.unban(user, reason=reason)
 
         embed = Embed(
-            title=f"{self.bot.E['hammer']} Unbanned {user}",
+            title=f"🛠️ Unbanned {user}",
             color=discord.Color.red(),
             executed=interaction.user.display_name,
         )
 
-        embed.add_field(name=f"{self.bot.E['question']} Reason", value=reason)
+        embed.add_field(name=f"❓ Reason", value=reason)
 
         return await interaction.response.send_message(embed=embed, ephemeral=silent)
