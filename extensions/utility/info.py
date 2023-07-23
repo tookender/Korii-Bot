@@ -95,11 +95,9 @@ class InfoCog(commands.Cog):
 
         return ", ".join(f"`{x}`" for x in formatted_roles)
 
-    group = app_commands.Group(name="info", description="Informative commands.")
-
-    @group.command(description="View information on the current server.")
+    @app_commands.command(description="View information on the current server.")
     @app_commands.checks.cooldown(1, 5)
-    async def server(self, interaction: Interaction):
+    async def server_info(self, interaction: Interaction):
         assert interaction.guild and interaction.guild.owner
 
         embed = Embed(title="Server Information")
@@ -135,9 +133,9 @@ class InfoCog(commands.Cog):
 
         return await interaction.response.send_message(embed=embed)
 
-    @group.command(description="View information on the specified user.")
+    @app_commands.command(description="View information on the specified user.")
     @app_commands.checks.cooldown(1, 5)
-    async def user(
+    async def user_info(
         self,
         interaction: Interaction,
         user: Optional[discord.Member] = None,
@@ -214,9 +212,9 @@ class InfoCog(commands.Cog):
             view=UserInfoView(user=user, fetched_user=fetched_user),
         )
 
-    @group.command(name="bot", description="View information about the bot.")
+    @app_commands.command(name="bot_info", description="View information about the bot.")
     @app_commands.checks.cooldown(1, 5)
-    async def bot_command(self, interaction: Interaction):
+    async def _bot_info(self, interaction: Interaction):
         github = "https://github.com/Korino-Development/Korii-Bot"
         invite = "https://bot.spooki.xyz"
         website = "https://spooki.xyz/bot"
