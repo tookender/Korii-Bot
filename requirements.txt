@@ -2,9 +2,6 @@ discord.py
 asyncpg
 git+https://github.com/Gorialis/jishaku
 mystbin-py
-black
-isort
 pygit2
 psutil
-discord
-git+https://github.com/Tom-the-Bomb/Discord-Games
+discord.py

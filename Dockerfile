@@ -1,10 +1,9 @@
-FROM gorialis/discord.py
+FROM python:bullseye
 
-WORKDIR /app
-
-COPY requirements.txt ./
-RUN pip install -r requirements.txt
+WORKDIR /main
 
 COPY . .
+
+RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["python", "bot.py"]
