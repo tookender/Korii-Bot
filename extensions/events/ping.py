@@ -46,4 +46,4 @@ class PingCog(commands.Cog):
             return
         
         if str(self.bot.user.id) in message.content.lower():
-            return await message.reply("fuck off")
+            return await message.reply("fuck off.")
