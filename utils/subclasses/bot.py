@@ -99,8 +99,21 @@ class Korii(commands.AutoShardedBot):
 
         await self.load_extension("jishaku")
 
+        for file in pathlib.Path("./extensions").glob("*.py"):
+            *tree, _ = file.parts
+            try:
+                await self.load_extension(f"{'.'.join(tree)}.{file.stem}")
+                self.ext_logger.info(f"Loaded {file}")
+                success += 1
+
+            except Exception as error:
+                self.ext_logger.error(f"Failed to load {file}", exc_info=error)
+                failed += 1
+
+
         for extension in pathlib.Path("./extensions").glob("*/__init__.py"):
             extension = str(extension.parent).replace("/", ".").replace("\\", ".")
+            
             try:
                 await self.load_extension(extension)
                 self.ext_logger.info(f"Loaded {extension}")
