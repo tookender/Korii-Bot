@@ -8,7 +8,7 @@ import mystbin as mystbin_library
 from aiohttp import ClientSession
 from asyncpg import Pool
 from discord.ext import commands
-from tree import CommandTree
+from .tree import CommandTree
 
 
 class Korii(commands.AutoShardedBot):

@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+env:
+  DIR: Korii-Bot
+  NAME: korii-bot
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -17,9 +21,9 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: |
-            cd Korii-Bot
-            git pull https://Korino-Development:${{ secrets.GIT_PASSWORD }}@github.com/Korino-Development/Korii-Bot.git
-            docker build -t korii-bot .
-            docker stop korii-bot
-            docker rm korii-bot
-            docker run --name korii-bot -d korii-bot
+            cd $DIR
+            git pull
+            docker build -t $NAME .
+            docker stop $NAME
+            docker rm $NAME
+            docker run --name $NAME -d $NAME
