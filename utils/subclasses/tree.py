@@ -1,5 +1,3 @@
-# https://gist.github.com/Soheab/fed903c25b1aae1f11a8ca8c33243131
-
 from __future__ import annotations
 from typing import Dict, Optional, List, TYPE_CHECKING, Union
 
@@ -12,7 +10,7 @@ if TYPE_CHECKING:
     AppCommandStore = Dict[str, app_commands.AppCommand] # name: AppCommand
 
 
-class CommandTree(app_commands.CommandTree):
+class MyCommandTree(app_commands.CommandTree):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._global_app_commands: AppCommandStore = {}
