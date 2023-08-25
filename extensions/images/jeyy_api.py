@@ -1,51 +1,59 @@
-"""
-Korii Bot: A multi-purpose bot with swag 😎
-Copyright (C) 2023 Ender2K89
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published
-by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-"""
 
 import io
-from typing import Optional
+from typing import Literal, Optional
 
 import discord
 from discord import app_commands
-from discord.ext import commands
+from discord.ext import commands, tasks
 
+import config
 from utils import Interaction, Korii
+
+endpoints = []
 
 
 class JeyyAPICog(commands.Cog):
     def __init__(self, bot: Korii):
         self.bot: Korii = bot
+        self.update_endpoints.start()
 
-    images = app_commands.Group(name="images", description="Commands to manipulate images and more.")
+    @tasks.loop(minutes=10)
+    async def update_endpoints(self):
+        await self.bot.wait_until_ready()
+        
+        headers = {"Authorization": f"Bearer {config.JEYY_API_TOKEN}"}
+        request = await self.bot.session.get("https://api.jeyy.xyz/v2/general/endpoints", headers=headers)
 
-    async def send_embed(
-        self,
-        interaction: Interaction,
-        endpoint: str,
-        url: str,
-        ephemeral: bool = False,
-    ):
+        json = await request.json()
+
+        for item in json:
+            if "image" in item:
+                endpoints.append("")
+
+    async def send_embed(self, interaction: Interaction, endpoint: str, url: str, ephemeral: bool = False):
         await interaction.response.defer(ephemeral=ephemeral)
 
-        request = await self.bot.session.get(f"https://api.jeyy.xyz/image/{endpoint}", params={"image_url": url})
+        request = await self.bot.session.get(f"https://api.jeyy.xyz/v2/image/{endpoint}", params={"image_url": url})
         buffer = io.BytesIO(await request.read())
         file = discord.File(buffer, filename=f"{endpoint}.gif")
 
         return await interaction.followup.send(file=file, ephemeral=ephemeral)
+
+    @app_commands.command(description="Imagine manipulation commands.")
+    @app_commands.choices(fruits=[
+        Choice(name='apple', value=1),
+        Choice(name='banana', value=2),
+        Choice(name='cherry', value=3),
+    ])
+    async def image(self, interaction: Interaction, type: endpoints, user: Optional[discord.Member] = None):
+        assert isinstance(interaction.user, discord.Member)
+
+        if not user:
+            user = interaction.user
+        
+        ...
+        
+        
 
     @images.command(description="Turn the specified user's profile picture into a pyramid.")
     @app_commands.describe(user="The user's profile picture you want to turn into a pyramid.")

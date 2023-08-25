@@ -8,6 +8,7 @@ import mystbin as mystbin_library
 from aiohttp import ClientSession
 from asyncpg import Pool
 from discord.ext import commands
+from tree import CommandTree
 
 
 class Korii(commands.AutoShardedBot):
@@ -26,6 +27,7 @@ class Korii(commands.AutoShardedBot):
             description="A multi-purpose bot with swag 😎\n" "**Website:** https://bot.korino.xyz\n" "**Docs:** https://bot.korino.xyz/docs",
             intents=discord.Intents.all(),
             allowed_mentions=discord.AllowedMentions.none(),
+            tree_cls=CommandTree,
         )
 
         self.maintenace = False

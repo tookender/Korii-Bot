@@ -1,23 +1,6 @@
-"""
-Korii Bot: A multi-purpose bot with swag 😎
-Copyright (C) 2023 Ender2K89
+import io
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published
-by the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-"""
-
-import random
-
+import discord
 from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
@@ -32,29 +15,53 @@ class AnimalsCog(commands.Cog):
     @app_commands.command(description="Shows cute pictures and facts about animals.")
     @app_commands.describe(animal="The animal you'd like to see.")
     @app_commands.describe(ephemeral="If the message should be private or not.")
+    @app_commands.guild_only()
     @app_commands.choices(
         animal=[
-            Choice(name="🐦 Bird", value="bird"),
-            Choice(name="😸 Cat", value="cat"),
-            Choice(name="🐶 Dog", value="dog"),
-            Choice(name="🦊 Fox", value="fox"),
-            Choice(name="🦘 Kangaroo", value="kangaroo"),
-            Choice(name="🐨 Koala", value="koala"),
-            Choice(name="🐼 Panda", value="panda"),
-            Choice(name="🦝 Raccoon", value="raccoon"),
-            Choice(name="🐼 Red Panda", value="red_panda"),
+            Choice(name="🐶 Dog", value="https://random.dog/woof"),
+            Choice(name="😺 Cat", value="https://api.thecatapi.com/v1/images/search"),
+            Choice(name="🦆 Duck", value="https://random-d.uk/api/random?format=json"),
+            # Choice(name="❓ Random", value="r/aww"),
         ]
     )
-    async def animal(self, interaction: Interaction, animal: Choice[str], ephemeral: bool = False):
-        return await interaction.response.send_message("API broke, coming soon.", ephemeral=True)
+    async def animal(self, interaction: Interaction,
+                    # animal: Optional[Choice[str]],
+                    animal: Choice[str],
+                    ephemeral: bool = False):
+        assert interaction.guild
+        # animal = animal or Choice(name="❓ Random", value="r/aww")
 
-        phrases = ["A very cute", "An adorable", "Very cute and adorable"]
+        request = await self.bot.session.get(animal.value)
+        if request.status != 200:
+            return await interaction.response.send_message("No animal found :(")
+        
+        name = animal.name.replace(" ", " Random ")
 
-        request = await self.bot.session.get(f"https://some-random-api.ml/endpoints/animal/{animal.value}")
-        json = await request.json()
-        image, fact = json["image"], json["fact"]
+        if "dog" not in animal.value:
+            json = await request.json()
+            embed = Embed(title=name)
+            embed.set_image(url=json[0]["url"])
 
-        embed = Embed(title=f"{random.choice(phrases)} {animal.value}", description=fact)
-        embed.set_image(url=image)
+            return await interaction.response.send_message(embed=embed, ephemeral=ephemeral)
 
-        return await interaction.response.send_message(embed=embed, ephemeral=ephemeral)
+        filename = await request.text()
+        url = f"https://random.dog/{filename}"
+        filesize = interaction.guild.filesize_limit
+
+        if filename.endswith((".mp4", ".webm")):
+            request = await self.bot.session.get(url)
+            if request.status != 200:
+                return await interaction.response.send_message("Failed to download dog video :(")
+            
+            read = await request.read()
+            buffer = io.BytesIO(read)
+
+            embed = Embed(title=name)
+            embed.set_image(url=f"attachments://{filename}")
+
+            return await interaction.response.send_message(embed=embed, file=discord.File(buffer, filename=filename))
+        
+        embed = Embed(title=name)
+        embed.set_image(url=url)
+        
+        return await interaction.response.send_message(embed=embed)

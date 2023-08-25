@@ -1,3 +1,6 @@
 [bot.settings]
 token = ""
 database = "postgresql://user:password@host/database"
+
+[bot.apis]
+jeyy_api_token = ""
