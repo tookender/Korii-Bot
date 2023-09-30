@@ -11,8 +11,6 @@ from discord.ext import commands
 import config
 from utils.subclasses.bot import Korii
 
-discord.VoiceClient.warn_nacl = False
-
 
 async def interaction_check(interaction: discord.Interaction[Korii]):
     if interaction.client.maintenace:

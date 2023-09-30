@@ -6,3 +6,4 @@ pygit2
 psutil
 discord.py
 python-dateutil
+pynacl
