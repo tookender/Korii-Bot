@@ -8,3 +8,4 @@ discord.py
 python-dateutil
 pynacl
 discord.py[voice]
+gtts
