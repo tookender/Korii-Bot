@@ -9,3 +9,4 @@ python-dateutil
 pynacl
 discord.py[voice]
 gtts
+humanfriendly
