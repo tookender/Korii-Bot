@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  postgres:
+    container_name: "korii_postgres"
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=korii
+      - POSTGRES_PASSWORD=korii
+      - POSTGRES_DATABASE=korii
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U korii"]
+      interval: 2s
+      timeout: 1s
+      retries: 5
+
+  bot:
+    container_name: "korii"
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      JISHAKU_HIDE: "True"
+      JISHAKU_RETAIN: "True"
+      JISHAKU_NO_UNDERSCORE: "True"
+      JISHAKU_FORCE_PAGINATOR: "True"
+      JISHAKU_NO_DM_TRACEBACK: "True"
+
+volumes:
+  pg_data:

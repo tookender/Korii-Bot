@@ -4,9 +4,13 @@ import random
 import discord
 from discord.ext import commands, tasks
 
-from utils import Embed, Korii
+from utils import Embed
+from bot import Korii
+from typing import TYPE_CHECKING
 import logging
 
+if TYPE_CHECKING:
+    from bot import Korii
 
 class AvatarsCog(commands.Cog):
     def __init__(self, bot: Korii):

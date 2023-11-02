@@ -1,52 +1,132 @@
-
-import asyncio
 import logging
+import pathlib
 
-import asyncpg
 import discord
-from aiohttp import ClientSession
-from discord import app_commands
+import mystbin as mystbin_library
+import aiohttp
+import asyncpg
 from discord.ext import commands
-
 import config
-from utils.subclasses.bot import Korii
+from typing import Any
 
 
-async def interaction_check(interaction: discord.Interaction[Korii]):
-    if interaction.client.maintenace:
-        return False
-    return True
+class Korii(commands.AutoShardedBot):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(
+            command_prefix=commands.when_mentioned_or("s!"),
+            case_insensitive=True,
+            strip_after_prefix=True,
+            description="A multi-purpose bot with swag 😎\n" "**Website:** https://bot.korino.dev\n" "**Docs:** https://bot.korino.dev/docs",
+            intents=discord.Intents.all(),
+            allowed_mentions=discord.AllowedMentions.none(),
+            owner_ids=[1022842005920940063, 555818548291829792],
+            *args,
+            **kwargs,
+        )
 
+        self.ext_logger = logging.getLogger("korii.ext")
+        self.cache_logger = logging.getLogger("korii.cache")
 
-async def on_error(interaction: discord.Interaction[Korii], error: app_commands.AppCommandError):
-    embed = discord.Embed(
-        title=f"{interaction.client.E['warning']} Error",
-        color=discord.Color.red(),
-    )
+        self.E = {}  # Dictionary of all bot emojis
+        self.files = self.lines = self.classes = self.functions = self.coroutines = self.comments = 0
 
-    embed.add_field(name="Reason", value=error)
+    def bot_code(self):
+        """Loading data about the bot's code"""
 
-    if interaction.response.is_done():
-        return await interaction.followup.send(embed=embed, ephemeral=True)
+        path = pathlib.Path("./")
+        for file in path.rglob("*.py"):
+            if str(file).startswith("venv"):
+                continue
 
-    return await interaction.response.send_message(embed=embed, ephemeral=True)
+            self.files += 1
+            with file.open(encoding="utf-8") as file:
+                for line in file.readlines():
+                    line = line.strip()
+                    self.lines += 1
+                    if line.startswith("class"):
+                        self.classes += 1
+                    if line.startswith("def"):
+                        self.functions += 1
+                    if line.startswith("async def"):
+                        self.coroutines += 1
+                    if "#" in line:
+                        self.comments += 1
 
+    def emoji_cache(self):
+        """Loading all emojis into the emoji cache"""
 
-async def run_bot() -> None:
-    discord.utils.setup_logging(level=logging.INFO)
+        emoji_guilds = [1036756543917527161, 1040293187354361857]
 
-    async with ClientSession() as session, asyncpg.create_pool(config.DATABASE) as pool,\
-        Korii(session=session, pool=pool) as bot:
+        success = 0
+        failed = 0
 
-        bot.tree.interaction_check = interaction_check
-        bot.tree.on_error = on_error
-        
-        try:
-            await bot.start(config.BOT_TOKEN)
-        
-        except KeyboardInterrupt:
-            return
+        for guild in emoji_guilds:
+            emoji_guild = self.get_guild(guild)
 
+            if not emoji_guild:
+                self.cache_logger.error(f"Emoji guild {guild} not found")
+                failed += 1
 
-if __name__ == "__main__":
-    asyncio.run(run_bot())
+            else:
+                for emoji in emoji_guild.emojis:
+                    self.E[emoji.name.lower()] = f"<{'a' if emoji.animated else ''}:owo:{emoji.id}>"
+
+                self.cache_logger.info(f"Emoji guild {guild} has been loaded")
+                success += 1
+
+        self.cache_logger.info(f"Loaded {success} out of {success + failed} emoji guilds")
+
+    async def load_extensions(self) -> None:
+        success = 0
+        failed = 0
+
+        await self.load_extension("jishaku")
+
+        for file in pathlib.Path("./extensions").glob("*.py"):
+            *tree, _ = file.parts
+            try:
+                await self.load_extension(f"{'.'.join(tree)}.{file.stem}")
+                self.ext_logger.info(f"Loaded {file}")
+                success += 1
+
+            except Exception as error:
+                self.ext_logger.error(f"Failed to load {file}", exc_info=error)
+                failed += 1
+
+        for extension in pathlib.Path("./extensions").glob("*/__init__.py"):
+            extension = str(extension.parent).replace("/", ".").replace("\\", ".")
+
+            try:
+                await self.load_extension(extension)
+                self.ext_logger.info(f"Loaded {extension}")
+                success += 1
+
+            except Exception as error:
+                self.ext_logger.error(f"Failed to load {extension}", exc_info=error)
+                failed += 1
+
+        return self.ext_logger.info(f"Loaded {success} out of {success + failed} extensions")
+
+    async def setup_hook(self) -> None:
+        self.pool: asyncpg.Pool = await asyncpg.create_pool(config.DATABASE)
+
+        if not self.pool:
+            raise RuntimeError("Failed connecting to database.")
+
+        with open("data/schema.sql") as file:
+            await self.pool.execute(file.read())
+
+        self.bot_code()
+        self.emoji_cache()
+        await self.load_extensions()
+
+    async def start(self) -> None:
+        discord.utils.setup_logging(level=logging.INFO)
+
+        async with aiohttp.ClientSession() as session:
+            self.session = session
+
+        self.uptime = discord.utils.utcnow()
+        self.mystbin = mystbin_library.Client()
+
+        await super().start(config.BOT_TOKEN, reconnect=True)
