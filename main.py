@@ -3,7 +3,7 @@ import asyncio
 from bot import Korii
 from discord import app_commands
 
-bot: Korii = Korii(intents=discord.Intents.all())
+bot: Korii = Korii()
 
 async def on_error(interaction: discord.Interaction[Korii], error: app_commands.AppCommandError):
     embed = discord.Embed(

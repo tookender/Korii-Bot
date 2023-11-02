@@ -11,7 +11,7 @@ from typing import Any
 
 
 class Korii(commands.AutoShardedBot):
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self) -> None:
         super().__init__(
             command_prefix=commands.when_mentioned_or("s!"),
             case_insensitive=True,
@@ -20,8 +20,6 @@ class Korii(commands.AutoShardedBot):
             intents=discord.Intents.all(),
             allowed_mentions=discord.AllowedMentions.none(),
             owner_ids=[1022842005920940063, 555818548291829792],
-            *args,
-            **kwargs,
         )
 
         self.ext_logger = logging.getLogger("korii.ext")
