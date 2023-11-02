@@ -5,9 +5,10 @@ from .ping import PingCog
 from .source import SourceCog
 from .embed import EmbedCog
 from .download import DownloadCog
+from .spotify import SpotifyCog
 
 
-class Utility(ConfigCog, InfoCog, NeofetchCog, PingCog, SourceCog, EmbedCog, DownloadCog):
+class Utility(ConfigCog, InfoCog, NeofetchCog, PingCog, SourceCog, EmbedCog, DownloadCog, SpotifyCog):
     pass
 
 
