@@ -7,15 +7,17 @@ import aiohttp
 import asyncpg
 from discord.ext import commands
 import config
-from typing import Any
+from typing import List
 
 
 class Korii(commands.AutoShardedBot):
+    pool: asyncpg.Pool # type: ignore
     user: discord.ClientUser
+    owner_ids: List[int]
 
     def __init__(self) -> None:
         super().__init__(
-            command_prefix=commands.when_mentioned_or("s!"),
+            command_prefix=self.get_prefix, # type: ignore
             case_insensitive=True,
             strip_after_prefix=True,
             description="A multi-purpose bot with swag 😎\n" "**Website:** https://bot.korino.dev\n" "**Docs:** https://bot.korino.dev/docs",
@@ -26,6 +28,9 @@ class Korii(commands.AutoShardedBot):
 
         self.ext_logger = logging.getLogger("korii.ext")
         self.cache_logger = logging.getLogger("korii.cache")
+        
+        self.NO_PREFIX = True
+        self.DEFAULT_PREFIX = "s!"
 
         self.E = {}  # Dictionary of all bot emojis
         self.files = self.lines = self.classes = self.functions = self.coroutines = self.comments = 0
@@ -108,7 +113,7 @@ class Korii(commands.AutoShardedBot):
         return self.ext_logger.info(f"Loaded {success} out of {success + failed} extensions")
 
     async def setup_hook(self) -> None:
-        self.pool: asyncpg.Pool = await asyncpg.create_pool(config.DATABASE)
+        self.pool: asyncpg.Pool | None = await asyncpg.create_pool(config.DATABASE)
 
         if not self.pool:
             raise RuntimeError("Failed connecting to database.")
@@ -130,3 +135,12 @@ class Korii(commands.AutoShardedBot):
         self.mystbin = mystbin_library.Client()
 
         await super().start(config.BOT_TOKEN, reconnect=True)
+    
+    async def get_prefix(self, message: discord.Message, /) -> List[str] | str:
+        prefixes: List[str] = []
+        prefixes.append(self.DEFAULT_PREFIX)
+
+        if (not message.guild or message.author.id in self.owner_ids) and self.NO_PREFIX:
+            prefixes.append("")
+        
+        return commands.when_mentioned_or(*prefixes)(self, message)
