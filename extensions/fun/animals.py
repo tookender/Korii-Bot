@@ -5,7 +5,8 @@ from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
 
-from utils import Embed, Interaction, Korii
+from utils import Embed, Interaction
+from bot import Korii
 
 
 class AnimalsCog(commands.Cog):

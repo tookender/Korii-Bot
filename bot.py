@@ -11,6 +11,8 @@ from typing import Any
 
 
 class Korii(commands.AutoShardedBot):
+    user: discord.ClientUser
+
     def __init__(self) -> None:
         super().__init__(
             command_prefix=commands.when_mentioned_or("s!"),

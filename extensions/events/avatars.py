@@ -28,7 +28,7 @@ class AvatarsCog(commands.Cog):
             if self.developers_role in member.roles:
                 assert member.avatar
                 await self.bot.pool.execute("INSERT INTO avatars(user_id, avatar_url) VALUES ($1, $2) ON CONFLICT(user_id) DO UPDATE SET avatar_url = $2",
-                                            member.id, member.avatar.replace(size=256, format="webp"))
+                                            member.id, member.avatar.replace(size=256, format="webp").url)
 
     @update_avatars.before_loop
     async def wait_until_ready(self):
