@@ -23,6 +23,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - .:/main
     depends_on:
       - postgres
     environment:
@@ -34,3 +36,4 @@ services:
 
 volumes:
   pg_data:
+  .:
