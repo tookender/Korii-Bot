@@ -3,16 +3,11 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from bot import Korii
-import aiohttp
+from utils import Cog
 import humanfriendly
 
 
-class DownloadCog(commands.Cog):
-    def __init__(self, bot: Korii):
-        self.bot = bot
-
-
+class DownloadCog(Cog):
     @app_commands.command()
     async def tiktok(self, interaction: discord.Interaction, *, url):
         await interaction.response.send_message("▶️ | downloading...")

@@ -1,4 +1,3 @@
-
 import contextlib
 from typing import Optional
 
@@ -7,14 +6,10 @@ from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
 
-from bot import Korii
-from utils import Embed, Interaction, utils
+from utils import Embed, Interaction, utils, Cog
 
 
-class BasicCog(commands.Cog):
-    def __init__(self, bot: Korii):
-        self.bot = bot
-
+class BasicCog(Cog):
     @app_commands.command(description="Kicks the specified member from the server.")
     @app_commands.guild_only()
     @app_commands.default_permissions(kick_members=True)
@@ -24,8 +19,14 @@ class BasicCog(commands.Cog):
     @app_commands.describe(reason="The reason we are kicking this member.")
     @app_commands.describe(silent="If we should send the kick message privately meaning only you can see it.")
     @app_commands.describe(notify="If we should DM the user before we kick them.")
-    async def kick(self, interaction: Interaction, member: discord.Member,
-                   reason: Optional[str] = "No reason provided.", silent: bool = False, notify: bool = False):
+    async def kick(
+        self,
+        interaction: Interaction,
+        member: discord.Member,
+        reason: Optional[str] = "No reason provided.",
+        silent: bool = False,
+        notify: bool = False,
+    ):
         assert interaction.guild
 
         notified = False
@@ -34,9 +35,7 @@ class BasicCog(commands.Cog):
             with contextlib.suppress(discord.HTTPException, discord.Forbidden):
                 embed = Embed(
                     title=f"🛠️ You have been kicked!",
-                    description=f"💁 **User:** {member}\n"
-                    f"🛡️ **Guild:** {interaction.guild.name}\n"
-                    f"❓ **Reason:** {reason}",
+                    description=f"💁 **User:** {member} \n🛡️ **Guild:** {interaction.guild.name} \n❓ **Reason:** {reason}",
                     color=discord.Color.orange(),
                     executed=interaction.user.display_name,
                 )
@@ -80,8 +79,16 @@ class BasicCog(commands.Cog):
             Choice(name="Past week", value=7),
         ]
     )
-    async def ban(self, interaction: Interaction, member: discord.Member, delete_messages: Choice[int],
-                  reason: Optional[str] = "No reason provided.", silent: bool = False, soft: bool = False, notify: bool = False):
+    async def ban(
+        self,
+        interaction: Interaction,
+        member: discord.Member,
+        delete_messages: Choice[int],
+        reason: Optional[str] = "No reason provided.",
+        silent: bool = False,
+        soft: bool = False,
+        notify: bool = False,
+    ):
         assert interaction.guild
 
         notified = False
@@ -90,9 +97,7 @@ class BasicCog(commands.Cog):
             with contextlib.suppress(discord.HTTPException, discord.Forbidden):
                 embed = Embed(
                     title=f"🛠️ You have been banned!",
-                    description=f"💁 **User:** {member}\n"
-                    f"🛡️ **Guild:** {interaction.guild.name}\n"
-                    f"❓ **Reason:** {reason}",
+                    description=f"💁 **User:** {member} \n🛡️ **Guild:** {interaction.guild.name} \n❓ **Reason:** {reason}",
                     color=discord.Color.red(),
                     executed=f"{interaction.user.display_name} | Soft: {utils.yn(soft)}",
                 )

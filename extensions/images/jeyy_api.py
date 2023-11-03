@@ -1,27 +1,25 @@
-
 import io
 from typing import Optional
 
 import discord
 from discord import app_commands
-from discord.ext import commands, tasks
+from discord.ext import tasks
 from discord.app_commands import Choice
 
 import config
-from utils import Interaction, Korii
+from utils import Interaction, Cog
 
 endpoints = []
 
 
-class JeyyAPICog(commands.Cog):
-    def __init__(self, bot: Korii):
-        self.bot: Korii = bot
+class JeyyAPICog(Cog):
+    def cog_load(self):
         self.update_endpoints.start()
 
     @tasks.loop(minutes=10)
     async def update_endpoints(self):
         await self.bot.wait_until_ready()
-        
+
         headers = {"Authorization": f"Bearer {config.JEYY_API_TOKEN}"}
         request = await self.bot.session.get("https://api.jeyy.xyz/v2/general/endpoints", headers=headers)
 
@@ -41,15 +39,17 @@ class JeyyAPICog(commands.Cog):
         return await interaction.followup.send(file=file, ephemeral=ephemeral)
 
     @app_commands.command(description="Imagine manipulation commands.")
-    @app_commands.choices(fruits=[
-        Choice(name='apple', value=1),
-        Choice(name='banana', value=2),
-        Choice(name='cherry', value=3),
-    ])
+    @app_commands.choices(
+        fruits=[
+            Choice(name="apple", value=1),
+            Choice(name="banana", value=2),
+            Choice(name="cherry", value=3),
+        ]
+    )
     async def images(self, interaction: Interaction, type: ..., user: Optional[discord.Member] = None):
         assert isinstance(interaction.user, discord.Member)
 
         if not user:
             user = interaction.user
-        
+
         ...

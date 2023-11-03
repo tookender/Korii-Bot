@@ -1,18 +1,13 @@
-
 import math
 import random
 
 import discord
 from discord.ext import commands
 
-from utils import Embed, Korii
+from utils import Embed, Cog
 
 
-class EventsCog(commands.Cog):
-    def __init__(self, bot: Korii):
-        self.bot = bot
-        self.cooldown: commands.CooldownMapping = commands.CooldownMapping.from_cooldown(1, 45, commands.BucketType.member)
-
+class EventsCog(Cog):
     @commands.Cog.listener("on_message")
     async def levelling(self, message: discord.Message):
         if not message.guild or message.author.bot or isinstance(message.author, discord.User):
@@ -24,7 +19,7 @@ class EventsCog(commands.Cog):
             # If the guild doesn't have levelling enabled we return
             return
 
-        bucket = self.cooldown.get_bucket(message)
+        bucket = self.bot.levelling_cooldown.get_bucket(message)
         if bucket:
             retry_after = bucket.update_rate_limit()
         else:
@@ -36,7 +31,7 @@ class EventsCog(commands.Cog):
 
         # Amount of XP the user should get for the message
         random_xp = random.randint(24, 34) + (random.randint(4, 7) if len(message.content) > random.randint(34, 44) else 0)
-        
+
         double_xp = await self.bot.pool.fetchval("SELECT levelling_double_xp FROM guilds WHERE guild_id = $1", message.guild.id)
         if double_xp:
             random_xp = random_xp * 2
@@ -101,7 +96,7 @@ class EventsCog(commands.Cog):
                 channel = message.channel
             else:
                 channel = message.guild.get_channel(channel_id)
-            
+
             if channel == message.channel:
                 return await message.reply(content=message_format.format(**message_formats), embed=embed)
 

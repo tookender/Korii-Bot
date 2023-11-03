@@ -35,12 +35,14 @@ async def shorten_text(bot: Korii, text: str, length: int | None = None, code: i
 
     return f"{text}[...]({url} 'But wait, there is more!')"
 
+
 async def timeit(coro: Coroutine) -> float:
     start = time.perf_counter()
     await coro
     end = time.perf_counter()
 
     return (end - start) * 1000
+
 
 def format_commit(commit: pygit2.Commit) -> str:
     short, _, _ = commit.message.partition("\n")
@@ -56,10 +58,12 @@ def format_commit(commit: pygit2.Commit) -> str:
     short = " ".join(short)
     return f"[`{short_sha2}`](https://github.com/Korino-Development/Korii-Bot/commit/{commit.hex}) {short}"
 
+
 def get_latest_commits(count=5):
     repo = pygit2.Repository(".git")
     commits = list(itertools.islice(repo.walk(repo.head.target, pygit2.GIT_SORT_TOPOLOGICAL), count))
     return "\n".join(format_commit(c) for c in commits)
+
 
 def yes_no(bool: bool):
     """Returns yes if the value is True and no if the value is False"""
@@ -68,9 +72,11 @@ def yes_no(bool: bool):
 
     return "No"
 
+
 @discord.utils.copy_doc(yes_no)
 def yn(bool: bool):
     return yes_no(bool)
+
 
 def to_boolean(argument: str) -> bool:
     lowered = argument.lower()

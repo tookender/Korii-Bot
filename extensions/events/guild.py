@@ -4,13 +4,11 @@ import random
 import discord
 from discord.ext import commands
 
-from utils import Embed, Korii
+from utils import Embed, Cog
+from bot import Korii
 
 
-class GuildCog(commands.Cog):
-    def __init__(self, bot: Korii):
-        self.bot = bot
-
+class GuildCog(Cog):
     @commands.Cog.listener("on_guild_join")
     async def smash_or_pass(self, guild: discord.Guild):
         if not guild.owner:
@@ -35,8 +33,7 @@ class GuildCog(commands.Cog):
 
         embed = Embed(
             title=f"💖 Thanks for choosing Korii",
-            description="Thank you for choosing **Korii**. We promise to not let you down.\n"
-            "For more information, use the `/help` command.",
+            description="Thank you for choosing **Korii**. We promise to not let you down.\n" "For more information, use the `/help` command.",
         )
 
         try:

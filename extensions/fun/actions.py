@@ -2,15 +2,12 @@ import random
 
 import discord
 from discord import app_commands
-from discord.ext import commands
 
-from bot import Korii
-from utils import Interaction
+from utils import Interaction, Cog
 
 
-class ActionsCog(commands.Cog):
-    def __init__(self, bot: Korii):
-        self.bot = bot
+class ActionsCog(Cog):
+    def __init__(self):
         self.prank_messages = []
         self.lucky_messages = []
         self.unlucky_messages = []

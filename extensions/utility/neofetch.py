@@ -3,14 +3,10 @@ import subprocess
 from discord import app_commands
 from discord.ext import commands
 
-from utils import Interaction
-from bot import Korii
+from utils import Interaction, Cog
 
 
-class NeofetchCog(commands.Cog):
-    def __init__(self, bot: Korii):
-        self.bot: Korii = bot
-
+class NeofetchCog(Cog):
     @app_commands.command(description="Neofetch but in Discord.")
     @app_commands.checks.cooldown(1, 5)
     async def neofetch(self, interaction: Interaction):

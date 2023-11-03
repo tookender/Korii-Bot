@@ -7,13 +7,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from utils import Embed, Interaction, Korii
+from utils import Embed, Interaction, Cog
 
 
-class RandomCog(commands.Cog):
-    def __init__(self, bot: Korii):
-        self.bot: Korii = bot
-
+class RandomCog(Cog):
     fun = app_commands.Group(name="fun", description="General entertainment commands.")
 
     async def wait_and_send(self, interaction: Interaction, content: str, wait: int = 2):

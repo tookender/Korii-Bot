@@ -1,15 +1,12 @@
 import discord
 from discord.ext import commands
 
-from bot import Korii
+from utils import Cog
 import config
 from io import BytesIO
 
 
-class SpotifyCog(commands.Cog):
-    def __init__(self, bot: Korii):
-        self.bot = bot
-
+class SpotifyCog(Cog):
     @commands.hybrid_command()
     async def spotify(self, ctx: commands.Context, member: discord.Member = commands.Author):
         await ctx.typing()

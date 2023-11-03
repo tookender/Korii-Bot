@@ -3,19 +3,14 @@ from typing import Optional
 
 import discord
 from discord import app_commands
-from discord.ext import commands
 
-from utils import Embed, Interaction
-
-
-class Invalid(Exception):
-    ...
+from utils import Embed, Interaction, Cog, Invalid
 
 
 class Modal(discord.ui.Modal):
     def __init__(self):
         super().__init__()
-    
+
     async def update_database(self, interaction: Interaction):
         return
 
@@ -36,15 +31,27 @@ class MessageModal(Modal, title="Config: Levelling"):
 
     async def update_database(self, interaction: Interaction):
         assert interaction.guild
-        return await interaction.client.pool.execute("UPDATE guilds SET levelling_message = $1 WHERE guild_id = $2", self.message.value, interaction.guild.id)
+        return await interaction.client.pool.execute(
+            "UPDATE guilds SET levelling_message = $1 WHERE guild_id = $2", self.message.value, interaction.guild.id
+        )
 
 
 class LevellingChannelView(discord.ui.View):
     def __init__(self):
         super().__init__()
 
-    @discord.ui.select(cls=discord.ui.ChannelSelect, placeholder="Select an announcement channel...", max_values=1, min_values=1,
-        channel_types=[discord.ChannelType.text, discord.ChannelType.news, discord.ChannelType.voice, discord.ChannelType.private_thread, discord.ChannelType.public_thread]
+    @discord.ui.select(
+        cls=discord.ui.ChannelSelect,
+        placeholder="Select an announcement channel...",
+        max_values=1,
+        min_values=1,
+        channel_types=[
+            discord.ChannelType.text,
+            discord.ChannelType.news,
+            discord.ChannelType.voice,
+            discord.ChannelType.private_thread,
+            discord.ChannelType.public_thread,
+        ],
     )
     async def select_channel(self, interaction: Interaction, select: discord.ui.ChannelSelect):
         assert interaction.guild and isinstance(interaction.user, discord.Member)
@@ -63,7 +70,7 @@ class XPMultiplierModal(Modal, title="Config: Levelling"):
         label="XP Multiplier",
         placeholder="Multiplier of XP. Default is 1.0",
     )
-    
+
     async def update_database(self, interaction: Interaction):
         assert interaction.guild
         multiplier = float(self.multiplier.value)
@@ -80,7 +87,9 @@ class ConfigLevellingDropdown(discord.ui.Select):
         options = [
             discord.SelectOption(label="Enable/Disable Levelling", description="Enable or disable levelling.", emoji="⚡"),
             discord.SelectOption(label="Enable/Disable Announcements", description="Change if we should send a level-up message.", emoji="📢"),
-            discord.SelectOption(label="Change Announcement Channel", description="Change where the message that is sent once you level-up.", emoji="#️⃣"),
+            discord.SelectOption(
+                label="Change Announcement Channel", description="Change where the message that is sent once you level-up.", emoji="#️⃣"
+            ),
             discord.SelectOption(label="Change Announcement Message", description="Change the message that is sent once you level-up.", emoji="💬"),
             discord.SelectOption(label="Change XP Multiplier", description="Change the XP multiplier. Default is 1.0.", emoji="🏆"),
         ]
@@ -89,20 +98,26 @@ class ConfigLevellingDropdown(discord.ui.Select):
 
     async def callback(self, interaction: Interaction):
         if interaction.guild:
-            data = await interaction.client.pool.fetchrow("SELECT levelling_enabled, levelling_announce, levelling_multiplier FROM guilds WHERE guild_id = $1", interaction.guild.id)
+            data = await interaction.client.pool.fetchrow(
+                "SELECT levelling_enabled, levelling_announce, levelling_multiplier FROM guilds WHERE guild_id = $1", interaction.guild.id
+            )
 
             match self.values[0]:
                 case "Enable/Disable Levelling":
-                    await interaction.client.pool.execute("UPDATE guilds SET levelling_enabled = $1 WHERE guild_id = $2", False if data[0] else True, interaction.guild.id)
+                    await interaction.client.pool.execute(
+                        "UPDATE guilds SET levelling_enabled = $1 WHERE guild_id = $2", False if data[0] else True, interaction.guild.id
+                    )
                 case "Enable/Disable Announcements":
-                    await interaction.client.pool.execute("UPDATE guilds SET levelling_announce = $1 WHERE guild_id = $2", False if data[1] else True, interaction.guild.id)
+                    await interaction.client.pool.execute(
+                        "UPDATE guilds SET levelling_announce = $1 WHERE guild_id = $2", False if data[1] else True, interaction.guild.id
+                    )
                 case "Change Announcement Channel":
                     return await interaction.response.send_message(view=LevellingChannelView(), ephemeral=True)
                 case "Change Announcement Message":
                     return await interaction.response.send_modal(MessageModal())
                 case "Change XP Multiplier":
                     return await interaction.response.send_modal(XPMultiplierModal())
-                    
+
             return await update_message(interaction)
 
 
@@ -115,9 +130,11 @@ class ConfigLevelling(discord.ui.View):
     async def view_message(self, interaction: Interaction, button: discord.ui.Button):
         if interaction.guild:
             message = await interaction.client.pool.fetchval("SELECT levelling_message FROM guilds WHERE guild_id = $1", interaction.guild.id)
-            
+
             if not message:
-                return await interaction.response.send_message("No announcement message has been found. Use the dropdown to change it.", ephemeral=True)
+                return await interaction.response.send_message(
+                    "No announcement message has been found. Use the dropdown to change it.", ephemeral=True
+                )
 
             return await interaction.response.send_message(f"**Announcement Message:** `{message}`", ephemeral=True)
 
@@ -125,7 +142,10 @@ class ConfigLevelling(discord.ui.View):
 async def update_message(interaction: Interaction, edit: Optional[bool] = True):
     try:
         if interaction.guild:
-            data = await interaction.client.pool.fetchrow("SELECT levelling_enabled, levelling_announce, levelling_channel, levelling_message, levelling_multiplier FROM guilds WHERE guild_id = $1", interaction.guild.id)
+            data = await interaction.client.pool.fetchrow(
+                "SELECT levelling_enabled, levelling_announce, levelling_channel, levelling_message, levelling_multiplier FROM guilds WHERE guild_id = $1",
+                interaction.guild.id,
+            )
 
             bool_emojis = {
                 True: "🟩",
@@ -136,33 +156,30 @@ async def update_message(interaction: Interaction, edit: Optional[bool] = True):
             embed = Embed(
                 title="Config: Levelling",
                 description="`🟩 Enabled`\n"
-                            "`🟥 Disabled`\n"
-                            "`⬜ Not set`\n\n"
-                            f"```\n"
-                            f"Enabled              - {bool_emojis[data[0]]}\n"
-                            f"Announce             - {bool_emojis[data[1]]}\n"
-                            f"Announcement Channel - {interaction.guild.get_channel(data[2]) if data[2] else bool_emojis[data[2]] + ' direct'}\n"
-                            f"Announcement Message - {bool_emojis[True] + ' view below' if data[3] else bool_emojis[None]}\n"
-                            f"Banned Roles         - soon™\n"
-                            f"XP Multiplier        - {data[4]}\n"
-                            f"```",
+                "`🟥 Disabled`\n"
+                "`⬜ Not set`\n\n"
+                f"```\n"
+                f"Enabled              - {bool_emojis[data[0]]}\n"
+                f"Announce             - {bool_emojis[data[1]]}\n"
+                f"Announcement Channel - {interaction.guild.get_channel(data[2]) if data[2] else bool_emojis[data[2]] + ' direct'}\n"
+                f"Announcement Message - {bool_emojis[True] + ' view below' if data[3] else bool_emojis[None]}\n"
+                f"Banned Roles         - soon™\n"
+                f"XP Multiplier        - {data[4]}\n"
+                f"```",
             )
 
             if not edit:
                 return await interaction.response.send_message(embed=embed, view=ConfigLevelling())
 
             return await interaction.response.edit_message(embed=embed, view=ConfigLevelling())
-        
+
     except Exception as e:
         return await interaction.response.send_message(f"An error occurred: {traceback.format_exception(e)}", ephemeral=True)
 
 
-class ConfigCog(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-    
+class ConfigCog(Cog):
     group = app_commands.Group(name="config", description="Configure your guild's bot configuration.")
-    
+
     @group.command(description="Configure your guild's levelling system.")
     async def levelling(self, interaction: Interaction):
         return await update_message(interaction, edit=False)

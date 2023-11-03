@@ -1,4 +1,3 @@
-
 import inspect
 import os
 from typing import Optional
@@ -6,14 +5,10 @@ from typing import Optional
 from discord import app_commands
 from discord.ext import commands
 
-from bot import Korii
-from utils import Embed, Interaction
+from utils import Embed, Interaction, Cog
 
 
-class SourceCog(commands.Cog):
-    def __init__(self, bot: Korii):
-        self.bot: Korii = bot
-
+class SourceCog(Cog):
     @app_commands.command(description="Get the source code of a command or the bot.")
     @app_commands.checks.cooldown(1, 5)
     async def source(self, interaction: Interaction, command: Optional[str] = None):

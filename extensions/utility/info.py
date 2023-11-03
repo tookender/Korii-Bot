@@ -8,8 +8,7 @@ import psutil
 from discord import app_commands
 from discord.ext import commands
 
-from utils import utils, Embed, Interaction
-from bot import Korii
+from utils import utils, Embed, Interaction, Cog
 
 
 class UserInfoView(discord.ui.View):
@@ -45,10 +44,7 @@ class UserInfoView(discord.ui.View):
         return await interaction.response.send_message("hehe oki", ephemeral=True)
 
 
-class InfoCog(commands.Cog):
-    def __init__(self, bot: Korii):
-        self.bot: Korii = bot
-
+class InfoCog(Cog):
     async def format_permissions(self, permissions: discord.Permissions):
         staff_permissions = dict({x for x in permissions if x[1] is True} - set(discord.Permissions(521942715969)))
 

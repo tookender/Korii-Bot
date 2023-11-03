@@ -1,4 +1,3 @@
-
 import math
 from typing import Optional
 
@@ -6,13 +5,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from utils import Embed, Interaction, Korii
+from utils import Embed, Interaction, Cog
 
 
-class CommandsCog(commands.Cog):
-    def __init__(self, bot: Korii):
-        self.bot = bot
-
+class CommandsCog(Cog):
     @app_commands.command(description="View the level of the specified member.")
     @app_commands.describe(user="The user you want to view the level of.")
     @app_commands.guild_only()

@@ -11,7 +11,7 @@ from typing import List
 
 
 class Korii(commands.AutoShardedBot):
-    pool: asyncpg.Pool # type: ignore
+    pool: asyncpg.Pool
     user: discord.ClientUser
     owner_ids: List[int]
 
@@ -34,6 +34,9 @@ class Korii(commands.AutoShardedBot):
 
         self.E = {}  # Dictionary of all bot emojis
         self.files = self.lines = self.classes = self.functions = self.coroutines = self.comments = 0
+
+        self.ping_cooldown: commands.CooldownMapping = commands.CooldownMapping.from_cooldown(1, 30, commands.BucketType.guild)
+        self.levelling_cooldown: commands.CooldownMapping = commands.CooldownMapping.from_cooldown(1, 45, commands.BucketType.member)
 
     def bot_code(self):
         """Loading data about the bot's code"""
@@ -113,7 +116,7 @@ class Korii(commands.AutoShardedBot):
         return self.ext_logger.info(f"Loaded {success} out of {success + failed} extensions")
 
     async def setup_hook(self) -> None:
-        self.pool: asyncpg.Pool | None = await asyncpg.create_pool(config.DATABASE)
+        self.pool: asyncpg.Pool = await asyncpg.create_pool(config.DATABASE)
 
         if not self.pool:
             raise RuntimeError("Failed connecting to database.")

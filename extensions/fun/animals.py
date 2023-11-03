@@ -5,14 +5,10 @@ from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
 
-from utils import Embed, Interaction
-from bot import Korii
+from utils import Embed, Interaction, Cog
 
 
-class AnimalsCog(commands.Cog):
-    def __init__(self, bot: Korii):
-        self.bot: Korii = bot
-
+class AnimalsCog(Cog):
     @app_commands.command(description="Shows cute pictures and facts about animals.")
     @app_commands.describe(animal="The animal you'd like to see.")
     @app_commands.describe(ephemeral="If the message should be private or not.")
