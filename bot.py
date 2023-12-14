@@ -60,30 +60,6 @@ class Korii(commands.AutoShardedBot):
                     if "#" in line:
                         self.comments += 1
 
-    def emoji_cache(self):
-        """Loading all emojis into the emoji cache"""
-
-        emoji_guilds = [1036756543917527161, 1040293187354361857]
-
-        success = 0
-        failed = 0
-
-        for guild in emoji_guilds:
-            emoji_guild = self.get_guild(guild)
-
-            if not emoji_guild:
-                self.cache_logger.error(f"Emoji guild {guild} not found")
-                failed += 1
-
-            else:
-                for emoji in emoji_guild.emojis:
-                    self.E[emoji.name.lower()] = f"<{'a' if emoji.animated else ''}:owo:{emoji.id}>"
-
-                self.cache_logger.info(f"Emoji guild {guild} has been loaded")
-                success += 1
-
-        self.cache_logger.info(f"Loaded {success} out of {success + failed} emoji guilds")
-
     async def load_extensions(self) -> None:
         success = 0
         failed = 0
@@ -125,7 +101,6 @@ class Korii(commands.AutoShardedBot):
             await self.pool.execute(file.read())
 
         self.bot_code()
-        self.emoji_cache()
         await self.load_extensions()
 
     async def start(self) -> None:

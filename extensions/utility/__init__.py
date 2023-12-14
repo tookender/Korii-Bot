@@ -4,11 +4,11 @@ from .neofetch import NeofetchCog
 from .ping import PingCog
 from .source import SourceCog
 from .embed import EmbedCog
-from .download import DownloadCog
+# from .download import DownloadCog
 from .spotify import SpotifyCog
 
 
-class Utility(ConfigCog, InfoCog, NeofetchCog, PingCog, SourceCog, EmbedCog, DownloadCog, SpotifyCog):
+class Utility(ConfigCog, InfoCog, NeofetchCog, PingCog, SourceCog, EmbedCog, SpotifyCog):
     pass
 
 

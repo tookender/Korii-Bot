@@ -8,7 +8,7 @@ import psutil
 from discord import app_commands
 from discord.ext import commands
 
-from utils import utils, Embed, Interaction, Cog
+from utils import utils, Embed, Interaction, Cog, EMOJIS
 
 
 class UserInfoView(discord.ui.View):
@@ -18,7 +18,7 @@ class UserInfoView(discord.ui.View):
         self.fetched_user = fetched_user
 
     @discord.ui.button(label="Avatar", style=discord.ButtonStyle.grey)
-    async def avatar(self, interaction: Interaction, button: discord.ui.Button):
+    async def avatar(self, interaction: Interaction, _):
         embed = Embed(title=f"<:owo:1036761720447828030> {self.user.display_name}'s Avatar")
 
         embed.set_image(url=self.user.display_avatar)
@@ -26,7 +26,7 @@ class UserInfoView(discord.ui.View):
         return await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="Banner", style=discord.ButtonStyle.grey)
-    async def banner(self, interaction: Interaction, button: discord.ui.Button):
+    async def banner(self, interaction: Interaction, _):
         if not self.fetched_user or not self.fetched_user.banner:
             return await interaction.response.send_message(f"{self.user.display_name} doesn't have a banner.", ephemeral=True)
 
@@ -36,8 +36,34 @@ class UserInfoView(discord.ui.View):
 
         return await interaction.response.send_message(embed=embed, ephemeral=True)
 
+    @discord.ui.button(label="Roles", style=discord.ButtonStyle.green)
+    async def roles(self, interaction: Interaction, _):
+        embed = Embed(
+            title=f"{EMOJIS['roles']} {self.user.display_name}'s Roles",
+            description=', '.join(role.mention if role.name != "@everyone" else role.name for role in self.user.roles),
+        )
+
+        embed.set_author(name="From lowest to highest")
+
+        return await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @discord.ui.button(label="Permissions", style=discord.ButtonStyle.green)
+    async def permissions(self, interaction: Interaction, _):
+        nl = "\n"
+        perms = []
+
+        for perm, value in self.user.guild_permissions:
+            perms.append(f"**{perm.replace('guild', 'server').replace('_', ' ').title()}:** `{str(value)}`")
+
+        embed = Embed(
+            title=f"{EMOJIS['roles']} {self.user.display_name}'s Permissions",
+            description=nl.join(perms),
+        )
+
+        return await interaction.response.send_message(embed=embed, ephemeral=True)
+
     @discord.ui.button(label="🗑️", style=discord.ButtonStyle.red)
-    async def delete(self, interaction: Interaction, button: discord.ui.Button):
+    async def delete(self, interaction: Interaction, _):
         assert interaction.message
 
         await interaction.message.delete()
@@ -73,55 +99,51 @@ class InfoCog(Cog):
 
         return ", ".join(f"`{x}`" for x in formatted_roles)
 
-    @app_commands.command(description="View information on the current server.")
+    @commands.hybrid_command(description="View information on the current server.")
     @app_commands.checks.cooldown(1, 5)
-    async def server_info(self, interaction: Interaction):
-        assert interaction.guild and interaction.guild.owner
+    async def server_info(self, ctx: commands.Context):
+        assert ctx.guild and ctx.guild.owner
 
         embed = Embed(title="Server Information")
 
         embed.add_field(
             name="Information",
-            value=f"{self.bot.E['edit']} **Name:** {interaction.guild.name}\n"
-            f"{self.bot.E['text2']} **ID:** `{interaction.guild.id}`\n"
-            f"{self.bot.E['text1']} **Description:** {await utils.shorten_text(self.bot, interaction.guild.description or 'No description.', 16)}\n"
+            value=f"{EMOJIS['edit']} **Name:** {ctx.guild.name}\n"
+            f"{EMOJIS['text2']} **ID:** `{ctx.guild.id}`\n"
+            f"{EMOJIS['text1']} **Description:** {await utils.shorten_text(self.bot, ctx.guild.description or 'No description.', 16)}\n"
             "\n"
-            f"{self.bot.E['owner']} **Owner:** {interaction.guild.owner.display_name}\n"
-            f"{self.bot.E['text2']} **ID:** `{interaction.guild.owner.id}`\n"
-            f"{self.bot.E['text1']} **Mention:** {interaction.guild.owner.mention}\n"
+            f"{EMOJIS['owner']} **Owner:** {ctx.guild.owner.display_name}\n"
+            f"{EMOJIS['text2']} **ID:** `{ctx.guild.owner.id}`\n"
+            f"{EMOJIS['text1']} **Mention:** {ctx.guild.owner.mention}\n"
             f"\n"
-            f"{self.bot.E['date']} **Created:** {discord.utils.format_dt(interaction.guild.created_at, style='R')}\n"
-            f"{self.bot.E['text1']} **Full date:** {discord.utils.format_dt(interaction.guild.created_at, style='f')}",
+            f"{EMOJIS['date']} **Created:** {discord.utils.format_dt(ctx.guild.created_at, style='R')}\n"
+            f"{EMOJIS['text1']} **Full date:** {discord.utils.format_dt(ctx.guild.created_at, style='f')}",
         )
 
         embed.add_field(
             name="Numbers",
-            value=f"{self.bot.E['text_channel']} **Channels:** `{len(interaction.guild.channels)}`\n"
-            f"{self.bot.E['text2']} **Text:** `{len(interaction.guild.text_channels)}`\n"
-            f"{self.bot.E['text2']} **Voice:** `{len(interaction.guild.voice_channels)}`\n"
-            f"{self.bot.E['text1']} **Threads:** `{len(interaction.guild.threads)}`\n"
+            value=f"{EMOJIS['text_channel']} **Channels:** `{len(ctx.guild.channels)}`\n"
+            f"{EMOJIS['text2']} **Text:** `{len(ctx.guild.text_channels)}`\n"
+            f"{EMOJIS['text2']} **Voice:** `{len(ctx.guild.voice_channels)}`\n"
+            f"{EMOJIS['text1']} **Threads:** `{len(ctx.guild.threads)}`\n"
             "\n"
-            f"{self.bot.E['people']} **Members:** `{interaction.guild.member_count}`\n"
-            f"{self.bot.E['text2']} **Humans:** `{len([member for member in interaction.guild.members if not member.bot])}`\n"
-            f"{self.bot.E['text1']} **Robots:** `{len([member for member in interaction.guild.members if member.bot])}`\n"
+            f"{EMOJIS['people']} **Members:** `{ctx.guild.member_count}`\n"
+            f"{EMOJIS['text2']} **Humans:** `{len([member for member in ctx.guild.members if not member.bot])}`\n"
+            f"{EMOJIS['text1']} **Robots:** `{len([member for member in ctx.guild.members if member.bot])}`\n"
             "\n"
-            f"{self.bot.E['roles']} **Roles:** {await self.format_roles([x for x in interaction.guild.roles if not x.is_default()])}\n"
-            f"{self.bot.E['text1']} **Amount:** `{len(interaction.guild.roles)}`",
+            f"{EMOJIS['roles']} **Roles:** {await self.format_roles([x for x in ctx.guild.roles if not x.is_default()])}\n"
+            f"{EMOJIS['text1']} **Amount:** `{len(ctx.guild.roles)}`",
         )
 
-        return await interaction.response.send_message(embed=embed)
+        return await ctx.send(embed=embed)
 
-    @app_commands.command(description="View information on the specified user.")
+    @commands.hybrid_command(description="View information on the specified user.", aliases=["userinfo", "ui"])
     @app_commands.checks.cooldown(1, 5)
-    async def user_info(
-        self,
-        interaction: Interaction,
-        user: Optional[discord.Member] = None,
-    ):
-        assert isinstance(interaction.user, discord.Member) and interaction.guild
+    async def user_info(self, ctx: commands.Context, user: Optional[discord.Member] = None):
+        assert isinstance(ctx.author, discord.Member) and ctx.guild
 
-        user = user or interaction.user
-        user = interaction.guild.get_member(user.id)
+        user = user or ctx.author
+        user = ctx.guild.get_member(user.id)
 
         assert isinstance(user, discord.Member) and user.joined_at
 
@@ -129,35 +151,34 @@ class InfoCog(Cog):
         voice = ""
 
         status_emojis = {
-            "online": self.bot.E["online"],
-            "idle": self.bot.E["idle"],
-            "dnd": self.bot.E["dnd"],
-            "streaming": self.bot.E["streaming"],
-            "offline": self.bot.E["offline"],
+            "online": EMOJIS["online"],
+            "idle": EMOJIS["idle"],
+            "dnd": EMOJIS["dnd"],
+            "streaming": EMOJIS["streaming"],
+            "offline": EMOJIS["offline"],
         }
 
-        embed = Embed(
-            title=f"{status_emojis[user.status.name]} User Information {'- hehe t-this me OwO' if user.id == interaction.guild.me.id else ''}"
-        )
+        embed = Embed(title=f"{status_emojis[user.status.name]} User Information {'- hehe t-this me OwO' if user.id == ctx.guild.me.id else ''}")
 
-        if user.premium_since:
+        if user.premium_since and ctx.guild.premium_subscriber_role:
             boosted = (
-                f"\n{self.bot.E['boost']} **Boosted:** {discord.utils.format_dt(user.premium_since, style='R')}\n"
-                f"{self.bot.E['text1']} **Full date:** {discord.utils.format_dt(user.premium_since, style='f')}"
+                f"\n{EMOJIS['boost']} **Boosted:** {discord.utils.format_dt(user.premium_since, style='R')}\n"
+                f"{EMOJIS['text2']} **Full date:** {discord.utils.format_dt(user.premium_since, style='f')}\n"
+                f"{EMOJIS['text1']} **Role:** {ctx.guild.premium_subscriber_role.mention}"
             )
 
         embed.add_field(
             name="General Information",
-            value=f"{self.bot.E['edit']} **Name:** `{user.display_name}`\n"
-            f"{self.bot.E['text2']} **ID:** `{user.id}`\n"
-            f"{self.bot.E['text1']} **Tag:** `{user}`\n"
+            value=f"{EMOJIS['edit']} **Name:** `{user.display_name}`\n"
+            f"{EMOJIS['text2']} **ID:** `{user.id}`\n"
+            f"{EMOJIS['text1']} **Tag:** `{user}`\n"
             f"\n"
-            f"{self.bot.E['date']} **Created:** {discord.utils.format_dt(user.created_at, style='R')}\n"
-            f"{self.bot.E['text1']} **Full date:** {discord.utils.format_dt(user.created_at, style='f')}\n"
+            f"{EMOJIS['date']} **Created:** {discord.utils.format_dt(user.created_at, style='R')}\n"
+            f"{EMOJIS['text1']} **Full date:** {discord.utils.format_dt(user.created_at, style='f')}\n"
             f"\n"
-            f"{self.bot.E['date']} **Joined:** {discord.utils.format_dt(user.joined_at, style='R')}\n"
-            f"{self.bot.E['text2']} **Position:** `{sorted(interaction.guild.members, key=lambda m: m.joined_at or discord.utils.utcnow()).index(user) + 1}`\n"
-            f"{self.bot.E['text1']} **Full date:** {discord.utils.format_dt(user.joined_at, style='f')}",
+            f"{EMOJIS['date']} **Joined:** {discord.utils.format_dt(user.joined_at, style='R')}\n"
+            f"{EMOJIS['text2']} **Position:** `{sorted(ctx.guild.members, key=lambda m: m.joined_at or discord.utils.utcnow()).index(user) + 1}`\n"
+            f"{EMOJIS['text1']} **Full date:** {discord.utils.format_dt(user.joined_at, style='f')}",
         )
 
         if user.voice and user.voice.channel:
@@ -167,28 +188,26 @@ class InfoCog(Cog):
             video = user.voice.self_video
 
             voice = (
-                f"\n{self.bot.E['stage_channel']} **Voice:** in {user.voice.channel.mention}\n"
-                f"{self.bot.E['text2']} {f'with {users} others.' if users else f'by themselves.'}\n"
-                f"{self.bot.E['text1']} {'Muted' if mute else 'Not muted'}, {'deafened' if deaf else 'not deafened'} and {'streaming' if video else 'not streaming'}.\n"
+                f"\n{EMOJIS['stage_channel']} **Voice:** in {user.voice.channel.mention}\n"
+                f"{EMOJIS['text2']} {f'with {users} others.' if users else f'by themselves.'}\n"
+                f"{EMOJIS['text1']} {'Muted' if mute else 'Not muted'}, {'deafened' if deaf else 'not deafened'} and {'streaming' if video else 'not streaming'}.\n"
             )
 
         embed.add_field(
             name="Other Information",
-            value=f"{self.bot.E['roles']} **Roles:** {await self.format_roles([x for x in user.roles if not x.is_default()])}\n"
-            f"{self.bot.E['text2']} **Amount:** `{len([x for x in user.roles if not x.is_default()])}`\n"
-            f"{self.bot.E['text2']} **Top Role:** `{user.top_role}`\n"
-            f"{self.bot.E['text2']} **Color:** `{user.color}`\n"
-            f"{self.bot.E['text1']} **Permissions:** {await self.format_permissions(user.guild_permissions)}\n"
+            value=f"{EMOJIS['roles']} **Roles:** **`Button Below`**\n"
+            f"{EMOJIS['text2']} **Amount:** `{len([x for x in user.roles if not x.is_default()])}`\n"
+            f"{EMOJIS['text2']} **Color:** `{user.color}`\n"
+            f"{EMOJIS['text2']} **Top Role:** {user.top_role.mention}\n"
+            f"{EMOJIS['text1']} **Permissions:** **`Button Below`**\n"
             f"{voice}"
             f"{boosted}",
         )
 
         fetched_user = await self.bot.fetch_user(user.id)
 
-        return await interaction.response.send_message(
-            embed=embed,
-            view=UserInfoView(user=user, fetched_user=fetched_user),
-        )
+        async with ctx.typing():
+            await ctx.send(embed=embed, view=UserInfoView(user=user, fetched_user=fetched_user))
 
     @app_commands.command(name="bot_info", description="View information about the bot.")
     @app_commands.checks.cooldown(1, 5)
@@ -197,7 +216,7 @@ class InfoCog(Cog):
         invite = "https://bot.spooki.xyz"
         website = "https://spooki.xyz/bot"
 
-        links = f"{self.bot.E['github']} [`Source`]({github}) | {self.bot.E['invite']} [`Invite`]({invite}) | {self.bot.E['globe']} [`Website`]({website})"
+        links = f"{EMOJIS['github']} [`Source`]({github}) | {EMOJIS['invite']} [`Invite`]({invite}) | {EMOJIS['globe']} [`Website`]({website})"
 
         users = [
             f"**Total:** `{len(self.bot.users):,}`",
