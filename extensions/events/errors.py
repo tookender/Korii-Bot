@@ -14,12 +14,12 @@ class ErrorsCog(Cog):
     async def on_command_error(self, ctx, error: Exception):
         if isinstance(error, commands.CommandNotFound):
             return
-        
+
         await ctx.message.add_reaction("❌")
 
         if reason := errors.get(type(error)):
             embed = Embed(title="an oopsie boopsie hoopsie happened !!!!", description=reason.format(self=self, error=error))
             return await ctx.reply(embed=embed)
-        
+
         embed = Embed(title="i dunno what to tell you m8", description=f"```prolog\n{error}\n```")
         return await ctx.reply(embed=embed)
