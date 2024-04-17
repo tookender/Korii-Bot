@@ -11,4 +11,7 @@ class GhostCog(Cog):
             return
 
         if message.content.lower() == "<:ghoost:1228090615510732850>":
-            return await message.reply("G-HOOOOOOST <:ghoost:1228090615510732850>")
+            return await message.reply("G-HOOOOOOST <:ghoost:1228090615510732850>", silent=True)
+
+        if message.content.lower() == "👻":
+            return await message.reply("G-HOOOOOOST 👻", silent=True)
