@@ -3,7 +3,7 @@ from .actions import ActionsCog
 from .random import RandomCog
 
 
-class Fun(ActionsCog, RandomCog, DogCog):
+class Fun(DogCog, ActionsCog, RandomCog):
     pass
 
 

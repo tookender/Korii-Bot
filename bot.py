@@ -37,8 +37,16 @@ class Korii(commands.AutoShardedBot):
         self.E = {}  # Dictionary of all bot emojis
         self.files = self.lines = self.classes = self.functions = self.coroutines = self.comments = 0
 
+        self.prank_messages = self.lucky_messages = self.unlucky_messages = []
+
         self.ping_cooldown: commands.CooldownMapping = commands.CooldownMapping.from_cooldown(1, 5, commands.BucketType.user)
         self.levelling_cooldown: commands.CooldownMapping = commands.CooldownMapping.from_cooldown(1, 45, commands.BucketType.member)
+
+    def fill(self, name: str, variable: list):
+        file = open(name, encoding="utf-8")
+        for line in file.readlines():
+            if not line.startswith("##"):
+                variable.append(line.replace("\n", ""))
 
     def bot_code(self):
         """Loading data about the bot's code"""
@@ -111,6 +119,9 @@ class Korii(commands.AutoShardedBot):
         self.uptime = discord.utils.utcnow()
         self.session = aiohttp.ClientSession()
         self.mystbin = mystbin_library.Client()
+
+        self.fill("data/messages/prank_messages.txt", self.prank_messages)
+        self.fill("data/messages/lucky_messages.txt", self.lucky_messages)
 
         await super().start(config.BOT_TOKEN, reconnect=True)
 
