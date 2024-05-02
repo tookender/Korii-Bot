@@ -20,20 +20,19 @@ class Korii(commands.AutoShardedBot):
             command_prefix=self.get_prefix,  # type: ignore
             case_insensitive=True,
             strip_after_prefix=True,
-            description="A multi-purpose bot with swag 😎\n" "**Website:** https://bot.korino.dev\n" "**Docs:** https://bot.korino.dev/docs",
+            description="A multi-purpose bot 👻\n" "**Website:** https://korino.dev/bot\n" "**Dashboard:** https://korino.dev/dashboard",
             intents=discord.Intents.all(),
             allowed_mentions=discord.AllowedMentions.none(),
             owner_ids=[1022842005920940063, 555818548291829792],
         )
 
         self.ext_logger = logging.getLogger("korii.ext")
-        self.cache_logger = logging.getLogger("korii.cache")
 
         self.NO_PREFIX = True
         self.DEFAULT_PREFIX = "s!"
 
-        self.messages = ["what do you want", "leave me alone", "commit alt f4", "i'm tired boss", "STOP", "WHAT", "??!??!?!?!?!?!?", "go away"]
         self.color = 0x10B981
+        self.messages = ["what do you want", "leave me alone", "commit alt f4", "i'm tired boss", "STOP", "WHAT", "??!??!?!?!?!?!?", "go away"]
 
         self.E = {}  # Dictionary of all bot emojis
         self.files = self.lines = self.classes = self.functions = self.coroutines = self.comments = 0
