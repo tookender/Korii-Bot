@@ -18,8 +18,8 @@ class ErrorsCog(Cog):
         await ctx.message.add_reaction("❌")
 
         if reason := errors.get(type(error)):
-            embed = Embed(title="an oopsie boopsie hoopsie happened !!!!", description=reason.format(self=self, error=error))
+            embed = Embed(title="G-HOOOOOOST", description=reason.format(self=self, error=error))
             return await ctx.reply(embed=embed)
 
-        embed = Embed(title="i dunno what to tell you m8", description=f"```prolog\n{error}\n```")
+        embed = Embed(title="something spoooky happened 👻👻", description=f"```prolog\n{error}\n```")
         return await ctx.reply(embed=embed)

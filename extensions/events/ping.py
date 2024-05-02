@@ -1,8 +1,8 @@
+import random
 import discord
 from discord.ext import commands
 
 from utils import Cog
-
 
 class PingCog(Cog):
     @commands.Cog.listener("on_message")
@@ -21,4 +21,4 @@ class PingCog(Cog):
             return
 
         if str(self.bot.user.id) in message.content.lower():
-            return await message.reply("fuck off.")
+            return await message.reply(random.choice(self.bot.messages))

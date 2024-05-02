@@ -7,14 +7,11 @@ import discord
 from utils import Interaction, utils
 
 nl = "\n"
-URL_REGEX = re.compile('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
-MESSAGE_REGEX = re.compile(
-    r"(?:https://)?(?:[a-zA-Z_]*.)?discord.com/channels/(?P<guild>[0-9]*)/(?P<channel>[0-9]*)/(?P<message>[0-9]*)"
-)
+URL_REGEX = re.compile("http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
+MESSAGE_REGEX = re.compile(r"(?:https://)?(?:[a-zA-Z_]*.)?discord.com/channels/(?P<guild>[0-9]*)/(?P<channel>[0-9]*)/(?P<message>[0-9]*)")
 
 
-class Invalid(Exception):
-    ...
+class Invalid(Exception): ...
 
 
 class EmbedView(discord.ui.View):
@@ -31,7 +28,7 @@ class EmbedView(discord.ui.View):
         while len(embed) > 6000 and embed.fields:
             embed.remove_field(-1)
         if len(embed) > 6000 and embed.description:
-            embed.description = embed.description[:(len(embed.description) - len(embed) - 6000)]
+            embed.description = embed.description[: (len(embed.description) - len(embed) - 6000)]
         return embed
 
     @property
@@ -71,24 +68,24 @@ class EmbedView(discord.ui.View):
         self.add_item(self.send_button)
         self.add_item(self.send_to_button)
         self.add_item(ModalButton(CopyEmbedModal, label="Copy Embed", style=discord.ButtonStyle.green, row=2))
-    
+
         # Row 3
         self.characters_button = discord.ui.Button(label="0/6,000 Characters", style=discord.ButtonStyle.gray, disabled=True, row=3)
-        self.add_item(self.characters_button) # Soon
+        self.add_item(self.characters_button)  # Soon
         self.fields_button = discord.ui.Button(label="0/25 Fields", style=discord.ButtonStyle.gray, disabled=True, row=3)
-        self.add_item(self.fields_button) # Soon
+        self.add_item(self.fields_button)  # Soon
 
     async def update_buttons(self):
         embed = self.embed
 
-        if len(embed.fields) > 25: # If there are more than 25 fields
-            if not self.send_button.disabled: # If the send button is not disabled yet
-                self.send_button.disabled = True # Disable send buttons
+        if len(embed.fields) > 25:  # If there are more than 25 fields
+            if not self.send_button.disabled:  # If the send button is not disabled yet
+                self.send_button.disabled = True  # Disable send buttons
                 self.send_to_button.disabled = True
-        
-        if len(embed.fields) > 24: # If there are more than 24 fields (means that more can't be added)
-            if not self.add_field_button.disabled: # If the add fields button is not disabled yet
-                self.add_field_button.disabled = True # Disable add fields button
+
+        if len(embed.fields) > 24:  # If there are more than 24 fields (means that more can't be added)
+            if not self.add_field_button.disabled:  # If the add fields button is not disabled yet
+                self.add_field_button.disabled = True  # Disable add fields button
 
         if not embed.fields or len(embed.fields) < 1:
             if not self.remove_field_button.disabled:
@@ -98,7 +95,7 @@ class EmbedView(discord.ui.View):
             print(embed.fields)
             print("embed.fields exist")
             self.remove_field_button.disabled = False
-        
+
         if len(embed) > 6000:
             if not self.send_button.disabled:
                 self.send_button.disabled = True
@@ -119,7 +116,11 @@ class EmbedView(discord.ui.View):
         )
         embed.add_field(name="This is an `example` of a __field__ name ⚒️", value="And this is the value of that field. This field is also inlined-")
         embed.add_field(name="Don't want it all on the same line?", value="This field is not inlined. You can have up to 3 fields in a single line.")
-        embed.add_field(name="Here is another field that is not inlined", value="Field's name can be up to 256 characters, and the value can be up to 1024 characters.", inline=False,)
+        embed.add_field(
+            name="Here is another field that is not inlined",
+            value="Field's name can be up to 256 characters, and the value can be up to 1024 characters.",
+            inline=False,
+        )
         embed.set_author(name="This is the author of the embed", url="https://korino.dev", icon_url="http://cdn.korino.dev/u/IgnZiH.png")
         embed.set_image(url="http://cdn.korino.dev/view/wKPa4M.png")
         embed.set_thumbnail(url="http://cdn.korino.dev/view/hmWJUk.png")
@@ -132,7 +133,7 @@ class Modal(discord.ui.Modal):
         self.parent_view = parent_view
         self.update_defaults(parent_view.embed)
         super().__init__()
-    
+
     def update_embed(self):
         return
 
@@ -153,7 +154,9 @@ class Modal(discord.ui.Modal):
 
 class EditEmbedModal(Modal, title="Edit Embed"):
     _title = discord.ui.TextInput(label="Embed Title", placeholder="Leave any field empty to remove its content", max_length=256, required=False)
-    description = discord.ui.TextInput(label="Embed Description", placeholder="This can be up to 4,000 characters long", style=discord.TextStyle.long, required=False)
+    description = discord.ui.TextInput(
+        label="Embed Description", placeholder="This can be up to 4,000 characters long", style=discord.TextStyle.long, required=False
+    )
     image = discord.ui.TextInput(label="Embed Image URL", placeholder="Must be in a HTTP(S) format", required=False)
     thumbnail = discord.ui.TextInput(label="Embed Thumbnail Image URL", placeholder="Must also be in HTTP(S) format", required=False)
     color = discord.ui.TextInput(label="Embed Color", placeholder="Formats: Hex [#00000] or RGB (rgb(num, num, num))", required=False)
@@ -165,7 +168,7 @@ class EditEmbedModal(Modal, title="Edit Embed"):
         self.thumbnail.default = embed.thumbnail.url
         if embed.color:
             self.color.default = str(embed.color)
-        
+
     def update_embed(self):
         failed = []
         embed = self.parent_view.embed
@@ -198,7 +201,7 @@ class EditEmbedModal(Modal, title="Edit Embed"):
 
         if failed:
             raise Invalid("\n".join(failed))
-        
+
 
 class EditAuthorModal(Modal, title="Edit Embed Author"):
     name = discord.ui.TextInput(label="Author Name", placeholder="Leave any field empty to remove its content", max_length=256, required=False)
@@ -209,7 +212,7 @@ class EditAuthorModal(Modal, title="Edit Embed Author"):
         self.name.default = embed.author.name
         self.url.default = embed.author.url
         self.icon.default = embed.author.icon_url
-    
+
     def update_embed(self):
         failed = []
         embed = self.parent_view.embed
@@ -229,7 +232,7 @@ class EditAuthorModal(Modal, title="Edit Embed Author"):
             if not self.name.value:
                 failed.append("Cannot add Icon. Name is required to add an author.")
             failed.append("Author Icon URL was invalid. Must follow the HTTP(S) format.")
-        
+
         if self.name.value:
             embed.set_author(name=self.name.value, url=self.url.value, icon_url=self.icon.value)
 
@@ -268,7 +271,9 @@ class AddFieldModal(Modal, title="Add Field"):
     name = discord.ui.TextInput(label="Field Name", max_length=256, required=True)
     value = discord.ui.TextInput(label="Field Value", max_length=1024, required=True)
     inline = discord.ui.TextInput(label="Is Inline?", placeholder="Yes (default) or No", max_length=3, required=False)
-    index = discord.ui.TextInput(label="Index", placeholder="Where to place the field, a number between 1 and 25. Default is 25 (last)", required=False)
+    index = discord.ui.TextInput(
+        label="Index", placeholder="Where to place the field, a number between 1 and 25. Default is 25 (last)", required=False
+    )
 
     def update_embed(self):
         failed = []
@@ -277,31 +282,20 @@ class AddFieldModal(Modal, title="Add Field"):
             try:
                 index = int(self.index.value) - 1
                 return self.parent_view.embed.insert_field_at(
-                    index=index,
-                    name=self.name.value,
-                    value=self.value.value,
-                    inline=utils.to_boolean(self.inline.value)
+                    index=index, name=self.name.value, value=self.value.value, inline=utils.to_boolean(self.inline.value)
                 )
-            
+
             except Exception as e:
-                return self.parent_view.embed.add_field(
-                    name=self.name.value,
-                    value=self.value.value,
-                    inline=utils.to_boolean(self.inline.value)
-                )
-            
-        self.parent_view.embed.add_field(
-            name=self.name.value,
-            value=self.value.value,
-            inline=utils.to_boolean(self.inline.value)
-        )
+                return self.parent_view.embed.add_field(name=self.name.value, value=self.value.value, inline=utils.to_boolean(self.inline.value))
+
+        self.parent_view.embed.add_field(name=self.name.value, value=self.value.value, inline=utils.to_boolean(self.inline.value))
 
 
 class RemoveFieldDropdown(discord.ui.Select):
     def __init__(self, parent_view: EmbedView, options: List[discord.SelectOption]):
         self.parent_view = parent_view
         super().__init__(placeholder="Choose the field...", min_values=1, max_values=1, options=options)
-    
+
     async def callback(self, interaction: Interaction):
         for value in self.values:
             index = int(value.split(")")[0]) - 1
@@ -319,19 +313,21 @@ class RemoveFieldView(discord.ui.View):
             self.options.append(discord.SelectOption(label=f"{i + 1}) {field.name}"))
 
         self.add_item(RemoveFieldDropdown(parent_view, self.options))
-    
+
 
 class RemoveFieldButton(discord.ui.Button):
     def __init__(self, parent_view: EmbedView):
         self.parent_view = parent_view
         super().__init__(emoji="➖", style=discord.ButtonStyle.red, disabled=True, row=1)
-    
+
     async def callback(self, interaction: Interaction):
         return await interaction.response.send_message(embed=self.parent_view.embed, view=RemoveFieldView(self.parent_view))
 
 
 class CopyEmbedModal(Modal, title="Copy Embed"):
-    message = discord.ui.TextInput(label="Message Link", placeholder="The link of the message featuring the embed (right click -> copy message link)", required=True)
+    message = discord.ui.TextInput(
+        label="Message Link", placeholder="The link of the message featuring the embed (right click -> copy message link)", required=True
+    )
 
     def update_defaults(self, embed: discord.Embed):
         return
@@ -341,21 +337,22 @@ class CopyEmbedModal(Modal, title="Copy Embed"):
         match = MESSAGE_REGEX.fullmatch(self.message.value)
 
         if not match:
-            return await interaction.response.send_message("Invalid Message Link. Must follow this format: `https://discord.com/channels/guild_id/channel_id/message_id`")
+            return await interaction.response.send_message(
+                "Invalid Message Link. Must follow this format: `https://discord.com/channels/guild_id/channel_id/message_id`"
+            )
 
-        guild = interaction.client.get_guild(int(match['guild']))
+        guild = interaction.client.get_guild(int(match["guild"]))
         if not guild:
             return await interaction.response.send_message("Invalid guild ID.")
 
-        channel = guild.get_channel(int(match['channel']))
+        channel = guild.get_channel(int(match["channel"]))
         if not channel or not isinstance(channel, discord.TextChannel):
             return await interaction.response.send_message("Invalid channel ID.")
-        
 
-        message = channel.get_partial_message(int(match['message']))
+        message = channel.get_partial_message(int(match["message"]))
         if not message:
             return await interaction.response.send_message("Invalid message ID.")
-        
+
         message = await channel.fetch_message(message.id)
         embed = message.embeds[0]
 
@@ -379,7 +376,7 @@ class SendButton(discord.ui.Button):
     async def callback(self, interaction: Interaction):
         if not interaction.message:
             return await interaction.response.send_message("No message was found. Try again.", ephemeral=True)
-        
+
         if not interaction.channel or not isinstance(interaction.channel, discord.TextChannel):
             return await interaction.response.send_message("No channel was found. Try again.", ephemeral=True)
 
@@ -392,8 +389,18 @@ class SendToView(discord.ui.View):
     def __init__(self):
         super().__init__()
 
-    @discord.ui.select(cls=discord.ui.ChannelSelect, placeholder="Select a channel...", max_values=1, min_values=1,
-        channel_types=[discord.ChannelType.text, discord.ChannelType.news, discord.ChannelType.voice, discord.ChannelType.private_thread, discord.ChannelType.public_thread]
+    @discord.ui.select(
+        cls=discord.ui.ChannelSelect,
+        placeholder="Select a channel...",
+        max_values=1,
+        min_values=1,
+        channel_types=[
+            discord.ChannelType.text,
+            discord.ChannelType.news,
+            discord.ChannelType.voice,
+            discord.ChannelType.private_thread,
+            discord.ChannelType.public_thread,
+        ],
     )
     async def select_channel(self, interaction: Interaction, select: discord.ui.ChannelSelect):
         assert interaction.guild and isinstance(interaction.user, discord.Member) and interaction.message

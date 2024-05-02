@@ -1,9 +1,9 @@
+from .dog import DogCog
 from .actions import ActionsCog
-from .animals import AnimalsCog
 from .random import RandomCog
 
 
-class Fun(ActionsCog, RandomCog, AnimalsCog):
+class Fun(ActionsCog, RandomCog, DogCog):
     pass
 
 
