@@ -37,7 +37,7 @@ class Korii(commands.AutoShardedBot):
         self.E = {}  # Dictionary of all bot emojis
         self.files = self.lines = self.classes = self.functions = self.coroutines = self.comments = 0
 
-        self.ping_cooldown: commands.CooldownMapping = commands.CooldownMapping.from_cooldown(1, 30, commands.BucketType.guild)
+        self.ping_cooldown: commands.CooldownMapping = commands.CooldownMapping.from_cooldown(1, 5, commands.BucketType.user)
         self.levelling_cooldown: commands.CooldownMapping = commands.CooldownMapping.from_cooldown(1, 45, commands.BucketType.member)
 
     def bot_code(self):
