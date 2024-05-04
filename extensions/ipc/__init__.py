@@ -1,3 +1,4 @@
+from aiohttp.web_routedef import route
 from bot import Korii
 from utils import Cog
 from aiohttp import web
@@ -9,20 +10,16 @@ class IPC(Cog):
         self.bot = bot
         app = web.Application()
         self.app = app
-        app.add_routes(routes)
+        self.router = app.router
+        self.router.add_route("get", "/", self.ping)
         self.bot.loop.create_task(self._start())
+
+    async def ping(self, _) -> Response:
+        return json_response({"message": f"PONG! {self.bot.latency * 1000}"})
 
     async def _start(self):
         await self.bot.wait_until_ready()
         await web._run_app(self.app, host="0.0.0.0", port=6969, print=None)
-
-
-routes = web.RouteTableDef()
-
-
-@routes.get("/")
-async def ping(_) -> Response:
-    return json_response({"message": f"PONG! {IPC.bot.latency * 1000}"})
 
 
 async def setup(bot):
