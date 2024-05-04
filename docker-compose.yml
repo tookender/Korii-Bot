@@ -20,6 +20,8 @@ services:
   bot:
     container_name: "korii"
     restart: unless-stopped
+    ports:
+      - "6969:6969"
     build:
       context: .
       dockerfile: Dockerfile
