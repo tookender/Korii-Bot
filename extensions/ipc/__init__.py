@@ -22,7 +22,7 @@ class IPC(Cog):
         data = await request.json()
         valid_guilds = [guild for guild in data if self.bot.get_guild(guild["id"])]
 
-        return json_response({"guilds": valid_guilds})
+        return json_response({"guilds": valid_guilds, "input": data})
 
     async def _start(self):
         await self.bot.wait_until_ready()
