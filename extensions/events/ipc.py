@@ -13,7 +13,7 @@ class IPC(Cog):
 
     async def _start(self):
         await self.bot.wait_until_ready()
-        await web._run_app(self.app, print=None)
+        await web._run_app(self.app, port=6969, print=None)
 
 
 routes = web.RouteTableDef()
