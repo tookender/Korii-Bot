@@ -6,6 +6,7 @@ from aiohttp.web import Response, json_response
 
 class IPC(Cog):
     def __init__(self, bot: Korii):
+        self.bot = bot
         app = web.Application()
         self.app = app
         app.add_routes(routes)
