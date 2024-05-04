@@ -24,7 +24,7 @@ class TranslateCog(Cog):
         try:
             response = await self.bot.session.get("https://clients5.google.com/translate_a/single", params=query, headers=headers)
             data = await response.json()
-            sentences = data["sentences"][0]["trans"]
+            sentences = data.get("sentences", [])
 
             return "".join(sentence.get("trans", "") for sentence in sentences)
         except Exception:
