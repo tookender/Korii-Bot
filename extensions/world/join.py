@@ -1,10 +1,7 @@
-import contextlib
-import random
-
 import discord
 from discord.ext import commands
 
-from utils import Embed, Korii
+from utils import Korii
 
 
 class JoinCog(commands.Cog):
