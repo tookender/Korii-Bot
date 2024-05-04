@@ -12,22 +12,22 @@ class IPC(Cog):
         self.app = app
         self.router = app.router
         self.router.add_route("get", "/ping", self.ping)
-        self.router.add_route("post", "/is_in_guild", self.is_in_guild)
+        self.router.add_route("post", "/bot_guilds", self.bot_guilds)
         self.bot.loop.create_task(self._start())
 
     async def ping(self, _) -> Response:
         return json_response({"latency": self.bot.latency * 1000})
 
-    async def is_in_guild(self, request: Request) -> Response:
+    async def bot_guilds(self, request: Request) -> Response:
         data = await request.json()
-        guild = data.get("guild")
+        guilds = data.get("guilds")
+        bot_guilds = []
 
-        if self.bot.get_guild(guild):
-            in_server = True
-        else:
-            in_server = False
+        for guild in guilds:
+            if self.bot.get_guild(guild):
+                bot_guilds.append(guild)
 
-        return json_response({"is_in_guild": in_server, "guild": int(guild)})
+        return json_response({"bot_guilds": bot_guilds, "guilds": guilds})
 
     async def _start(self):
         await self.bot.wait_until_ready()
