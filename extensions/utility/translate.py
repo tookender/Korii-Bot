@@ -26,7 +26,7 @@ class TranslateCog(Cog):
             data = await response.json()
             sentences = data["sentences"][0]["trans"]
 
-            return sentences
+            return "".join(sentence.get("trans", "") for sentence in sentences)
         except Exception:
             return "Some error happened :("
 
