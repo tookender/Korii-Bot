@@ -16,5 +16,6 @@ class DogCog(Cog):
         embed = Embed(title="Doggo :D", color=self.bot.color)
 
         embed.set_image(url=json["data"]["url"])
+        embed.set_author(name="Visit korino.dev/doggo for more", url="https://korino.dev/doggo")
 
         return await interaction.response.send_message(embed=embed, ephemeral=ephemeral)
