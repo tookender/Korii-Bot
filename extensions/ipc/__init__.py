@@ -22,3 +22,7 @@ routes = web.RouteTableDef()
 @routes.get("/")
 async def ping(_) -> Response:
     return json_response({"message": f"PONG! {IPC.bot.latency * 1000}"})
+
+
+async def setup(bot):
+    await bot.add_cog(IPC(bot))
