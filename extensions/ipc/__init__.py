@@ -22,7 +22,7 @@ class IPC(Cog):
         data = await request.json()
         guild = data.get("guild")
 
-        if int(guild) in self.bot.guilds:
+        if self.bot.get_guild(guild):
             in_server = True
         else:
             in_server = False
