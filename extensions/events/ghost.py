@@ -1,10 +1,10 @@
 import discord
 from discord.ext import commands
 
-from utils import Cog
+from ._base import EventsBase
 
 
-class GhostCog(Cog):
+class GhostCog(EventsBase):
     @commands.Cog.listener("on_message")
     async def ghost(self, message: discord.Message):
         if message.author.bot:

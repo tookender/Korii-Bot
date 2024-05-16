@@ -1,5 +1,5 @@
-from .dog import DogCog
 from .actions import ActionsCog
+from .dog import DogCog
 from .random import RandomCog
 
 

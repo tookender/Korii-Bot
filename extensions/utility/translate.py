@@ -2,10 +2,12 @@ import discord
 from discord import app_commands
 
 from bot import Korii
-from utils import Interaction, Cog
+from utils import Interaction
+
+from ._base import UtilityBase
 
 
-class TranslateCog(Cog):
+class TranslateCog(UtilityBase):
     def __init__(self, bot: Korii):
         self.bot = bot
         self.ctx_menu = app_commands.ContextMenu(

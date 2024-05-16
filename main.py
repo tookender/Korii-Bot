@@ -1,7 +1,9 @@
-import discord
 import asyncio
-from bot import Korii
+
+import discord
 from discord import app_commands
+
+from bot import Korii
 
 bot: Korii = Korii()
 

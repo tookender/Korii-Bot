@@ -3,10 +3,12 @@ import random
 import discord
 from discord import app_commands
 
-from utils import Interaction, Cog
+from utils import Interaction
+
+from ._base import FunBase
 
 
-class ActionsCog(Cog):
+class ActionsCog(FunBase):
     @app_commands.command(description="Do a funny lil' prank on someone to show how grateful you are!")
     @app_commands.describe(user="The user you want to prank.")
     @app_commands.guild_only()

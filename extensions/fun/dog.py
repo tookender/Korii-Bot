@@ -1,8 +1,11 @@
 from discord import app_commands
-from utils import Embed, Interaction, Cog
+
+from utils import Embed, Interaction
+
+from ._base import FunBase
 
 
-class DogCog(Cog):
+class DogCog(FunBase):
     @app_commands.command(description="Sends a random image of my dog :D")
     @app_commands.guild_only()
     @app_commands.describe(ephemeral="If the message should be private or not.")

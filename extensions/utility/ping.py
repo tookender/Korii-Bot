@@ -1,11 +1,12 @@
 from discord import app_commands
 from discord.ext import commands
 
-from bot import Korii
-from utils import Interaction, utils, Cog
+from utils import Interaction, utils
+
+from ._base import UtilityBase
 
 
-class PingCog(Cog):
+class PingCog(UtilityBase):
     def spaces(self, ping: float) -> str:
         return " " * (9 - len(str(round(ping, 2))))
 

@@ -1,6 +1,8 @@
 from discord.ext import commands
 
-from utils import Cog, BlacklistedError, Embed
+from utils import BlacklistedError, Embed
+
+from ._base import EventsBase
 
 errors: dict[type[Exception], str] = {
     BlacklistedError: "bro got blacklisted 💀💀 point and laugh at this user {self.bot.E['pepepoint']}",
@@ -9,7 +11,7 @@ errors: dict[type[Exception], str] = {
 }
 
 
-class ErrorsCog(Cog):
+class ErrorsCog(EventsBase):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error: Exception):
         if isinstance(error, commands.CommandNotFound):

@@ -1,12 +1,12 @@
-import discord
 from discord import app_commands
-from discord.ext import commands
 
-from utils import Interaction, Cog
+from utils import Interaction
 from views.embed import EmbedView
 
+from ._base import UtilityBase
 
-class EmbedCog(Cog):
+
+class EmbedCog(UtilityBase):
     @app_commands.command(description="Create a custom embed.")
     @app_commands.describe(ephemeral="If the message should be sent ephemerally or not.")
     async def embed(self, interaction: Interaction, ephemeral: bool = False):

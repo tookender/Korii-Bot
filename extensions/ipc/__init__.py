@@ -1,8 +1,9 @@
+from aiohttp import web
+from aiohttp.web import Request, Response, json_response
 from aiohttp.web_routedef import route
+
 from bot import Korii
 from utils import Cog
-from aiohttp import web
-from aiohttp.web import Response, json_response, Request
 
 
 class IPC(Cog):

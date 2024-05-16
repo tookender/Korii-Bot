@@ -1,10 +1,12 @@
 import random
+
 import discord
 from discord.ext import commands
 
-from utils import Cog
+from ._base import EventsBase
 
-class PingCog(Cog):
+
+class PingCog(EventsBase):
     @commands.Cog.listener("on_message")
     async def ping(self, message: discord.Message):
         if message.reference and message.reference.resolved:

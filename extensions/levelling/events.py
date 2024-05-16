@@ -4,10 +4,12 @@ import random
 import discord
 from discord.ext import commands
 
-from utils import Embed, Cog
+from utils import Cog, Embed
+
+from ._base import LevellingBase
 
 
-class EventsCog(Cog):
+class EventsCog(LevellingBase):
     @commands.Cog.listener("on_message")
     async def levelling(self, message: discord.Message):
         if not message.guild or message.author.bot or isinstance(message.author, discord.User):

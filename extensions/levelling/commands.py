@@ -3,12 +3,13 @@ from typing import Optional
 
 import discord
 from discord import app_commands
-from discord.ext import commands
 
-from utils import Embed, Interaction, Cog
+from utils import Embed, Interaction
+
+from ._base import LevellingBase
 
 
-class CommandsCog(Cog):
+class CommandsCog(LevellingBase):
     @app_commands.command(description="View the level of the specified member.")
     @app_commands.describe(user="The user you want to view the level of.")
     @app_commands.guild_only()

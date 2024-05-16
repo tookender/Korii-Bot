@@ -4,7 +4,9 @@ from typing import Optional
 import discord
 from discord import app_commands
 
-from utils import Embed, Interaction, Cog, Invalid
+from utils import Embed, Interaction, Invalid
+
+from ._base import UtilityBase
 
 
 class Modal(discord.ui.Modal):
@@ -177,7 +179,7 @@ async def update_message(interaction: Interaction, edit: Optional[bool] = True):
         return await interaction.response.send_message(f"An error occurred: {traceback.format_exception(e)}", ephemeral=True)
 
 
-class ConfigCog(Cog):
+class ConfigCog(UtilityBase):
     group = app_commands.Group(name="config", description="Configure your guild's bot configuration.")
 
     @group.command(description="Configure your guild's levelling system.")

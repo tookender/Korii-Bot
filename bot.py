@@ -1,17 +1,18 @@
 import logging
 import pathlib
+from typing import List
 
-import discord
-import mystbin as mystbin_library
 import aiohttp
 import asyncpg
+import discord
+import mystbin as mystbin_library
 from discord.ext import commands
+
 import config
-from typing import List
 
 
 class Korii(commands.AutoShardedBot):
-    pool: asyncpg.Pool | None
+    pool: asyncpg.Pool
     user: discord.ClientUser
     owner_ids: List[int]
 
@@ -102,7 +103,7 @@ class Korii(commands.AutoShardedBot):
         return self.ext_logger.info(f"Loaded {success} out of {success + failed} extensions")
 
     async def setup_hook(self) -> None:
-        self.pool = await asyncpg.create_pool(config.DATABASE)
+        self.pool = await asyncpg.create_pool(config.DATABASE) # type: ignore
 
         if not self.pool:
             raise RuntimeError("Failed to connect with the database.")

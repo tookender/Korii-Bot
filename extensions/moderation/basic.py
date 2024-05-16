@@ -4,12 +4,13 @@ from typing import Optional
 import discord
 from discord import app_commands
 from discord.app_commands import Choice
-from discord.ext import commands
 
-from utils import Embed, Interaction, utils, Cog
+from utils import Embed, Interaction, utils
+
+from ._base import ModerationBase
 
 
-class BasicCog(Cog):
+class BasicCog(ModerationBase):
     @app_commands.command(description="Kicks the specified member from the server.")
     @app_commands.guild_only()
     @app_commands.default_permissions(kick_members=True)

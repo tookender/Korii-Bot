@@ -1,12 +1,14 @@
+from io import BytesIO
+
 import discord
 from discord.ext import commands
 
-from utils import Cog
 import config
-from io import BytesIO
+
+from ._base import UtilityBase
 
 
-class SpotifyCog(Cog):
+class SpotifyCog(UtilityBase):
     @commands.hybrid_command()
     async def spotify(self, ctx: commands.Context, member: discord.Member = commands.Author):
         await ctx.typing()

@@ -3,12 +3,13 @@ import os
 from typing import Optional
 
 from discord import app_commands
-from discord.ext import commands
 
-from utils import Embed, Interaction, Cog
+from utils import Embed, Interaction
+
+from ._base import UtilityBase
 
 
-class SourceCog(Cog):
+class SourceCog(UtilityBase):
     @app_commands.command(description="Get the source code of a command or the bot.")
     @app_commands.checks.cooldown(1, 5)
     async def source(self, interaction: Interaction, command: Optional[str] = None):
