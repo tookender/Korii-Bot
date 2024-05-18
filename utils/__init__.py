@@ -1,6 +1,10 @@
-from typing import TypeAlias
+from typing import TypeAlias, TYPE_CHECKING
 
-from bot import Korii
+
+if TYPE_CHECKING:
+    from bot import Korii
+else:
+    from discord.ext.commands import bot as Korii
 
 from .bases import *
 from .constants import *
