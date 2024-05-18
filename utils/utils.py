@@ -6,9 +6,6 @@ from typing import Coroutine
 import discord
 import pygit2
 
-from bot import Korii
-
-
 
 def tick(boolean: bool | None):
     if boolean == True:
@@ -18,7 +15,7 @@ def tick(boolean: bool | None):
     else:
         return "<:icons_hyphen:1240731518175809556>"
 
-async def shorten_text(bot: Korii, text: str, length: int | None = None, code: int | None = None, link: bool = False):
+async def shorten_text(bot, text: str, length: int | None = None, code: int | None = None, link: bool = False):
     """A function to shorten text
     shorten_text("Hello World", 6) --> Hello
     shorten_text("Hello World", 6, link=True) --> Hello [...](link)
