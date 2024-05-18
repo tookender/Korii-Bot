@@ -1,13 +1,15 @@
 import datetime
 import itertools
 import time
-from typing import Coroutine
+from typing import Coroutine, TYPE_CHECKING
 
 import discord
 import pygit2
 
-from bot import Korii
-
+if TYPE_CHECKING:
+    from bot import Korii
+else:
+    from discord.ext.commands import bot as Korii
 
 async def shorten_text(bot: Korii, text: str, length: int | None = None, code: int | None = None, link: bool = False):
     """A function to shorten text
