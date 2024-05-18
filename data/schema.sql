@@ -52,8 +52,9 @@ CREATE TABLE IF NOT EXISTS log_channels (
     CONSTRAINT fk_log_channels_guild_id FOREIGN KEY (guild_id) REFERENCES guilds(guild_id) ON DELETE CASCADE
 );
 
+DROP TABLE logging_events;
 CREATE TABLE IF NOT EXISTS logging_events (
-    guild_id BIGINT NOT PRIMARY KEY,
+    guild_id BIGINT PRIMARY KEY,
     message_delete BOOLEAN DEFAULT true NOT NULL,
     message_purge BOOLEAN DEFAULT true NOT NULL,
     message_edit BOOLEAN DEFAULT true NOT NULL,
