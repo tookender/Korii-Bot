@@ -9,10 +9,24 @@ import asyncpg
 import discord
 import mystbin as mystbin_library
 from discord.ext import commands
-from utils.utils import col
 from utils.logging import LoggingEventsFlags
 
 import config
+
+
+def col(color=None, /, *, fmt=0, bg=False):
+    base = "\u001b["
+    if fmt != 0:
+        base += "{fmt};"
+    if color is None:
+        base += "{color}m"
+        color = 0
+    else:
+        if bg is True:
+            base += "4{color}m"
+        else:
+            base += "3{color}m"
+    return base.format(fmt=fmt, color=color)
 
 
 class LoggingConfig:
