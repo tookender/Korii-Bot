@@ -10,8 +10,6 @@ BEGIN
 END
 $$;
 
-DROP TABLE IF EXISTS guilds;
-
 CREATE TABLE IF NOT EXISTS levels (
     guild_id BIGINT NOT NULL,
     user_id  BIGINT PRIMARY KEY,
