@@ -1,14 +1,34 @@
+import typing
 import logging
 import pathlib
-from typing import List
+from typing import List, Type
+from collections import defaultdict
 
 import aiohttp
 import asyncpg
 import discord
 import mystbin as mystbin_library
 from discord.ext import commands
+from utils.utils import col
+from utils.logging import LoggingEventsFlags
 
 import config
+
+
+class LoggingConfig:
+    __slots__ = ("default", "message", "member", "join_leave", "voice", "server")
+
+    def __init__(self, default, message, member, join_leave, voice, server):
+        self.default = default
+        self.message = message
+        self.member = member
+        self.join_leave = join_leave
+        self.voice = voice
+        self.server = server
+
+    def _replace(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
 
 class Korii(commands.AutoShardedBot):
@@ -43,6 +63,19 @@ class Korii(commands.AutoShardedBot):
         self.ping_cooldown: commands.CooldownMapping = commands.CooldownMapping.from_cooldown(1, 5, commands.BucketType.user)
         self.levelling_cooldown: commands.CooldownMapping = commands.CooldownMapping.from_cooldown(1, 45, commands.BucketType.member)
 
+        self.log_webhooks: Type[LoggingConfig] = LoggingConfig
+        self.log_channels: typing.Dict[int, LoggingConfig] = {}
+        self.log_cache = defaultdict(lambda: defaultdict(list))
+        self.guild_loggings: typing.Dict[int, LoggingEventsFlags] = {}
+
+    def tick(self, boolean: bool | None):
+        if boolean == True:
+            return self.E["yes"]
+        elif boolean == False:
+            return self.E["no"]
+        else:
+            return self.E["hyphen"]
+
     def fill(self, name: str, variable: list):
         file = open(name, encoding="utf-8")
         for line in file.readlines():
@@ -70,6 +103,32 @@ class Korii(commands.AutoShardedBot):
                         self.coroutines += 1
                     if "#" in line:
                         self.comments += 1
+
+    def update_log(self, deliver_type: str, webhook_url: str, guild_id: int):
+        guild_id = getattr(guild_id, "id", guild_id)
+        if deliver_type == "default":
+            self.log_channels[guild_id]._replace(default=webhook_url)
+        elif deliver_type == "message":
+            self.log_channels[guild_id]._replace(message=webhook_url)
+        elif deliver_type == "member":
+            self.log_channels[guild_id]._replace(member=webhook_url)
+        elif deliver_type == "join_leave":
+            self.log_channels[guild_id]._replace(join_leave=webhook_url)
+        elif deliver_type == "voice":
+            self.log_channels[guild_id]._replace(voice=webhook_url)
+        elif deliver_type == "server":
+            self.log_channels[guild_id]._replace(server=webhook_url)
+
+    async def load_emojis(self) -> None:
+        await self.wait_until_ready()
+        EMOJI_GUILDS = [1036756543917527161, 1040293187354361857]
+
+        for guild_id in EMOJI_GUILDS:
+            guild = self.get_guild(guild_id)
+            assert guild
+            emojis = guild.emojis
+            for emoji in emojis:
+                self.E[f"{emoji.name}"] = f"<:ghost:{emoji.id}>"
 
     async def load_extensions(self) -> None:
         success = 0
@@ -103,7 +162,7 @@ class Korii(commands.AutoShardedBot):
         return self.ext_logger.info(f"Loaded {success} out of {success + failed} extensions")
 
     async def setup_hook(self) -> None:
-        self.pool = await asyncpg.create_pool(config.DATABASE) # type: ignore
+        self.pool = await asyncpg.create_pool(config.DATABASE)  # type: ignore
 
         if not self.pool:
             raise RuntimeError("Failed to connect with the database.")
@@ -112,6 +171,7 @@ class Korii(commands.AutoShardedBot):
             await self.pool.execute(file.read())
 
         self.bot_code()
+        await self.load_emojis()
         await self.load_extensions()
 
     async def start(self) -> None:
@@ -134,3 +194,34 @@ class Korii(commands.AutoShardedBot):
             prefixes.append("")
 
         return commands.when_mentioned_or(*prefixes)(self, message)
+
+    async def populate_cache(self):
+        for entry in await self.pool.fetch("SELECT * FROM log_channels"):
+            guild_id = entry["guild_id"]
+            await self.pool.execute(
+                "INSERT INTO logging_events(guild_id) VALUES ($1) ON CONFLICT (guild_id) DO NOTHING",
+                entry["guild_id"],
+            )
+
+            self.log_channels[guild_id] = LoggingConfig(
+                default=entry["default_channel"],
+                message=entry["message_channel"],
+                join_leave=entry["join_leave_channel"],
+                member=entry["member_channel"],
+                voice=entry["voice_channel"],
+                server=entry["server_channel"],
+            )
+
+            flags = dict(
+                await self.pool.fetchrow(
+                    "SELECT message_delete, message_purge, message_edit, member_join, member_leave, member_update, user_ban, user_unban, "
+                    "user_update, invite_create, invite_delete, voice_join, voice_leave, voice_move, voice_mod, emoji_create, emoji_delete, "
+                    "emoji_update, sticker_create, sticker_delete, sticker_update, server_update, stage_open, stage_close, channel_create, "
+                    "channel_delete, channel_edit, role_create, role_delete, role_edit FROM logging_events WHERE guild_id = $1",
+                    guild_id,
+                )
+            )
+            self.guild_loggings[guild_id] = LoggingEventsFlags(**flags)
+
+        logging.info(f"{col(2)}All cache populated successfully")
+        self.dispatch("cache_ready")

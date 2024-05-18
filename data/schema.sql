@@ -35,7 +35,54 @@ CREATE TABLE IF NOT EXISTS guilds (
     levelling_delete_after INT     DEFAULT NULL
 );
 
-CREATE TABLE IF NOT EXISTS avatars (
-    user_id     BIGINT PRIMARY KEY,
-    avatar_url  TEXT NOT NULL
-)
+CREATE TABLE IF NOT EXISTS log_channels (
+    guild_id BIGINT PRIMARY KEY,
+    default_channel TEXT,
+    default_chid BIGINT NOT NULL,
+    message_channel TEXT,
+    message_chid BIGINT,
+    join_leave_channel TEXT,
+    join_leave_chid BIGINT,
+    member_channel TEXT,
+    member_chid BIGINT,
+    voice_channel TEXT,
+    voice_chid BIGINT,
+    server_channel TEXT,
+    server_chid BIGINT,
+    CONSTRAINT fk_log_channels_guild_id FOREIGN KEY (guild_id) REFERENCES guilds(guild_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS logging_events (
+    guild_id BIGINT NOT PRIMARY KEY,
+    message_delete BOOLEAN DEFAULT true NOT NULL,
+    message_purge BOOLEAN DEFAULT true NOT NULL,
+    message_edit BOOLEAN DEFAULT true NOT NULL,
+    member_join BOOLEAN DEFAULT true NOT NULL,
+    member_leave BOOLEAN DEFAULT true NOT NULL,
+    member_update BOOLEAN DEFAULT true NOT NULL,
+    user_ban BOOLEAN DEFAULT true NOT NULL,
+    user_unban BOOLEAN DEFAULT true NOT NULL,
+    user_update BOOLEAN DEFAULT true NOT NULL,
+    invite_create BOOLEAN DEFAULT true NOT NULL,
+    invite_delete BOOLEAN DEFAULT true NOT NULL,
+    voice_join BOOLEAN DEFAULT true NOT NULL,
+    voice_leave BOOLEAN DEFAULT true NOT NULL,
+    voice_move BOOLEAN DEFAULT true NOT NULL,
+    voice_mod BOOLEAN DEFAULT true NOT NULL,
+    emoji_create BOOLEAN DEFAULT true NOT NULL,
+    emoji_delete BOOLEAN DEFAULT true NOT NULL,
+    emoji_update BOOLEAN DEFAULT true NOT NULL,
+    sticker_create BOOLEAN DEFAULT true NOT NULL,
+    sticker_delete BOOLEAN DEFAULT true NOT NULL,
+    sticker_update BOOLEAN DEFAULT true NOT NULL,
+    server_update BOOLEAN DEFAULT true NOT NULL,
+    stage_open BOOLEAN DEFAULT true NOT NULL,
+    stage_close BOOLEAN DEFAULT true NOT NULL,
+    channel_create BOOLEAN DEFAULT true NOT NULL,
+    channel_delete BOOLEAN DEFAULT true NOT NULL,
+    channel_edit BOOLEAN DEFAULT true NOT NULL,
+    role_create BOOLEAN DEFAULT true NOT NULL,
+    role_delete BOOLEAN DEFAULT true NOT NULL,
+    role_edit BOOLEAN DEFAULT true NOT NULL,
+    CONSTRAINT fk_logging_events_guild_id FOREIGN KEY (guild_id) REFERENCES guilds(guild_id) ON DELETE CASCADE
+);

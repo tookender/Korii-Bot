@@ -9,6 +9,15 @@ import pygit2
 from bot import Korii
 
 
+
+def tick(boolean: bool | None):
+    if boolean == True:
+        return "<:yes:1036761765322686505>"
+    elif boolean == False:
+        return "<:no:1036761731806003210>"
+    else:
+        return "<:icons_hyphen:1240731518175809556>"
+
 async def shorten_text(bot: Korii, text: str, length: int | None = None, code: int | None = None, link: bool = False):
     """A function to shorten text
     shorten_text("Hello World", 6) --> Hello
@@ -147,3 +156,17 @@ def get_member_permissions(permissions: discord.Permissions):
         perms.append("Create instant invites")
     
     return ", ".join(perms) if perms else 'No permissions'
+
+def col(color=None, /, *, fmt=0, bg=False):
+    base = "\u001b["
+    if fmt != 0:
+        base += "{fmt};"
+    if color is None:
+        base += "{color}m"
+        color = 0
+    else:
+        if bg is True:
+            base += "4{color}m"
+        else:
+            base += "3{color}m"
+    return base.format(fmt=fmt, color=color)
