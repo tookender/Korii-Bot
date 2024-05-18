@@ -1,3 +1,5 @@
+from discord.flags import BaseFlags, fill_with_flags, flag_value
+
 @fill_with_flags()
 class LoggingEventsFlags(BaseFlags):
     def __init__(self, permissions: int = 0, **kwargs: bool):
