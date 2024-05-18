@@ -14,21 +14,6 @@ from utils.logging import LoggingEventsFlags
 import config
 
 
-def col(color=None, /, *, fmt=0, bg=False):
-    base = "\u001b["
-    if fmt != 0:
-        base += "{fmt};"
-    if color is None:
-        base += "{color}m"
-        color = 0
-    else:
-        if bg is True:
-            base += "4{color}m"
-        else:
-            base += "3{color}m"
-    return base.format(fmt=fmt, color=color)
-
-
 class LoggingConfig:
     __slots__ = ("default", "message", "member", "join_leave", "voice", "server")
 
@@ -237,5 +222,4 @@ class Korii(commands.AutoShardedBot):
             )
             self.guild_loggings[guild_id] = LoggingEventsFlags(**flags)
 
-        logging.info(f"{col(2)}All cache populated successfully")
-        self.dispatch("cache_ready")
+        logging.info(f"All cache populated successfully")
