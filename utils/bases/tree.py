@@ -7,8 +7,8 @@ from discord import app_commands
 
 if TYPE_CHECKING:
     from discord.abc import Snowflake
-    
-    AppCommandStore = Dict[str, app_commands.AppCommand] # name: AppCommand
+
+    AppCommandStore = Dict[str, app_commands.AppCommand]  # name: AppCommand
 
 
 class MyCommandTree(app_commands.CommandTree):
@@ -31,13 +31,13 @@ class MyCommandTree(app_commands.CommandTree):
                 commands = self._global_app_commands
             else:
                 commands = guild_commands
-                
+
         for cmd_name, cmd in commands.items():
             if any(name in qualified_name for name in cmd_name.split()):
                 return cmd
 
         return None
-    
+
     def get_app_command(
         self,
         value: Union[str, int],
@@ -48,7 +48,7 @@ class MyCommandTree(app_commands.CommandTree):
                 if value == cmd_name or (str(value).isdigit() and int(value) == cmd.id):
                     return cmd
             return None
-            
+
         if guild:
             guild_id = guild.id if not isinstance(guild, int) else guild
             guild_commands = self._guild_app_commands.get(guild_id, {})
@@ -58,7 +58,6 @@ class MyCommandTree(app_commands.CommandTree):
                 return search_dict(guild_commands) or search_dict(self._global_app_commands)
         else:
             return search_dict(self._global_app_commands)
-
 
     @staticmethod
     def _unpack_app_commands(commands: List[app_commands.AppCommand]) -> AppCommandStore:
@@ -75,12 +74,8 @@ class MyCommandTree(app_commands.CommandTree):
             unpack_options(command.options)  # type: ignore
 
         return ret
- 
-    async def _update_cache(
-        self,
-        commands: List[app_commands.AppCommand],
-        guild: Optional[Union[Snowflake, int]] = None
-    ) -> None:
+
+    async def _update_cache(self, commands: List[app_commands.AppCommand], guild: Optional[Union[Snowflake, int]] = None) -> None:
         # because we support both int and Snowflake
         # we need to convert it to a Snowflake like object if it's an int
         _guild: Optional[Snowflake] = None
@@ -96,26 +91,28 @@ class MyCommandTree(app_commands.CommandTree):
             self._global_app_commands = self._unpack_app_commands(commands)
 
     async def fetch_command(self, command_id: int, /, *, guild: Optional[Snowflake] = None) -> app_commands.AppCommand:
-      res = await super().fetch_command(command_id, guild=guild)
-      await self._update_cache([res], guild=guild)
-      return res
- 
+        res = await super().fetch_command(command_id, guild=guild)
+        await self._update_cache([res], guild=guild)
+        return res
+
     async def fetch_commands(self, *, guild: Optional[Snowflake] = None) -> List[app_commands.AppCommand]:
-      res = await super().fetch_commands(guild=guild)
-      await self._update_cache(res, guild=guild)
-      return res
-      
+        res = await super().fetch_commands(guild=guild)
+        await self._update_cache(res, guild=guild)
+        return res
+
     def clear_app_commands_cache(self, *, guild: Optional[Snowflake]) -> None:
         if guild:
             self._guild_app_commands.pop(guild.id, None)
         else:
             self._global_app_commands = {}
 
-    def clear_commands(self, *, guild: Optional[Snowflake], type: Optional[discord.AppCommandType] = None, clear_app_commands_cache: bool = True) -> None:
-      super().clear_commands(guild=guild)
-      if clear_app_commands_cache:
-        self.clear_app_commands_cache(guild=guild)
-        
+    def clear_commands(
+        self, *, guild: Optional[Snowflake], type: Optional[discord.AppCommandType] = None, clear_app_commands_cache: bool = True
+    ) -> None:
+        super().clear_commands(guild=guild)
+        if clear_app_commands_cache:
+            self.clear_app_commands_cache(guild=guild)
+
     async def sync(self, *, guild: Optional[Snowflake] = None) -> List[app_commands.AppCommand]:
         res = await super().sync(guild=guild)
         await self._update_cache(res, guild=guild)

@@ -1,10 +1,11 @@
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 import discord
+from discord import Colour
 
 
 class Embed(discord.Embed):
-    def __init__(self, executed: Optional[str] = None, requested: Optional[str] = None, colour=0x10B981, **kwargs):
+    def __init__(self, executed: Optional[str] = None, requested: Optional[str] = None, colour: Optional[Union[Colour, int]] = 0x10B981, **kwargs):
         super().__init__(colour=colour, **kwargs)
 
         if executed:

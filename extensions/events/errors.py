@@ -13,11 +13,12 @@ errors: dict[type[Exception], str] = {
 
 class ErrorsCog(EventsBase):
     @commands.Cog.listener()
-    async def on_command_error(self, ctx, error: Exception):
-        if isinstance(error, commands.CommandNotFound):
+    async def on_command_error(self, ctx: commands.Context, error: Exception):
+        if isinstance(error, commands.CommandNotFound) or (ctx.command and str(ctx.command.cog) == "Economy"):
             return
 
-        await ctx.message.add_reaction("❌")
+        if ctx.message:
+            await ctx.message.add_reaction("❌")
 
         if reason := errors.get(type(error)):
             embed = Embed(title="G-HOOOOOOST", description=reason.format(self=self, error=error))

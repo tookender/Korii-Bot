@@ -9,6 +9,7 @@ from utils import Cog
 class IPC(Cog):
     def __init__(self, bot: Korii):
         self.bot = bot
+        self.description = "Behind the scenes stuff to communicate with the website."
         app = web.Application()
         self.app = app
         self.router = app.router

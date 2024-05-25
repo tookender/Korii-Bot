@@ -8,7 +8,7 @@ from .spotify import SpotifyCog
 from .translate import TranslateCog
 
 
-class Utility(ConfigCog, InfoCog, NeofetchCog, PingCog, SourceCog, EmbedCog, TranslateCog, SpotifyCog):
+class Utility(InfoCog, NeofetchCog, PingCog, SourceCog, EmbedCog, TranslateCog, SpotifyCog):
     pass
 
 

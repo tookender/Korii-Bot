@@ -10,3 +10,4 @@ pynacl
 discord.py[voice]
 gtts
 humanfriendly
+git+https://github.com/Rapptz/discord-ext-menus

@@ -1,7 +1,7 @@
 import datetime
 import itertools
 import time
-from typing import Coroutine, TYPE_CHECKING
+from typing import TYPE_CHECKING, Coroutine
 
 import discord
 import pygit2
@@ -10,6 +10,16 @@ if TYPE_CHECKING:
     from bot import Korii
 else:
     from discord.ext.commands import bot as Korii
+
+
+def tick(boolean: bool | None):
+    if boolean == True:
+        return "<:yes:1036761765322686505>"
+    elif boolean == False:
+        return "<:no:1036761731806003210>"
+    else:
+        return "<:icons_hyphen:1240731518175809556>"
+
 
 async def shorten_text(bot: Korii, text: str, length: int | None = None, code: int | None = None, link: bool = False):
     """A function to shorten text
@@ -89,63 +99,64 @@ def to_boolean(argument: str) -> bool:
     else:
         return True
 
+
 def get_member_permissions(permissions: discord.Permissions):
     perms = []
-    
+
     if permissions.administrator:
         perms.append("Administrator")
-        
+
         return "Administrator"
-    
+
     if permissions.manage_guild:
         perms.append("Manage guild")
-        
+
     if permissions.ban_members:
         perms.append("Ban members")
-        
+
     if permissions.kick_members:
         perms.append("Kick members")
-        
+
     if permissions.manage_channels:
         perms.append("Manage channels")
-        
+
     if permissions.manage_emojis:
         perms.append("Manage custom emotes")
-        
+
     if permissions.manage_messages:
         perms.append("Manage messages")
-        
+
     if permissions.manage_permissions:
         perms.append("Manage permissions")
-        
+
     if permissions.manage_roles:
         perms.append("Manage roles")
-        
+
     if permissions.mention_everyone:
         perms.append("Mention everyone")
-        
+
     if permissions.manage_emojis:
         perms.append("Manage emojis")
-        
+
     if permissions.manage_webhooks:
         perms.append("Manage webhooks")
-        
+
     if permissions.move_members:
         perms.append("Move members")
-        
+
     if permissions.mute_members:
         perms.append("Mute members")
-        
+
     if permissions.deafen_members:
         perms.append("Deafen members")
-        
+
     if permissions.priority_speaker:
         perms.append("Priority speaker")
-        
+
     if permissions.view_audit_log:
         perms.append("See audit log")
-        
+
     if permissions.create_instant_invite:
         perms.append("Create instant invites")
-    
-    return ", ".join(perms) if perms else 'No permissions'
+
+    return ", ".join(perms) if perms else "No permissions"

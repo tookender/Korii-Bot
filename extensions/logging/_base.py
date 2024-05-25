@@ -1,9 +1,9 @@
 import asyncio
 import logging
+import typing
 from collections import namedtuple
 
 import discord
-import typing
 from discord.ext import commands, tasks
 
 from bot import Korii
@@ -23,6 +23,7 @@ invalidated_webhook = (
 class LoggingBase(commands.Cog):
     def __init__(self, bot):
         self.bot: Korii = bot
+        self.description = "📜 | Monitor your Discord server, more than with Audit Logs."
         _nt_send_to = namedtuple("send_to", ["default", "message", "member", "join_leave", "voice", "server"])
 
         self.send_to = _nt_send_to(

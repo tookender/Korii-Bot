@@ -1,10 +1,9 @@
-import discord
-
 import typing
+
+import discord
 from discord.ext import commands
 
 from ._base import LoggingBase, guild_channels
-
 
 TOPIC_CHANNELS = typing.Union[discord.TextChannel, discord.ForumChannel, discord.StageChannel, discord.StageInstance]
 
@@ -12,11 +11,7 @@ TOPIC_CHANNELS = typing.Union[discord.TextChannel, discord.ForumChannel, discord
 class ServerLogs(LoggingBase):
     @commands.Cog.listener("on_guild_channel_delete")
     async def logger_on_guild_channel_delete(self, channel: guild_channels):
-        if (
-            not channel.guild
-            or channel.guild.id not in self.bot.log_channels
-            or not self.bot.guild_loggings[channel.guild.id].channel_delete
-        ):
+        if not channel.guild or channel.guild.id not in self.bot.log_channels or not self.bot.guild_loggings[channel.guild.id].channel_delete:
             return
 
         embed = discord.Embed(
@@ -36,7 +31,7 @@ class ServerLogs(LoggingBase):
     async def logger_on_guild_channel_create(self, channel: guild_channels):
         if channel.guild.id not in self.bot.log_channels:
             return
-        
+
         embed = discord.Embed(
             title=f"{channel.type} channel Created".title(),
             description=f"**Name:** #{channel.name}"
@@ -45,14 +40,12 @@ class ServerLogs(LoggingBase):
             colour=discord.Colour.green(),
             timestamp=discord.utils.utcnow(),
         )
-        
+
         for target, over in channel.overwrites.items():
             perms = []
             for perm, value in dict(over).items():
                 if value is not None:
-                    perms.append(
-                        f"{str(perm).replace('guild', 'server').replace('_', ' ').title()} {self.bot.tick(value)}"
-                    )
+                    perms.append(f"{str(perm).replace('guild', 'server').replace('_', ' ').title()} {self.bot.tick(value)}")
 
             if perms:
                 embed.add_field(name=f"Permissions for {target}", value="\n".join(perms), inline=False)
@@ -64,7 +57,7 @@ class ServerLogs(LoggingBase):
     async def logger_on_guild_channel_update(self, before: guild_channels, after: guild_channels):
         if before.guild.id not in self.bot.log_channels or not self.bot.guild_loggings[after.guild.id].channel_delete:
             return
-        
+
         deliver = False
         embed = discord.Embed(
             title=f"{before.type} channel updated".title(),
@@ -77,13 +70,18 @@ class ServerLogs(LoggingBase):
         if before.name != after.name:
             embed.add_field(
                 name="Name updated:",
-                value=f"**From:** {discord.utils.escape_markdown(before.name)}"
-                f"\n**To:** {discord.utils.escape_markdown(after.name)}",
+                value=f"**From:** {discord.utils.escape_markdown(before.name)}" f"\n**To:** {discord.utils.escape_markdown(after.name)}",
                 inline=False,
             )
             deliver = True
 
-        if hasattr(before, "topic") and hasattr(after, "topic") and isinstance(before, TOPIC_CHANNELS) and isinstance(after, TOPIC_CHANNELS) and before.topic != after.topic:
+        if (
+            hasattr(before, "topic")
+            and hasattr(after, "topic")
+            and isinstance(before, TOPIC_CHANNELS)
+            and isinstance(after, TOPIC_CHANNELS)
+            and before.topic != after.topic
+        ):
             embed.add_field(
                 name="Topic updated",
                 value=f"**Before:** {discord.utils.remove_markdown(str(before.topic))}"
@@ -124,23 +122,17 @@ class ServerLogs(LoggingBase):
             return
         if before.icon != after.icon:
             if after.icon and before.icon:
-                embed = discord.Embed(
-                    title="Server icon updated to:", timestamp=discord.utils.utcnow(), colour=discord.Colour.blue()
-                )
+                embed = discord.Embed(title="Server icon updated to:", timestamp=discord.utils.utcnow(), colour=discord.Colour.blue())
                 embed.set_footer(text=f"Server ID: {after.id}")
                 embed.set_image(url=after.icon.url)
 
             elif after.icon and not before.icon:
-                embed = discord.Embed(
-                    title="Server icon set:", timestamp=discord.utils.utcnow(), colour=discord.Colour.green()
-                )
+                embed = discord.Embed(title="Server icon set:", timestamp=discord.utils.utcnow(), colour=discord.Colour.green())
                 embed.set_footer(text=f"Server ID: {after.id}")
                 embed.set_image(url=after.icon.url)
 
             else:
-                embed = discord.Embed(
-                    title="Server icon removed", timestamp=discord.utils.utcnow(), colour=discord.Colour.red()
-                )
+                embed = discord.Embed(title="Server icon removed", timestamp=discord.utils.utcnow(), colour=discord.Colour.red())
                 embed.set_footer(text=f"Server ID: {after.id}")
 
             await self.log(embed, guild=after, send_to=self.send_to.server)
@@ -150,8 +142,7 @@ class ServerLogs(LoggingBase):
                 title="Server Name Updated",
                 timestamp=discord.utils.utcnow(),
                 colour=discord.Colour.blurple(),
-                description=f"**Before:** {discord.utils.remove_markdown(before.name)}\n"
-                f"**After:** {discord.utils.escape_markdown(after.name)}",
+                description=f"**Before:** {discord.utils.remove_markdown(before.name)}\n" f"**After:** {discord.utils.escape_markdown(after.name)}",
             )
             embed.set_footer(text=f"Server id: {after.id}")
             await self.log(embed, guild=after, send_to=self.send_to.server)
@@ -180,11 +171,7 @@ class ServerLogs(LoggingBase):
             f"**Mentionable:** {self.bot.tick(role.mentionable)} • **Position:** {role.position}\n",
         )
         enabled = ", ".join(
-            [
-                str(name).replace("guild", "server").replace("_", " ").title()
-                for name, value in set(role.permissions)
-                if value is True
-            ]
+            [str(name).replace("guild", "server").replace("_", " ").title() for name, value in set(role.permissions) if value is True]
         )
         embed.add_field(name="Permissions enabled:", value=enabled, inline=False)
         embed.set_footer(text=f"Role ID: {role.id}")
@@ -194,7 +181,7 @@ class ServerLogs(LoggingBase):
     async def logger_on_guild_role_delete(self, role: discord.Role):
         if role.guild.id not in self.bot.log_channels or not self.bot.guild_loggings[role.guild.id].role_delete:
             return
-        
+
         embed = discord.Embed(
             title="Role Deleted",
             timestamp=discord.utils.utcnow(),
@@ -207,11 +194,7 @@ class ServerLogs(LoggingBase):
         )
 
         enabled = ", ".join(
-            [
-                str(name).replace("guild", "server").replace("_", " ").title()
-                for name, value in set(role.permissions)
-                if value is True
-            ]
+            [str(name).replace("guild", "server").replace("_", " ").title() for name, value in set(role.permissions) if value is True]
         )
 
         embed.add_field(name="Permissions enabled:", value=enabled, inline=False)
@@ -226,29 +209,15 @@ class ServerLogs(LoggingBase):
         deliver = False
 
         if before.permissions != after.permissions:
-            before_true = [
-                str(name).replace("guild", "server").replace("_", " ").title()
-                for name, value in set(before.permissions)
-                if value is True
-            ]
+            before_true = [str(name).replace("guild", "server").replace("_", " ").title() for name, value in set(before.permissions) if value is True]
 
             before_false = [
-                str(name).replace("guild", "server").replace("_", " ").title()
-                for name, value in set(before.permissions)
-                if value is False
+                str(name).replace("guild", "server").replace("_", " ").title() for name, value in set(before.permissions) if value is False
             ]
 
-            after_true = [
-                str(name).replace("guild", "server").replace("_", " ").title()
-                for name, value in set(after.permissions)
-                if value is True
-            ]
+            after_true = [str(name).replace("guild", "server").replace("_", " ").title() for name, value in set(after.permissions) if value is True]
 
-            after_false = [
-                str(name).replace("guild", "server").replace("_", " ").title()
-                for name, value in set(after.permissions)
-                if value is False
-            ]
+            after_false = [str(name).replace("guild", "server").replace("_", " ").title() for name, value in set(after.permissions) if value is False]
 
             added = ""
             if before_true != after_true:
@@ -273,9 +242,7 @@ class ServerLogs(LoggingBase):
 
         hoist_update = ""
         if before.hoist != after.hoist:
-            hoist_update = (
-                f"\n**Show Separately:** {self.bot.tick(before.hoist)} ➜ {self.bot.tick(after.hoist)}"
-            )
+            hoist_update = f"\n**Show Separately:** {self.bot.tick(before.hoist)} ➜ {self.bot.tick(after.hoist)}"
             deliver = True
 
         ping_update = ""
@@ -286,8 +253,7 @@ class ServerLogs(LoggingBase):
         role_update = f"**Name:** {after.name}"
         if before.name != after.name:
             role_update = (
-                f"**Name:**\n**Before:** {discord.utils.remove_markdown(before.name)}"
-                f"\n**After:** {discord.utils.remove_markdown(after.name)}"
+                f"**Name:**\n**Before:** {discord.utils.remove_markdown(before.name)}" f"\n**After:** {discord.utils.remove_markdown(after.name)}"
             )
             deliver = True
 
@@ -300,7 +266,6 @@ class ServerLogs(LoggingBase):
         if before.position != after.position:
             position_update = f"\n**Updated Position:** `{before.position}` ➜ `{after.position}`"
 
-
         embed.description = role_update + hoist_update + ping_update + color_update + position_update
         if deliver:
             await self.log(embed, guild=after.guild, send_to=self.send_to.server)
@@ -311,7 +276,7 @@ class ServerLogs(LoggingBase):
     ):
         if guild.id not in self.bot.log_channels:
             return
-        
+
         added = [e for e in after if e not in before]
         removed = [e for e in before if e not in after]
 
@@ -357,10 +322,10 @@ class ServerLogs(LoggingBase):
     async def emoji_update(self, guild: discord.Guild, before: discord.Emoji, after: discord.Emoji):
         if before.name == after.name and before.roles == after.roles:
             return
-        
+
         if not self.bot.guild_loggings[guild.id].emoji_update:
             return
-        
+
         embed = discord.Embed(
             title="Emoji Updated",
             colour=discord.Colour.blurple(),
@@ -393,7 +358,7 @@ class ServerLogs(LoggingBase):
     ):
         if guild.id not in self.bot.log_channels:
             return
-        
+
         added = [s for s in after if s not in before]
         removed = [s for s in before if s not in after]
 
@@ -446,10 +411,10 @@ class ServerLogs(LoggingBase):
     async def sticker_update(self, guild: discord.Guild, before: discord.Sticker, after: discord.Sticker):
         if before.description == after.description and before.name == after.name:
             return
-        
+
         if not self.bot.guild_loggings[guild.id].sticker_update:
             return
-        
+
         embed = discord.Embed(
             title="Sticker Updated",
             colour=discord.Colour.blurple(),
@@ -461,8 +426,6 @@ class ServerLogs(LoggingBase):
             embed.add_field(name="Name updated:", inline=False, value=f"**Before:** {before.name}\n**After:** {after.name}")
 
         if before.description != after.description:
-            embed.add_field(
-                name="Name updated:", inline=False, value=f"**Before:** {before.description}\n**After:** {after.description}"
-            )
+            embed.add_field(name="Name updated:", inline=False, value=f"**Before:** {before.description}\n**After:** {after.description}")
 
         await self.log(embed, guild=guild, send_to=self.send_to.server)

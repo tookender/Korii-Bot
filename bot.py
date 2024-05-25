@@ -1,17 +1,18 @@
-import typing
 import logging
 import pathlib
-from typing import List, Type
+import typing
 from collections import defaultdict
+from typing import List, Type
 
 import aiohttp
 import asyncpg
 import discord
 import mystbin as mystbin_library
 from discord.ext import commands
-from utils.logging import LoggingEventsFlags
 
 import config
+from utils.context import CustomContext
+from utils.logging import LoggingEventsFlags
 
 
 class LoggingConfig:
@@ -48,7 +49,7 @@ class Korii(commands.AutoShardedBot):
 
         self.ext_logger = logging.getLogger("korii.ext")
 
-        self.NO_PREFIX = True
+        self.NO_PREFIX = False
         self.DEFAULT_PREFIX = "s!"
 
         self.color = 0x10B981
@@ -129,6 +130,9 @@ class Korii(commands.AutoShardedBot):
             for emoji in emojis:
                 self.E[f"{emoji.name}"] = f"<:ghost:{emoji.id}>"
 
+    async def on_ready(self):
+        await self.load_emojis()
+
     async def load_extensions(self) -> None:
         success = 0
         failed = 0
@@ -170,7 +174,6 @@ class Korii(commands.AutoShardedBot):
             await self.pool.execute(file.read())
 
         self.bot_code()
-        await self.load_emojis()
         await self.load_extensions()
 
     async def start(self) -> None:
@@ -193,6 +196,9 @@ class Korii(commands.AutoShardedBot):
             prefixes.append("")
 
         return commands.when_mentioned_or(*prefixes)(self, message)
+
+    async def get_context(self, message, *, cls=CustomContext):
+        return await super().get_context(message, cls=cls)
 
     async def populate_cache(self):
         for entry in await self.pool.fetch("SELECT * FROM log_channels"):

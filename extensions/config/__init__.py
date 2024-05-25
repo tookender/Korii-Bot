@@ -1,7 +1,8 @@
 from .levelling import LevellingConfig
+from .logging import LoggingConfig
 
 
-class Config(LevellingConfig):
+class Config(LevellingConfig, LoggingConfig):
     pass
 
 

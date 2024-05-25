@@ -1,4 +1,3 @@
-
 from .basic import BasicCog
 
 

@@ -58,3 +58,20 @@ EMOJIS = {
     "boner": "<:owo:1174748673448607815>",
     "pepepoint": "<:owo:1184949033475768332>",
 }
+
+
+NOT_YOUR_BUTTON = [
+    "Nice try, but this button is for [user]!",
+    "Stop messing with [user]'s button!",
+    "You aren't using this command, [user] is!",
+    "Quit it, only [user] can interact with these buttons!",
+    "I know it's tempting, but these buttons can only be used by [user].",
+    "Run your own command, will ya? And not use [user]'s.",
+    "The dog does not approve of you using [user]'s buttons.",
+    "You: ❌, [user]: ✅",
+    "STOP TOUCHING THESE BUTTONS THEY'RE FOR [user]!!!",
+    "That's enough, [user] can only use these buttons.",
+    ">:(",
+    "I wonder why only [user] can interact with these buttons.",
+    "Blasphemy! Ya dare use me buttons! Yes, the message is from [user] meself! Now walk the plank, ya landlubber!",
+]

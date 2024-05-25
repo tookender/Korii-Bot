@@ -23,6 +23,12 @@ CREATE TABLE IF NOT EXISTS role_rewards (
     level    BIGINT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS economy (
+    user_id BIGINT PRIMARY KEY,
+    balance BIGINT,
+    bank    BIGINT
+);
+
 CREATE TABLE IF NOT EXISTS guilds (
     guild_id               BIGINT  PRIMARY KEY,
     levelling_enabled      BOOLEAN DEFAULT FALSE,

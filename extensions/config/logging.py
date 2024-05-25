@@ -8,6 +8,7 @@ from discord.ext import commands
 from bot import Korii
 from utils.context import CustomContext
 from utils.logging import LoggingEventsFlags
+
 from ._base import ConfigBase
 
 
@@ -87,9 +88,7 @@ class ChannelsView(discord.ui.View):
                 except commands.ChannelNotFound:
                     pass
                 except (commands.BadArgument, discord.Forbidden):
-                    await self.ctx.send(
-                        "Could not create a webhook in that channel!\n" "Do i have **Manage Webhooks** permissions there?"
-                    )
+                    await self.ctx.send("Could not create a webhook in that channel!\n" "Do i have **Manage Webhooks** permissions there?")
                 except discord.HTTPException:
                     await self.ctx.send("Something went wrong while creating a webhook...")
             await self.update_message()
@@ -146,9 +145,7 @@ class ChannelsView(discord.ui.View):
                 except commands.ChannelNotFound:
                     pass
                 except (commands.BadArgument, discord.Forbidden):
-                    await self.ctx.send(
-                        "Could not create a webhook in that channel!\n" "Do i have **Manage Webhooks** permissions there?"
-                    )
+                    await self.ctx.send("Could not create a webhook in that channel!\n" "Do i have **Manage Webhooks** permissions there?")
                 except discord.HTTPException:
                     await self.ctx.send("Something went wrong while creating a webhook...")
             await self.update_message()
@@ -205,9 +202,7 @@ class ChannelsView(discord.ui.View):
                 except commands.ChannelNotFound:
                     pass
                 except (commands.BadArgument, discord.Forbidden):
-                    await self.ctx.send(
-                        "Could not create a webhook in that channel!\n" "Do i have **Manage Webhooks** permissions there?"
-                    )
+                    await self.ctx.send("Could not create a webhook in that channel!\n" "Do i have **Manage Webhooks** permissions there?")
                 except discord.HTTPException:
                     await self.ctx.send("Something went wrong while creating a webhook...")
             await self.update_message()
@@ -264,9 +259,7 @@ class ChannelsView(discord.ui.View):
                 except commands.ChannelNotFound:
                     pass
                 except (commands.BadArgument, discord.Forbidden):
-                    await self.ctx.send(
-                        "Could not create a webhook in that channel!\n" "Do i have **Manage Webhooks** permissions there?"
-                    )
+                    await self.ctx.send("Could not create a webhook in that channel!\n" "Do i have **Manage Webhooks** permissions there?")
                 except discord.HTTPException:
                     await self.ctx.send("Something went wrong while creating a webhook...")
             await self.update_message()
@@ -323,9 +316,7 @@ class ChannelsView(discord.ui.View):
                 except commands.ChannelNotFound:
                     pass
                 except (commands.BadArgument, discord.Forbidden):
-                    await self.ctx.send(
-                        "Could not create a webhook in that channel!\n" "Do i have **Manage Webhooks** permissions there?"
-                    )
+                    await self.ctx.send("Could not create a webhook in that channel!\n" "Do i have **Manage Webhooks** permissions there?")
                 except discord.HTTPException:
                     await self.ctx.send("Something went wrong while creating a webhook...")
             await self.update_message()
@@ -345,9 +336,7 @@ class ChannelsView(discord.ui.View):
                 child.disabled = True
             await interaction.response.edit_message(view=self)
             to_delete = []
-            m = await self.ctx.send(
-                "Please send a channel to change the **Voice Events Channel**" '\n_Send "cancel" to cancel_'
-            )
+            m = await self.ctx.send("Please send a channel to change the **Voice Events Channel**" '\n_Send "cancel" to cancel_')
             to_delete.append(m)
 
             def check(message: discord.Message):
@@ -384,9 +373,7 @@ class ChannelsView(discord.ui.View):
                 except commands.ChannelNotFound:
                     pass
                 except (commands.BadArgument, discord.Forbidden):
-                    await self.ctx.send(
-                        "Could not create a webhook in that channel!\n" "Do i have **Manage Webhooks** permissions there?"
-                    )
+                    await self.ctx.send("Could not create a webhook in that channel!\n" "Do i have **Manage Webhooks** permissions there?")
                 except discord.HTTPException:
                     await self.ctx.send("Something went wrong while creating a webhook...")
             await self.update_message()
@@ -541,9 +528,7 @@ class AllEvents(discord.ui.View):
             "server": "⚙",
         }
         for event, emoji in events.items():
-            self.select_category.options.append(
-                discord.SelectOption(label=f"{event.title()} events", value=event, emoji=emoji)
-            )
+            self.select_category.options.append(discord.SelectOption(label=f"{event.title()} events", value=event, emoji=emoji))
         option = "message"
         options: typing.List[str, bool] = [o for o, v in getattr(LoggingEventsFlags, option)() if v is True]
         opts = {k: v for k, v in self.events if k in options}
@@ -646,7 +631,7 @@ class AllEvents(discord.ui.View):
         return interaction.user == self.ctx.author and interaction.user.guild_permissions.manage_guild
 
 
-class Logging(ConfigBase):
+class LoggingConfig(ConfigBase):
     @commands.group(aliases=["logging", "logger"])
     @commands.max_concurrency(1, commands.BucketType.guild)
     async def log(self, ctx: CustomContext):
@@ -696,9 +681,7 @@ class Logging(ConfigBase):
         try:
             webhooks = await channel.webhooks()
         except (discord.Forbidden, discord.HTTPException):
-            raise commands.BadArgument(
-                f"I was unable to get the list of webhooks in {channel.mention}. (Missing Permissions - Manage Webhooks)"
-            )
+            raise commands.BadArgument(f"I was unable to get the list of webhooks in {channel.mention}. (Missing Permissions - Manage Webhooks)")
         for w in webhooks:
             if w.user == self.bot.user:
                 webhook_url = w.url
@@ -714,9 +697,7 @@ class Logging(ConfigBase):
                 )
                 webhook_url = w.url
             except discord.Forbidden:
-                raise commands.BadArgument(
-                    f"I couldn't create a webhook in {channel.mention}(Missing Permissions - Manage Webhooks)"
-                )
+                raise commands.BadArgument(f"I couldn't create a webhook in {channel.mention}(Missing Permissions - Manage Webhooks)")
             except discord.HTTPException:
                 raise commands.BadArgument(
                     f"There was an unexpected error while creating a webhook in {channel.mention} (HTTP exception) - Perhaps try again?"
@@ -749,8 +730,7 @@ class Logging(ConfigBase):
                 join_leave=None,
             )
         await ctx.send(
-            f"Successfully set the logging channel to {channel.mention}"
-            f"\n_see `{ctx.clean_prefix}help log` for more customization commands!_"
+            f"Successfully set the logging channel to {channel.mention}" f"\n_see `{ctx.clean_prefix}help log` for more customization commands!_"
         )
 
     @log.command(name="disable", aliases=["disable-logging"])
@@ -796,10 +776,7 @@ class Logging(ConfigBase):
                                 success += 1
                     except (discord.Forbidden, discord.HTTPException, discord.NotFound):
                         failed += 1
-            await ctx.send(
-                "✅ **Successfully unset all logging channels!**"
-                f"\n_Deleted {success} webhooks. {failed} failed to delete._"
-            )
+            await ctx.send("✅ **Successfully unset all logging channels!**" f"\n_Deleted {success} webhooks. {failed} failed to delete._")
 
     @log.command(name="channels")
     @commands.has_permissions(manage_guild=True)
@@ -926,7 +903,7 @@ class Logging(ConfigBase):
         c = await ctx.confirm(
             "**Do you want to proceed?**"
             "\nThis command will set up logging for you,"
-            "\nBy creating the followinc category:"
+            "\nBy creating the following categories:"
             "\n"
             f"\n`#logging` (category)"
             f"\n- `#join-leave-log`"
@@ -1010,6 +987,7 @@ class Logging(ConfigBase):
                         description=f"{join_leave_channel.mention}"
                         f"\n{message_channel.mention}"
                         f"\n{voice_channel.mention}"
+                        f"\n{member_channel.mention}"
                         f"\n{server_channel.mention}",
                     )
                     await ctx.send(embed=embed, mention_author=True)

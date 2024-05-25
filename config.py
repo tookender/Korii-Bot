@@ -1,4 +1,3 @@
-
 import tomllib
 
 with open("./data/config.toml", "rb") as file:

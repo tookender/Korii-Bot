@@ -7,6 +7,7 @@ from bot import Korii
 
 bot: Korii = Korii()
 
+
 async def on_error(interaction: discord.Interaction[Korii], error: app_commands.AppCommandError):
     embed = discord.Embed(
         title=f"{interaction.client.E['warning']} Error",
@@ -20,9 +21,11 @@ async def on_error(interaction: discord.Interaction[Korii], error: app_commands.
 
     return await interaction.response.send_message(embed=embed, ephemeral=True)
 
+
 async def run_bot() -> None:
     bot.tree.on_error = on_error
     await bot.start()
+
 
 if __name__ == "__main__":
     asyncio.run(run_bot())

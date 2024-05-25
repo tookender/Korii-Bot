@@ -42,7 +42,7 @@ class UserInfoView(discord.ui.View):
     async def roles(self, interaction: Interaction, _):
         embed = Embed(
             title=f"{EMOJIS['roles']} {self.user.display_name}'s Roles",
-            description=', '.join(role.mention if role.name != "@everyone" else role.name for role in self.user.roles),
+            description=", ".join(role.mention if role.name != "@everyone" else role.name for role in self.user.roles),
         )
 
         embed.set_author(name="From lowest to highest")
