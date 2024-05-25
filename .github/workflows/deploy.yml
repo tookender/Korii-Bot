@@ -17,7 +17,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: |
-            cd personal/Korii-Bot
+            cd Korii-Bot
             sudo docker compose down
             sudo git pull
             sudo docker compose up -d
