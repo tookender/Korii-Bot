@@ -149,6 +149,10 @@ async def update_message(interaction: Interaction, edit: Optional[bool] = True):
                 interaction.guild.id,
             )
 
+            if not data:
+                await interaction.client.pool.execute("INSERT INTO guilds(guild_id) VALUES ($1)", interaction.guild.id)
+                await update_message(interaction, edit)
+
             bool_emojis = {
                 True: "🟩",
                 False: "🟥",
