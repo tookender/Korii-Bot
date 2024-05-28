@@ -2,7 +2,7 @@ import traceback
 from typing import Optional
 
 import discord
-from discord import app_commands
+from discord.ext import commands
 
 from utils import Embed, Interaction, Invalid
 
@@ -184,7 +184,7 @@ async def update_message(interaction: Interaction, edit: Optional[bool] = True):
 
 
 class LevellingConfig(ConfigBase):
-    group = app_commands.Group(name="config", description="Configure your guild's bot configuration.")
+    group = commands.hybrid_group(name="config", description="Configure your guild's bot configuration.")
 
     @group.command(description="Configure your guild's levelling system.")
     async def levelling(self, interaction: Interaction):
