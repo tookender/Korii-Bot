@@ -7,7 +7,6 @@ psutil
 discord.py
 python-dateutil
 pynacl
-discord.py[voice]
-gtts
 humanfriendly
 git+https://github.com/Rapptz/discord-ext-menus
+beautifulsoup4

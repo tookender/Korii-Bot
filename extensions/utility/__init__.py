@@ -1,4 +1,5 @@
-from .config import ConfigCog
+from .convert import ConvertCog
+from .define import DefineCog
 from .embed import EmbedCog
 from .info import InfoCog
 from .neofetch import NeofetchCog
@@ -8,7 +9,7 @@ from .spotify import SpotifyCog
 from .translate import TranslateCog
 
 
-class Utility(InfoCog, NeofetchCog, PingCog, SourceCog, EmbedCog, TranslateCog, SpotifyCog):
+class Utility(InfoCog, NeofetchCog, PingCog, SourceCog, EmbedCog, TranslateCog, SpotifyCog, ConvertCog, DefineCog):
     pass
 
 
