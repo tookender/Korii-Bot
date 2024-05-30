@@ -34,9 +34,8 @@ class EventsCog(LevellingBase):
         # Amount of XP the user should get for the message
         random_xp = random.randint(24, 34) + (random.randint(4, 7) if len(message.content) > random.randint(34, 44) else 0)
 
-        double_xp = await self.bot.pool.fetchval("SELECT levelling_double_xp FROM guilds WHERE guild_id = $1", message.guild.id)
-        if double_xp:
-            random_xp = random_xp * 2
+        multiplier = await self.bot.pool.fetchval("SELECT levelling_multiplier FROM guilds WHERE guild_id = $1", message.guild.id)
+        random_xp = random_xp * multiplier
 
         data = await self.bot.pool.fetchrow(
             "SELECT level, xp FROM levels WHERE guild_id = $1 AND user_id = $2",
