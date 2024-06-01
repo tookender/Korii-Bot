@@ -8,4 +8,4 @@ class ConfigBase(commands.Cog):
         self.bot = bot
         self.description = "🔎 | For setting up Korii in your server."
 
-    group = commands.hybrid_group(name="config", description="Configure your guild's bot configuration.")
+    group: commands.HybridGroup = commands.hybrid_group(name="config", description="Configure your guild's bot configuration.")

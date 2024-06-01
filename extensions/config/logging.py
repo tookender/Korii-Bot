@@ -632,7 +632,7 @@ class AllEvents(discord.ui.View):
 
 
 class LoggingConfig(ConfigBase):
-    @ConfigBase.group.command(aliases=["logging", "logger"])
+    @ConfigBase.group.group(aliases=["logging", "logger"])
     @commands.max_concurrency(1, commands.BucketType.guild)
     async def log(self, ctx: CustomContext):
         """Base command to manage the logging events.
@@ -661,7 +661,7 @@ class LoggingConfig(ConfigBase):
             )
             await ctx.send(embed=embed)
 
-    @ConfigBase.group.command(
+    @log.command(
         name="enable",
         aliases=["set-default"],
     )
@@ -733,7 +733,7 @@ class LoggingConfig(ConfigBase):
             f"Successfully set the logging channel to {channel.mention}" f"\n_see `{ctx.clean_prefix}help log` for more customization commands!_"
         )
 
-    @ConfigBase.group.command(name="disable", aliases=["disable-logging"])
+    @log.command(name="disable", aliases=["disable-logging"])
     @commands.has_permissions(manage_guild=True)
     @commands.max_concurrency(1, commands.BucketType.guild)
     async def log_disable(self, ctx: CustomContext):
@@ -778,7 +778,7 @@ class LoggingConfig(ConfigBase):
                         failed += 1
             await ctx.send("✅ **Successfully unset all logging channels!**" f"\n_Deleted {success} webhooks. {failed} failed to delete._")
 
-    @ConfigBase.group.command(name="channels")
+    @log.command(name="channels")
     @commands.has_permissions(manage_guild=True)
     async def log_channels(self, ctx: CustomContext):
         """Shows this server's logging channels"""
@@ -812,7 +812,7 @@ class LoggingConfig(ConfigBase):
         embed.set_footer(text=f"{len(enabled)}/{len(set(loggings))} events enabled.")
         await ctx.send(embed=embed)
 
-    @ConfigBase.group.command(name="disable-event", aliases=["disable_event", "de"])
+    @log.command(name="disable-event", aliases=["disable_event", "de"])
     @commands.has_permissions(manage_guild=True)
     @commands.max_concurrency(1, commands.BucketType.guild)
     async def log_disable_event(self, ctx, *, event: ValidEventConverter):
@@ -835,7 +835,7 @@ class LoggingConfig(ConfigBase):
         setattr(self.bot.guild_loggings[ctx.guild.id], event, False)
         await ctx.send(f'✅ **|** Successfully disabled **{str(event).replace("_", " ").title()} Events**')
 
-    @ConfigBase.group.command(name="enable-event", aliases=["enable_event", "ee"])
+    @log.command(name="enable-event", aliases=["enable_event", "ee"])
     @commands.has_permissions(manage_guild=True)
     @commands.max_concurrency(1, commands.BucketType.guild)
     async def log_enable_event(self, ctx: CustomContext, *, event: ValidEventConverter):
@@ -858,7 +858,7 @@ class LoggingConfig(ConfigBase):
         setattr(self.bot.guild_loggings[ctx.guild.id], event, True)
         await ctx.send(f'✅ **|** Successfully enabled **{str(event).replace("_", " ").title()} Events**')
 
-    @ConfigBase.group.command(
+    @log.command(
         name="edit-channels",
         aliases=["edit_channels", "ec"],
     )
@@ -873,7 +873,7 @@ class LoggingConfig(ConfigBase):
         await view.wait()
 
     @commands.max_concurrency(1, commands.BucketType.guild)
-    @ConfigBase.group.command(name="events", aliases=["all-events", "ae"])
+    @log.command(name="events", aliases=["all-events", "ae"])
     @commands.has_permissions(manage_guild=True)
     async def log_all_events(self, ctx: CustomContext):
         if ctx.guild.id not in self.bot.log_channels:
@@ -884,7 +884,7 @@ class LoggingConfig(ConfigBase):
         await view.start()
         await view.wait()
 
-    @ConfigBase.group.command(name="auto-setup")
+    @log.command(name="auto-setup")
     @commands.has_permissions(administrator=True)
     @commands.max_concurrency(1, commands.BucketType.guild)
     @commands.bot_has_guild_permissions(manage_channels=True, manage_webhooks=True)
