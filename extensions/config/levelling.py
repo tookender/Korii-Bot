@@ -1,11 +1,11 @@
-import traceback
+import traceback, random
 from typing import Optional
 
 import discord
 from discord.ext import commands
 from discord import app_commands
 
-from utils import Embed, Interaction, Invalid
+from utils import Embed, Interaction, Invalid, constants
 
 from ._base import ConfigBase
 
@@ -99,6 +99,14 @@ class ConfigLevellingDropdown(discord.ui.Select):
 
         super().__init__(placeholder="Change an option...", min_values=1, max_values=1, options=options)
 
+    async def interaction_check(self, interaction: Interaction) -> bool:
+        if interaction.user and interaction.user.id in (self.ctx.bot.owner_id, self.ctx.author.id):
+            return True
+
+        messages = random.choice(constants.NOT_YOUR_BUTTON)
+        await interaction.response.send_message(random.choice(messages).format(user=self.ctx.author.display_name), ephemeral=True)
+        return False
+
     async def callback(self, interaction: Interaction):
         if interaction.guild:
             data = await interaction.client.pool.fetchrow(
@@ -128,6 +136,14 @@ class ConfigLevelling(discord.ui.View):
     def __init__(self):
         super().__init__()
         self.add_item(ConfigLevellingDropdown())
+    
+    async def interaction_check(self, interaction: Interaction) -> bool:
+        if interaction.user and interaction.user.id in (self.ctx.bot.owner_id, self.ctx.author.id):
+            return True
+
+        messages = random.choice(constants.NOT_YOUR_BUTTON)
+        await interaction.response.send_message(random.choice(messages).format(user=self.ctx.author.display_name), ephemeral=True)
+        return False
 
     @discord.ui.button(label="View Announcement Message", emoji="💬", style=discord.ButtonStyle.blurple)
     async def view_message(self, interaction: Interaction, button: discord.ui.Button):
