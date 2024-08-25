@@ -144,13 +144,13 @@ class ConfigLevelling(discord.ui.View):
 async def update_message(ctx, edit: Optional[bool] = True):
     try:
         if ctx.guild:
-            data = await ctx.client.pool.fetchrow(
+            data = await ctx.bot.pool.fetchrow(
                 "SELECT levelling_enabled, levelling_announce, levelling_channel, levelling_message, levelling_multiplier FROM guilds WHERE guild_id = $1",
                 ctx.guild.id,
             )
 
             if not data:
-                await ctx.client.pool.execute("INSERT INTO guilds(guild_id) VALUES ($1)", ctx.guild.id)
+                await ctx.bot.pool.execute("INSERT INTO guilds(guild_id) VALUES ($1)", ctx.guild.id)
                 await update_message(ctx, edit)
 
             bool_emojis = {
