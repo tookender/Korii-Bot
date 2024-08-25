@@ -25,7 +25,7 @@ class EventsBase(commands.Cog):
                 channel = self.bot.get_channel(1269897035327209504)
                 await channel.send("⚠️ | Daily Quests have been refreshed")
 
-    @tasks.loop(time=datetime.time(hour=9, minute=0))
+    @tasks.loop(time=datetime.time(hour=10, minute=0))
     async def before(self):
         timezone = pytz.timezone("America/Chicago")
         time = timezone.localize(datetime.datetime.now().replace(hour=19, minute=0, second=0, microsecond=0))

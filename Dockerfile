@@ -7,7 +7,7 @@ COPY . .
 RUN apt-get -y update
 RUN apt-get install -y ffmpeg
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 EXPOSE 6969
 

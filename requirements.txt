@@ -1,6 +1,7 @@
 discord.py
 asyncpg
-git+https://github.com/Gorialis/jishaku
+beautifulsoup4
+pytz
 mystbin-py
 pygit2
 psutil
@@ -8,6 +9,5 @@ discord.py
 python-dateutil
 pynacl
 humanfriendly
+git+https://github.com/Gorialis/jishaku
 git+https://github.com/Rapptz/discord-ext-menus
-beautifulsoup4
-pytz
