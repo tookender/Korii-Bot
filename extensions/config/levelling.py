@@ -184,6 +184,6 @@ async def update_message(interaction: Interaction, edit: Optional[bool] = True):
 
 
 class LevellingConfig(ConfigBase):
-    @commands.hybrid_command(description="Configure your guild's levelling system.")
+    @commands.hybrid_command(description="Configure your guild's levelling system.", aliases=["level_config", "levelling"])
     async def levelling_config(self, interaction: Interaction):
         return await update_message(interaction, edit=False)

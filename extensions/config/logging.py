@@ -632,9 +632,9 @@ class AllEvents(discord.ui.View):
 
 
 class LoggingConfig(ConfigBase):
-    @commands.hybrid_group(aliases=["logging", "logger"])
+    @commands.hybrid_group(name="logging_config", aliases=["log_config", "logger", "logging", "log", "logs"])
     @commands.max_concurrency(1, commands.BucketType.guild)
-    async def logging_config(self, ctx: CustomContext):
+    async def log(self, ctx: CustomContext):
         """Base command to manage the logging events.
 
         Run this command without sub-commands to show more detailed information on the logging module"""
