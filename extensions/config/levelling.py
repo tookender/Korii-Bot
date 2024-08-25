@@ -135,7 +135,7 @@ class ConfigLevelling(discord.ui.View):
             return True
 
         message = random.choice(constants.NOT_YOUR_BUTTON)
-        await interaction.response.send_message(message.format(user=self.author.display_name), ephemeral=True)
+        await interaction.response.send_message(message.replace("[user]", self.author.display_name), ephemeral=True)
         return False
 
     @discord.ui.button(label="View Announcement Message", emoji="💬", style=discord.ButtonStyle.blurple)
