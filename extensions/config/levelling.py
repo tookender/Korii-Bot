@@ -131,11 +131,11 @@ class ConfigLevelling(discord.ui.View):
         self.add_item(ConfigLevellingDropdown())
     
     async def interaction_check(self, interaction: Interaction) -> bool:
-        if interaction.user.id != self.author.id:
+        if interaction.user.id == self.author.id:
             return True
 
-        messages = random.choice(constants.NOT_YOUR_BUTTON)
-        await interaction.response.send_message(random.choice(messages).format(user=self.author.display_name), ephemeral=True)
+        message = random.choice(constants.NOT_YOUR_BUTTON)
+        await interaction.response.send_message(message.format(user=self.author.display_name), ephemeral=True)
         return False
 
     @discord.ui.button(label="View Announcement Message", emoji="💬", style=discord.ButtonStyle.blurple)
