@@ -125,17 +125,17 @@ class ConfigLevellingDropdown(discord.ui.Select):
 
 
 class ConfigLevelling(discord.ui.View):
-    def __init__(self, author: int):
+    def __init__(self, author):
         super().__init__()
         self.author = author
         self.add_item(ConfigLevellingDropdown())
     
     async def interaction_check(self, interaction: Interaction) -> bool:
-        if interaction.user.id != self.author:
+        if interaction.user.id != self.author.id:
             return True
 
         messages = random.choice(constants.NOT_YOUR_BUTTON)
-        await interaction.response.send_message(random.choice(messages).format(user=self.ctx.author.display_name), ephemeral=True)
+        await interaction.response.send_message(random.choice(messages).format(user=self.author.display_name), ephemeral=True)
         return False
 
     @discord.ui.button(label="View Announcement Message", emoji="💬", style=discord.ButtonStyle.blurple)
@@ -185,9 +185,9 @@ async def update_message(interaction: Interaction, edit: Optional[bool] = True):
             )
 
             if not edit:
-                return await interaction.response.send_message(embed=embed, view=ConfigLevelling(author=interaction.user.id))
+                return await interaction.response.send_message(embed=embed, view=ConfigLevelling(author=interaction.user))
 
-            return await interaction.response.edit_message(embed=embed, view=ConfigLevelling(author=interaction.user.id))
+            return await interaction.response.edit_message(embed=embed, view=ConfigLevelling(author=interaction.user))
 
     except Exception as e:
         return await interaction.response.send_message(f"An error occurred: {traceback.format_exception(e)}", ephemeral=True)
