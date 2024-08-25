@@ -1,4 +1,4 @@
-import datetime
+import datetime, pytz
 from discord.ext import commands, tasks
 
 from bot import Korii
@@ -24,3 +24,12 @@ class EventsBase(commands.Cog):
             if now.hour == 16 and now.minute == 0:
                 channel = self.bot.get_channel(1269897035327209504)
                 await channel.send("⚠️ | Daily Quests have been refreshed")
+
+    @tasks.loop(time=datetime.time(hour=9, minute=0))
+    async def before(self):
+        timezone = pytz.timezone("America/Chicago")
+        time = timezone.localize(datetime.datetime.now().replace(hour=19, minute=0, second=0, microsecond=0))
+        unix_timestamp = int(time.timestamp())
+
+        channel = self.bot.get_channel(1269897035327209504)
+        await channel.send(f"⚠️ | Make sure to log in before <t:{unix_timestamp}:F>") 

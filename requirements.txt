@@ -10,3 +10,4 @@ pynacl
 humanfriendly
 git+https://github.com/Rapptz/discord-ext-menus
 beautifulsoup4
+pytz
