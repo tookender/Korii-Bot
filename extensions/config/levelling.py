@@ -99,14 +99,6 @@ class ConfigLevellingDropdown(discord.ui.Select):
 
         super().__init__(placeholder="Change an option...", min_values=1, max_values=1, options=options)
 
-    async def interaction_check(self, interaction: Interaction) -> bool:
-        if interaction.user and interaction.user.id in (self.ctx.bot.owner_id, self.ctx.author.id):
-            return True
-
-        messages = random.choice(constants.NOT_YOUR_BUTTON)
-        await interaction.response.send_message(random.choice(messages).format(user=self.ctx.author.display_name), ephemeral=True)
-        return False
-
     async def callback(self, interaction: Interaction):
         if interaction.guild:
             data = await interaction.client.pool.fetchrow(
