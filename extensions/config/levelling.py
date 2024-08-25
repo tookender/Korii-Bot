@@ -125,12 +125,13 @@ class ConfigLevellingDropdown(discord.ui.Select):
 
 
 class ConfigLevelling(discord.ui.View):
-    def __init__(self):
+    def __init__(self, author: int):
         super().__init__()
+        self.author = author
         self.add_item(ConfigLevellingDropdown())
     
     async def interaction_check(self, interaction: Interaction) -> bool:
-        if interaction.user and interaction.user.id in (self.ctx.bot.owner_id, self.ctx.author.id):
+        if interaction.user.id != self.author:
             return True
 
         messages = random.choice(constants.NOT_YOUR_BUTTON)
@@ -184,9 +185,9 @@ async def update_message(interaction: Interaction, edit: Optional[bool] = True):
             )
 
             if not edit:
-                return await interaction.response.send_message(embed=embed, view=ConfigLevelling())
+                return await interaction.response.send_message(embed=embed, view=ConfigLevelling(author=interaction.user.id))
 
-            return await interaction.response.edit_message(embed=embed, view=ConfigLevelling())
+            return await interaction.response.edit_message(embed=embed, view=ConfigLevelling(author=interaction.user.id))
 
     except Exception as e:
         return await interaction.response.send_message(f"An error occurred: {traceback.format_exception(e)}", ephemeral=True)
