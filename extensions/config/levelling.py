@@ -141,17 +141,17 @@ class ConfigLevelling(discord.ui.View):
             return await interaction.response.send_message(f"**Announcement Message:** `{message}`", ephemeral=True)
 
 
-async def update_message(interaction: Interaction, edit: Optional[bool] = True):
+async def update_message(ctx, edit: Optional[bool] = True):
     try:
-        if interaction.guild:
-            data = await interaction.client.pool.fetchrow(
+        if ctx.guild:
+            data = await ctx.client.pool.fetchrow(
                 "SELECT levelling_enabled, levelling_announce, levelling_channel, levelling_message, levelling_multiplier FROM guilds WHERE guild_id = $1",
-                interaction.guild.id,
+                ctx.guild.id,
             )
 
             if not data:
-                await interaction.client.pool.execute("INSERT INTO guilds(guild_id) VALUES ($1)", interaction.guild.id)
-                await update_message(interaction, edit)
+                await ctx.client.pool.execute("INSERT INTO guilds(guild_id) VALUES ($1)", ctx.guild.id)
+                await update_message(ctx, edit)
 
             bool_emojis = {
                 True: "🟩",
@@ -167,7 +167,7 @@ async def update_message(interaction: Interaction, edit: Optional[bool] = True):
                 f"```\n"
                 f"Enabled              - {bool_emojis[data[0]]}\n"
                 f"Announce             - {bool_emojis[data[1]]}\n"
-                f"Announcement Channel - {interaction.guild.get_channel(data[2]) if data[2] else bool_emojis[data[2]] + ' direct'}\n"
+                f"Announcement Channel - {ctx.guild.get_channel(data[2]) if data[2] else bool_emojis[data[2]] + ' direct'}\n"
                 f"Announcement Message - {bool_emojis[True] + ' view below' if data[3] else bool_emojis[None]}\n"
                 f"Banned Roles         - soon™\n"
                 f"XP Multiplier        - {data[4]}\n"
@@ -175,12 +175,12 @@ async def update_message(interaction: Interaction, edit: Optional[bool] = True):
             )
 
             if not edit:
-                return await interaction.response.send_message(embed=embed, view=ConfigLevelling())
+                return await ctx.send(embed=embed, view=ConfigLevelling())
 
-            return await interaction.response.edit_message(embed=embed, view=ConfigLevelling())
+            return await ctx.message.edit(embed=embed, view=ConfigLevelling())
 
     except Exception as e:
-        return await interaction.response.send_message(f"An error occurred: {traceback.format_exception(e)}", ephemeral=True)
+        return await ctx.send(f"An error occurred: {traceback.format_exception(e)}", ephemeral=True)
 
 
 class LevellingConfig(ConfigBase):
