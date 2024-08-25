@@ -2,12 +2,11 @@ FROM python:3.11
 
 WORKDIR /main
 
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
 COPY . .
-
-RUN apt-get -y update
-RUN apt-get install -y ffmpeg
-
-RUN pip install -r requirements.txt
 
 EXPOSE 6969
 
