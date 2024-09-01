@@ -18,10 +18,9 @@ class CalculatorsCog(DQBase):
 		humanized_cost = f"({numerize.numerize(upgrade_cost)})"
 		humanized_potential = f"({numerize.numerize(potential)})"
 
-		embed = Embed(
-            title="Potential Calculator",
-            description=f"💪 **Max Power:** {potential:,} {humanized_potential if potential > 999 else ''}\n"\
-						f"💰 **Upgrade Cost:** {upgrade_cost:,} {humanized_cost if upgrade_cost > 999 else ''}"
-		)
+		embed = Embed(title="Potential Calculator")
+
+		embed.add_field(name="💪 Max Power", value=f"{potential:,} {humanized_potential if potential > 999 else ''}")
+		embed.add_field(name="💰 Upgrade Cost", value=f"{upgrade_cost:,} {humanized_cost if upgrade_cost > 999 else ''}")
 
 		return await ctx.send(embed=embed)
