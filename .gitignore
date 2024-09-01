@@ -1,5 +1,5 @@
 config.toml
 __pycache__/
-.vscode
 env
 venv
+.venv
