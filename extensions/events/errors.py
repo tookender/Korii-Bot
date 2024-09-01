@@ -18,7 +18,10 @@ class ErrorsCog(EventsBase):
             return
 
         if ctx.message:
-            await ctx.message.add_reaction("❌")
+            try:
+                await ctx.message.add_reaction("❌")
+            except Exception as e:
+                pass
 
         if reason := errors.get(type(error)):
             embed = Embed(title="G-HOOOOOOST", description=reason.format(self=self, error=error))
