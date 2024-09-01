@@ -1,4 +1,4 @@
-import discord
+import humanize
 from discord import app_commands
 from discord.ext import commands
 
@@ -15,10 +15,13 @@ class CalculatorsCog(DQBase):
 		upgrade_cost = calculate_upgrade_cost(current_upgrades, total_upgrades)
 		potential = calculate_potential(current_power, current_upgrades, total_upgrades)
         
+		humanized_cost = f"({humanize.intword(upgrade_cost)})"
+		humanized_potential = f"({humanize.intword(potential)})"
+
 		embed = Embed(
             title="Potential Calculator",
-            description=f"💪 **Max Power:** {potential:,}\n"\
-						f"💰 **Upgrade Cost:** {upgrade_cost:,}"
+            description=f"💪 **Max Power:** {potential:,} {humanized_cost if potential > 999 else ''}\n"\
+						f"💰 **Upgrade Cost:** {upgrade_cost:,} {humanized_potential if upgrade_cost > 999 else ''}"
 		)
 
 		return await ctx.send(embed=embed)

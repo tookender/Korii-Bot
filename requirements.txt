@@ -9,5 +9,6 @@ discord.py
 python-dateutil
 pynacl
 humanfriendly
+humanize
 git+https://github.com/Gorialis/jishaku
 git+https://github.com/Rapptz/discord-ext-menus
