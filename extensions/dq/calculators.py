@@ -20,8 +20,8 @@ class CalculatorsCog(DQBase):
 
 		embed = Embed(
             title="Potential Calculator",
-            description=f"💪 **Max Power:** {potential:,} {humanized_cost if potential > 999 else ''}\n"\
-						f"💰 **Upgrade Cost:** {upgrade_cost:,} {humanized_potential if upgrade_cost > 999 else ''}"
+            description=f"💪 **Max Power:** {potential:,} {humanized_potential if potential > 999 else ''}\n"\
+						f"💰 **Upgrade Cost:** {upgrade_cost:,} {humanized_cost if upgrade_cost > 999 else ''}"
 		)
 
 		return await ctx.send(embed=embed)
