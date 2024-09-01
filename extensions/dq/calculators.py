@@ -6,7 +6,6 @@ from ._base import DQBase
 from utils.calculators import *
 from utils import Embed
 
-s!calc_pot 500 1 500
 class CalculatorsCog(DQBase):
 	@commands.hybrid_command(description="Calculate max potential of an item and the upgrade cost.", aliases=["potential", "pot", "calc_pot", "calcpot", "potcalc"])
 	@app_commands.describe(current_power="Current power of your item.")
