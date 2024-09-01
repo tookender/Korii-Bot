@@ -20,7 +20,7 @@ class CalculatorsCog(DQBase):
 
 		embed = Embed(title="Potential Calculator")
 
-		embed.add_field(name="💪 Max Power", value=f"{potential:,} {humanized_potential if potential > 999 else ''}")
-		embed.add_field(name="💰 Upgrade Cost", value=f"{upgrade_cost:,} {humanized_cost if upgrade_cost > 999 else ''}")
+		embed.add_field(name="💪 Max Power", value=f"{potential:,} {humanized_potential if potential > 999 else ''}", inline=False)
+		embed.add_field(name="💰 Upgrade Cost", value=f"{upgrade_cost:,} {humanized_cost if upgrade_cost > 999 else ''}", inline=False)
 
 		return await ctx.send(embed=embed)
