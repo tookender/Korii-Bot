@@ -15,8 +15,8 @@ class CalculatorsCog(DQBase):
 		upgrade_cost = calculate_upgrade_cost(current_upgrades, total_upgrades)
 		potential = calculate_potential(current_power, current_upgrades, total_upgrades)
         
-		humanized_cost = f"({numerize.numerize.intword(upgrade_cost)})"
-		humanized_potential = f"({numerize.numerize.intword(potential)})"
+		humanized_cost = f"({numerize.numerize(upgrade_cost)})"
+		humanized_potential = f"({numerize.numerize(potential)})"
 
 		embed = Embed(
             title="Potential Calculator",
