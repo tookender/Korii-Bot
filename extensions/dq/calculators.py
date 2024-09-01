@@ -9,7 +9,9 @@ from utils import Embed
 
 class CalculatorsCog(DQBase):
 	@commands.hybrid_command(description="Calculate max potential of an item and the upgrade cost.", aliases=["potential", "pot", "calc_pot", "calcpot", "potcalc"])
-	@app_commands.describe(amount="The amount of money you want to deposit into the bank.")
+	@app_commands.describe(current_power="Current power of your item.")
+	@app_commands.describe(current_upgrades="Current amount of upgrades on your item.")
+	@app_commands.describe(total_upgrades="Total amount of upgrades of your item.")
 	async def calc_potential(self, ctx, current_power, current_upgrades, total_upgrades):
 		upgrade_cost = calculate_upgrade_cost(current_upgrades, total_upgrades)
 		potential = calculate_potential(current_power, current_upgrades, total_upgrades)
