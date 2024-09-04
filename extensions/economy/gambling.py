@@ -196,7 +196,7 @@ class GamblingCog(EconomyBase):
         else:
             await remove_money(self.bot, ctx.author.id, amount)
 
-        return await ctx.send(embed=embed)
+        return await ctx.send(embed=embed, silent=True)
 
     @commands.hybrid_command(description="Bet money on blackjack.", aliases=["bj"])
     @app_commands.describe(amount="The amount you want to bet on the blackjack.")
@@ -218,7 +218,7 @@ class GamblingCog(EconomyBase):
         view = BlackjackView(player_hand, dealer_hand, ctx.author, amount)
 
         try:
-            message = await ctx.send(embed=view.embed, view=view)
+            message = await ctx.send(embed=view.embed, view=view, silent=True)
         except discord.HTTPException:
             return
         else:

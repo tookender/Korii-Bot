@@ -106,4 +106,4 @@ class BasicCog(EconomyBase):
             icon_url="https://media.discordapp.net/attachments/1236282958755659946/1242190293533593651/d70b9ff8f22fa25ed9c4.png",
         )
 
-        return await ctx.send(embed=embed)
+        return await ctx.send(embed=embed, silent=True)

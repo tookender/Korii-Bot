@@ -48,7 +48,7 @@ class EconomyBase(commands.Cog):
         embed.set_footer(text=footer)
 
         if not return_embed:
-            return await ctx.send(embed=embed)
+            return await ctx.send(embed=embed, silent=True)
         return embed
 
     async def check_account(self, ctx, user: discord.Member):
@@ -58,7 +58,7 @@ class EconomyBase(commands.Cog):
                 description=f"{user.mention} needs to use `/register` to register an account.",
             )
 
-            await ctx.send(embed=embed)
+            await ctx.send(embed=embed, silent=True)
             return True
         else:
             return False
@@ -74,8 +74,7 @@ class EconomyBase(commands.Cog):
 
         embed = Embed(title="❌ | No account found", description="Please use `s!register` to register an account in order to use this command.")
 
-        await ctx.send(embed=embed)
-
+        await ctx.send(embed=embed, silent=True)
         return False
 
     async def interaction_check(self, interaction: Interaction):
@@ -89,6 +88,5 @@ class EconomyBase(commands.Cog):
 
         embed = Embed(title="❌ | No account found", description="Please use `/register` to register an account in order to use this command.")
 
-        await interaction.response.send_message(embed=embed)
-
+        await interaction.response.send_message(embed=embed, silent=True)
         return False
