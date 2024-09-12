@@ -32,6 +32,7 @@ class EconomyBase(commands.Cog):
         footer: Optional[str] = None,
         return_embed: Optional[bool] = False,
         author: Optional[discord.Member] = None,
+        view: Optional[discord.ui.View] = None,
     ):
         author = author or ctx.author
 
@@ -48,7 +49,8 @@ class EconomyBase(commands.Cog):
         embed.set_footer(text=footer)
 
         if not return_embed:
-            return await ctx.send(embed=embed, silent=True)
+            return await ctx.send(embed=embed, silent=True, view=view)
+        
         return embed
 
     async def check_account(self, ctx, user: discord.Member):
