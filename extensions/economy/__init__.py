@@ -2,9 +2,10 @@ from .bank import BankCog
 from .basic import BasicCog
 from .gambling import GamblingCog
 from .work import WorkCog
+from .job import JobCog
 
 
-class Economy(BasicCog, GamblingCog, WorkCog, BankCog):
+class Economy(BasicCog, GamblingCog, WorkCog, BankCog, JobCog):
     pass
 
 
