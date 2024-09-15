@@ -56,7 +56,7 @@ class JobDropdown(ui.Select):
         selected_job = self.values[0]
         await interaction.client.pool.execute(
             "UPDATE economy SET job = $1, last_claim = $2 WHERE user_id = $3",
-            selected_job, datetime.datetime.now(datetime.timezone.utc), interaction.user.id
+            selected_job, discord.utils.utcnow(), interaction.user.id
         )
         
 
@@ -82,9 +82,9 @@ class JobCog(EconomyBase):
         last_claim = await self.bot.pool.fetchval("SELECT last_claim FROM economy WHERE user_id = $1", ctx.author.id)
 
         if last_claim is None:
-            last_claim = datetime.datetime.now(datetime.timezone.utc)
+            last_claim = discord.utils.utcnow()
 
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = discord.utils.utcnow()
         hours_passed = (now - last_claim).total_seconds() // 3600  # Convert seconds to hours
 
         if hours_passed < 1:
