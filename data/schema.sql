@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS economy (
     balance BIGINT,
     bank    BIGINT,
     job     TEXT,
-    last_job_claim TIMESTAMP
+    last_job_claim TIMESTAMP WITH TIME ZONE
 );
 
 CREATE TABLE IF NOT EXISTS guilds (

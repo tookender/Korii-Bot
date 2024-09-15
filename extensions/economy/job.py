@@ -84,7 +84,7 @@ class JobCog(EconomyBase):
             await self.claim_income(ctx, user_job)
 
     async def claim_income(self, ctx, user_job):
-        last_claim = await self.bot.pool.fetchval("SELECT last_claim FROM economy WHERE user_id = $1", ctx.user.id)
+        last_claim = await self.bot.pool.fetchval("SELECT last_claim FROM economy WHERE user_id = $1", ctx.author.id)
 
         if last_claim is None:
             last_claim = discord.utils.utcnow()
@@ -104,6 +104,6 @@ class JobCog(EconomyBase):
         hourly_pay = jobs_data[user_job]["pay"]
         total_income = int(hours_passed) * hourly_pay
 
-        await self.bot.pool.execute("UPDATE economy SET last_claim = $1 WHERE user_id = $2", now, ctx.user.id)
+        await self.bot.pool.execute("UPDATE economy SET last_claim = $1 WHERE user_id = $2", now, ctx.author.id)
         await add_money(self.bot, ctx.author.id, total_income)
         await self.send_embed(ctx, text=f"You've claimed ${total_income} from your job as a {user_job.capitalize()}. Keep working hard!", return_embed=False)
