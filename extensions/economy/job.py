@@ -69,7 +69,7 @@ class JobDropdown(ui.Select):
 class JobCog(EconomyBase):
     @commands.hybrid_command(description="Get a job or claim your passive income!")
     async def job(self, ctx):
-        user_job = await self.bot.pool.fetchval("SELECT job FROM economy WHERE user_id = $1", ctx.user.id)
+        user_job = await self.bot.pool.fetchval("SELECT job FROM economy WHERE user_id = $1", ctx.author.id)
 
         if not user_job:            
             await self.send_embed(ctx, text="You don't have a job yet! Please choose one from the dropdown below.", view=JobSelection(self.bot, ctx))
@@ -79,7 +79,7 @@ class JobCog(EconomyBase):
 
     async def claim_income(self, ctx, user_job):
         # Fetch the last time user claimed their income
-        last_claim = await self.bot.pool.fetchval("SELECT last_claim FROM economy WHERE user_id = $1", ctx.user.id)
+        last_claim = await self.bot.pool.fetchval("SELECT last_claim FROM economy WHERE user_id = $1", ctx.author.id)
 
         if last_claim is None:
             last_claim = datetime.datetime.now(datetime.timezone.utc)
@@ -94,7 +94,7 @@ class JobCog(EconomyBase):
         hourly_pay = jobs_data[user_job]["pay"]
         total_income = int(hours_passed) * hourly_pay
 
-        await self.bot.pool.execute("UPDATE economy SET last_claim = $1 WHERE user_id = $2", now, ctx.user.id)
+        await self.bot.pool.execute("UPDATE economy SET last_claim = $1 WHERE user_id = $2", now, ctx.author.id)
         await add_money(self.bot, ctx.author.id, total_income)
 
         await self.send_embed(ctx, text=f"You've claimed ${total_income} from your job as a {user_job.capitalize()}. Keep working hard!", return_embed=False)
