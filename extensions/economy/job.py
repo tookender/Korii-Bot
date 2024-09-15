@@ -1,11 +1,11 @@
-import datetime, discord
+import random, discord
 from discord.ext import commands
 from discord import ui
 from ._base import EconomyBase
-from utils import Interaction
+from utils import Interaction, Embed, constants
 from .utils import add_money
+from datetime import timedelta
 
-# Jobs dictionary with hourly pay for each job and their respective emojis
 jobs_data = {
     "doctor": {"pay": 500, "emoji": "🩺"},     
     "teacher": {"pay": 300, "emoji": "📚"},
@@ -16,21 +16,27 @@ jobs_data = {
 
 class JobSelection(ui.View):
     def __init__(self, bot, ctx):
-        super().__init__(timeout=60)  # Timeout for the interaction
+        super().__init__(timeout=60)
         self.bot = bot
         self.ctx = ctx
         self.value = None
 
-        # Create a dropdown select menu for jobs
         self.add_item(JobDropdown())
 
     async def interaction_check(self, interaction: Interaction) -> bool:
-        # Ensure that only the original user can interact with the dropdown
-        return interaction.user == self.ctx.author
+        if interaction.user.id == self.ctx.author.id:
+            return True
 
-    async def on_timeout(self):
-        # Handle what happens when the interaction times out
-        await self.ctx.send("Job selection timed out! Please try again.", ephemeral=True)
+        message = random.choice(constants.NOT_YOUR_BUTTON)
+        await interaction.response.send_message(message.replace("[user]", self.ctx.author.display_name), ephemeral=True)
+        return False
+
+    async def on_timeout(self) -> None:
+        for child in self.children:
+            child.disabled = True
+            child.style = discord.ButtonStyle.grey
+        await self.ctx.message.edit(view=self)
+        self.stop()
 
 class JobDropdown(ui.Select):
     def __init__(self):
@@ -46,7 +52,7 @@ class JobDropdown(ui.Select):
         ]
 
         super().__init__(
-            placeholder="Choose your job...",  # Placeholder for the dropdown
+            placeholder="Choose your job...",
             min_values=1,
             max_values=1,
             options=options
@@ -58,13 +64,13 @@ class JobDropdown(ui.Select):
             "UPDATE economy SET job = $1, last_claim = $2 WHERE user_id = $3",
             selected_job, discord.utils.utcnow(), interaction.user.id
         )
-        
 
-
-        await interaction.response.send_message(
-            f"Congatula! You're now a {selected_job.capitalize()} earning ${jobs_data[selected_job]['pay']} per hour.",
-            ephemeral=True
+        embed = Embed(
+            title="Congratulations!",
+            description=f"You've chosen {selected_job.capitalize()} as your job! You're now earning ${jobs_data[selected_job]['pay']} per hour.",
         )
+
+        await interaction.response.edit_message(embed=embed, view=None)
 
 class JobCog(EconomyBase):
     @commands.hybrid_command(description="Get a job or claim your passive income!")
@@ -72,29 +78,32 @@ class JobCog(EconomyBase):
         user_job = await self.bot.pool.fetchval("SELECT job FROM economy WHERE user_id = $1", ctx.author.id)
 
         if not user_job:            
-            await self.send_embed(ctx, text="You don't have a job yet! Please choose one from the dropdown below.", view=JobSelection(self.bot, ctx))
+            await self.send_embed(ctx, text="You don't have a job yet!\nPlease choose one from the dropdown below.", view=JobSelection(self.bot, ctx))
         
         else:
             await self.claim_income(ctx, user_job)
 
     async def claim_income(self, ctx, user_job):
-        # Fetch the last time user claimed their income
-        last_claim = await self.bot.pool.fetchval("SELECT last_claim FROM economy WHERE user_id = $1", ctx.author.id)
+        last_claim = await self.bot.pool.fetchval("SELECT last_claim FROM economy WHERE user_id = $1", ctx.user.id)
 
         if last_claim is None:
             last_claim = discord.utils.utcnow()
 
         now = discord.utils.utcnow()
-        hours_passed = (now - last_claim).total_seconds() // 3600  # Convert seconds to hours
+        time_since_last_claim = now - last_claim
+        hours_passed = time_since_last_claim.total_seconds() // 3600  # Convert seconds to hours
 
         if hours_passed < 1:
-            await self.send_embed(ctx, text=f"Your hourly earnings are available every hour. Please check back later.", return_embed=False)
-            return
+            next_claim_time = last_claim + timedelta(hours=1)
+            
+            return await self.send_embed(
+                ctx, 
+                text=f"You can claim your next earnings {discord.utils.format_dt(next_claim_time, 'R')}.",
+            )
 
         hourly_pay = jobs_data[user_job]["pay"]
         total_income = int(hours_passed) * hourly_pay
 
-        await self.bot.pool.execute("UPDATE economy SET last_claim = $1 WHERE user_id = $2", now, ctx.author.id)
+        await self.bot.pool.execute("UPDATE economy SET last_claim = $1 WHERE user_id = $2", now, ctx.user.id)
         await add_money(self.bot, ctx.author.id, total_income)
-
         await self.send_embed(ctx, text=f"You've claimed ${total_income} from your job as a {user_job.capitalize()}. Keep working hard!", return_embed=False)
