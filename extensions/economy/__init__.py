@@ -3,9 +3,10 @@ from .basic import BasicCog
 from .gambling import GamblingCog
 from .work import WorkCog
 from .job import JobCog
+from .rewards import RewardsCog
 
 
-class Economy(BasicCog, GamblingCog, WorkCog, BankCog, JobCog):
+class Economy(BasicCog, GamblingCog, WorkCog, BankCog, JobCog, RewardsCog):
     pass
 
 
