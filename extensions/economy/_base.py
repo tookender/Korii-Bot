@@ -11,6 +11,14 @@ from utils import Embed, Interaction
 from .utils import *
 
 
+class GuildContext(commands.Context):
+    @property
+    def guild(self) -> discord.Guild:
+        if not self.guild:
+            raise commands.NoPrivateMessage("This command cannot be used outside of a guild.")
+        return self.guild
+
+
 class EconomyBase(commands.Cog):
     def __init__(self, bot: Korii):
         self.bot = bot
@@ -54,10 +62,10 @@ class EconomyBase(commands.Cog):
         return embed
 
     async def check_account(self, ctx, user: discord.Member):
-        if not await has_account(self.bot, user.id):
+        if not await has_account(self.bot, user.id, ctx.guild.id):
             embed = Embed(
                 title="❌ No account found",
-                description=f"{user.mention} needs to use `/register` to register an account.",
+                description=f"{user.mention} needs to use `/register` to register an account for this guild.",
             )
 
             await ctx.send(embed=embed, silent=True)
@@ -66,29 +74,29 @@ class EconomyBase(commands.Cog):
             return False
 
     async def cog_check(self, ctx: Context):
-        assert ctx.command
+        assert ctx.command and ctx.guild
 
         if ctx.command.name == "register":
             return True
 
-        if await has_account(self.bot, ctx.author.id):
+        if await has_account(self.bot, ctx.author.id, ctx.guild.id):
             return True
 
-        embed = Embed(title="❌ | No account found", description="Please use `s!register` to register an account in order to use this command.")
+        embed = Embed(title="❌ | No account found", description="Please use `s!register` to register an account for this guild in order to use this command.")
 
         await ctx.send(embed=embed, silent=True)
         return False
 
     async def interaction_check(self, interaction: Interaction):
-        assert interaction.command
+        assert interaction.command and interaction.guild
 
         if interaction.command.name == "register":
             return True
 
-        if await has_account(self.bot, interaction.user.id):
+        if await has_account(self.bot, interaction.user.id, interaction.guild.id):
             return True
 
-        embed = Embed(title="❌ | No account found", description="Please use `/register` to register an account in order to use this command.")
+        embed = Embed(title="❌ | No account found", description="Please use `/register` to register an account for this guild in order to use this command.")
 
         await interaction.response.send_message(embed=embed, silent=True)
         return False

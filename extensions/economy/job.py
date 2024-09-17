@@ -1,7 +1,7 @@
 import random, discord
 from discord.ext import commands
 from discord import ui
-from ._base import EconomyBase
+from ._base import EconomyBase, GuildContext
 from utils import Interaction, Embed, constants
 from .utils import add_money
 from datetime import timedelta
@@ -74,8 +74,8 @@ class JobDropdown(ui.Select):
 
 class JobCog(EconomyBase):
     @commands.hybrid_command(description="Get a job or claim your passive income!")
-    async def job(self, ctx):
-        user_job = await self.bot.pool.fetchval("SELECT job FROM economy WHERE user_id = $1", ctx.author.id)
+    async def job(self, ctx: GuildContext):
+        user_job = await self.bot.pool.fetchval("SELECT job FROM economy WHERE user_id = $1 AND guild_id = $2", ctx.author.id, ctx.guild.id)
 
         if not user_job:            
             await self.send_embed(ctx, text="You don't have a job yet!\nPlease choose one from the dropdown below.", view=JobSelection(self.bot, ctx))
@@ -83,8 +83,8 @@ class JobCog(EconomyBase):
         else:
             await self.claim_income(ctx, user_job)
 
-    async def claim_income(self, ctx, user_job):
-        last_claim = await self.bot.pool.fetchval("SELECT last_claim FROM economy WHERE user_id = $1", ctx.author.id)
+    async def claim_income(self, ctx: GuildContext, user_job):
+        last_claim = await self.bot.pool.fetchval("SELECT last_claim FROM economy WHERE user_id = $1 AND guild_id = $2", ctx.author.id, ctx.guild.id)
 
         if last_claim is None:
             last_claim = discord.utils.utcnow()
@@ -104,6 +104,6 @@ class JobCog(EconomyBase):
         hourly_pay = jobs_data[user_job]["pay"]
         total_income = int(hours_passed) * hourly_pay
 
-        await self.bot.pool.execute("UPDATE economy SET last_claim = $1 WHERE user_id = $2", now, ctx.author.id)
-        await add_money(self.bot, ctx.author.id, total_income)
+        await self.bot.pool.execute("UPDATE economy SET last_claim = $1 WHERE user_id = $2 AND guild_id = $3", now, ctx.author.id, ctx.guild.id)
+        await add_money(self.bot, ctx.author.id, ctx.guild.id, total_income)
         await self.send_embed(ctx, text=f"You've claimed ${total_income} from your job as a {user_job.capitalize()}. Keep working hard!", return_embed=False)

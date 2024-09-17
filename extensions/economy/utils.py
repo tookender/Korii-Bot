@@ -7,8 +7,10 @@ from bot import Korii
 
 class BalanceConverter(commands.Converter):
     async def convert(self, ctx, argument) -> int:
+        assert ctx.guild
+
         if argument.lower() == "all":
-            number = await get_balance(ctx.bot, ctx.author.id)
+            number = await get_balance(ctx.bot, ctx.author.id, ctx.guild.id)
 
             if number < 0:
                 raise commands.BadArgument(f"'{argument}' is a negative number. Please provide a positive number.")
@@ -18,7 +20,7 @@ class BalanceConverter(commands.Converter):
 
             return number
         elif argument.lower() == "half":
-            number = int(await get_balance(ctx.bot, ctx.author.id) / 2)
+            number = int(await get_balance(ctx.bot, ctx.author.id, ctx.guild.id) / 2)
 
             if number < 0:
                 raise commands.BadArgument(f"'{number} ({argument})' is a negative number. Please provide a positive number.")
@@ -45,8 +47,10 @@ class BalanceConverter(commands.Converter):
 
 class BankConverter(commands.Converter):
     async def convert(self, ctx, argument) -> int:
+        assert ctx.guild
+        
         if argument.lower() == "all":
-            number = await get_bank(ctx.bot, ctx.author.id)
+            number = await get_bank(ctx.bot, ctx.author.id, ctx.guild.id)
             
             if number < 0:
                 raise commands.BadArgument(f"'{number} ({argument})' is a negative number. Please provide a positive number.")
@@ -57,7 +61,7 @@ class BankConverter(commands.Converter):
             return number
         
         elif argument.lower() == "half":
-            number = int(await get_bank(ctx.bot, ctx.author.id) / 2)
+            number = int(await get_bank(ctx.bot, ctx.author.id, ctx.guild.id) / 2)
 
             if number < 0:
                 raise commands.BadArgument(f"'{number} ({argument})' is a negative number. Please provide a positive number.")
@@ -113,56 +117,55 @@ class RouletteConverter(commands.Converter):
 numbers = Union[int, BalanceConverter, BankConverter]
 
 
-async def create_account(bot: Korii, user: int):
-    return await bot.pool.execute("INSERT INTO economy(user_id, balance, bank) VALUES ($1, $2, $3)", user, 100, 1)
+async def create_account(bot: Korii, user: int, guild: int): 
+    return await bot.pool.execute("INSERT INTO economy(user_id, guild_id, balance, bank) VALUES ($1, $2, $3, $4)", user, guild, 100, 1)
 
 
-async def has_account(bot: Korii, user: int):
-    data = await bot.pool.fetch("SELECT * FROM economy WHERE user_id = $1", user)
+async def has_account(bot: Korii, user: int, guild: int):
+    data = await bot.pool.fetch("SELECT * FROM economy WHERE user_id = $1 AND guild_id = $2", user, guild)
 
     if data:
         return True
     return False
 
 
-async def get_balance(bot: Korii, user: int):
-    balance = await bot.pool.fetchval("SELECT balance FROM economy WHERE user_id = $1", user)
+async def get_balance(bot: Korii, user: int, guild: int):
+    balance = await bot.pool.fetchval("SELECT balance FROM economy WHERE user_id = $1 AND guild_id = $2", user, guild)
 
     return balance
 
 
-async def get_bank(bot: Korii, user: int):
-    bank = await bot.pool.fetchval("SELECT bank FROM economy WHERE user_id = $1", user)
-
+async def get_bank(bot: Korii, user: int, guild: int):
+    bank = await bot.pool.fetchval("SELECT bank FROM economy WHERE user_id = $1 AND guild_id = $2", user, guild)
     return bank
 
 
-async def add_money(bot: Korii, user: int, amount: numbers):
-    return await bot.pool.execute("UPDATE economy SET balance = balance + $1 WHERE user_id = $2", amount, user)
+async def add_money(bot: Korii, user: int, guild: int, amount: numbers):
+    return await bot.pool.execute("UPDATE economy SET balance = balance + $1 WHERE user_id = $2 AND guild_id = $3", amount, user, guild)
 
 
-async def remove_money(bot: Korii, user: int, amount: numbers):
-    return await bot.pool.execute("UPDATE economy SET balance = balance - $1 WHERE user_id = $2", amount, user)
+async def remove_money(bot: Korii, user: int, guild: int, amount: numbers):
+    return await bot.pool.execute("UPDATE economy SET balance = balance - $1 WHERE user_id = $2 AND guild_id = $3", amount, user, guild)
 
 
-async def add_bank(bot: Korii, user: int, amount: numbers):
-    return await bot.pool.execute("UPDATE economy SET bank = bank + $1 WHERE user_id = $2", amount, user)
+async def add_bank(bot: Korii, user: int, guild: int, amount: numbers):
+    return await bot.pool.execute("UPDATE economy SET bank = bank + $1 WHERE user_id = $2 AND guild_id = $3", amount, user, guild)
 
 
-async def remove_bank(bot: Korii, user: int, amount: numbers):
-    return await bot.pool.execute("UPDATE economy SET bank = bank - $1 WHERE user_id = $2", amount, user)
+async def remove_bank(bot: Korii, user: int, guild: int, amount: numbers):
+    return await bot.pool.execute("UPDATE economy SET bank = bank - $1 WHERE user_id = $2 AND guild_id = $3", amount, user, guild)
 
 
-async def has_enough_money(bot: Korii, user: int, amount: numbers):
-    balance = await get_balance(bot, user)
+async def has_enough_money(bot: Korii, user: int, guild: int, amount: numbers):
+    balance = await get_balance(bot, user, guild)
 
     if amount > balance:
         return False
     return True
 
 
-async def has_enough_bank(bot: Korii, user: int, amount: numbers):
-    bank = await get_bank(bot, user)
+async def has_enough_bank(bot: Korii, user: int, guild: int, amount: numbers):
+    bank = await get_bank(bot, user, guild)
 
     if amount > bank:
         return False

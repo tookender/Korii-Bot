@@ -4,32 +4,32 @@ from discord.ext import commands
 
 from utils import Embed
 
-from ._base import EconomyBase
+from ._base import EconomyBase, GuildContext
 from .utils import *
 
 
 class BasicCog(EconomyBase):
     @commands.hybrid_command(description="Create an account for Korii Economy")
     @commands.cooldown(1, 300, commands.BucketType.user)
-    async def register(self, ctx):
-        if await has_account(self.bot, ctx.author.id):
+    async def register(self, ctx: GuildContext):
+        if await has_account(self.bot, ctx.author.id, ctx.guild.id):
             return await self.send_embed(
                 ctx,
-                text=f"{self.bot.E['no']} | You already have an account registered.",
+                text=f"{self.bot.E['no']} | You already have an account registered for this guild..",
                 color=discord.Color.red(),
             )
 
-        await create_account(self.bot, ctx.author.id)
+        await create_account(self.bot, ctx.author.id, ctx.guild.id)
         prefix = await self.get_prefix(ctx)
 
         return await self.send_embed(
             ctx,
-            text=f"{self.bot.E['yes']} | Successfully created an account for Korii Economy.\n" f"Use `{prefix}balance` to view your balance.",
+            text=f"{self.bot.E['yes']} | Successfully created an account for this guild.\n" f"Use `{prefix}balance` to view your balance.",
             color=discord.Color.green(),
         )
 
     @commands.hybrid_command(description="View your or a user's balance.", aliases=["bal"])
-    @app_commands.describe(user="The user you want to view the balance of. Defaults to yourself..")
+    @app_commands.describe(user="The user you want to view the balance of. Defaults to yourself.")
     @commands.cooldown(1, 2, commands.BucketType.user)
     async def balance(self, ctx, user: discord.Member | None = None):
         user = user if user else ctx.author
@@ -37,8 +37,8 @@ class BasicCog(EconomyBase):
         if await self.check_account(ctx, user):
             return
 
-        balance = await get_balance(self.bot, user.id)
-        bank = await get_bank(self.bot, user.id)
+        balance = await get_balance(self.bot, user.id, ctx.guild.id)
+        bank = await get_bank(self.bot, user.id, ctx.guild.id)
 
         return await self.send_embed(
             ctx,
@@ -49,13 +49,13 @@ class BasicCog(EconomyBase):
     @commands.hybrid_command(description="Give a person an amount of money.")
     @app_commands.describe(user="The user you want to give the money to.")
     @app_commands.describe(amount="The amount of money you want to give the user.")
-    @commands.cooldown(1, 30, commands.BucketType.user)
-    async def give(self, ctx, user: discord.Member, amount: BalanceConverter):
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def give(self, ctx: GuildContext, user: discord.Member, amount: BalanceConverter):
         if await self.check_account(ctx, user):
             return
 
-        if not await has_enough_money(self.bot, ctx.author.id, amount):
-            balance = await get_balance(self.bot, ctx.author.id)
+        if not await has_enough_money(self.bot, ctx.author.id, ctx.guild.id, amount):
+            balance = await get_balance(self.bot, ctx.author.id, ctx.guild.id)
 
             return await self.send_embed(
                 ctx,
@@ -63,11 +63,11 @@ class BasicCog(EconomyBase):
                 color=discord.Color.red(),
             )
 
-        balance = await get_balance(self.bot, ctx.author.id)
-        user_balance = await get_balance(self.bot, user.id)
+        balance = await get_balance(self.bot, ctx.author.id, ctx.guild.id)
+        user_balance = await get_balance(self.bot, user.id, ctx.guild.id)
 
-        await remove_money(self.bot, ctx.author.id, amount)
-        await add_money(self.bot, user.id, amount)
+        await remove_money(self.bot, ctx.author.id, ctx.guild.id, amount)
+        await add_money(self.bot, user.id, ctx.guild.id, amount)
 
         embed = await self.send_embed(
             ctx,
@@ -82,7 +82,7 @@ class BasicCog(EconomyBase):
 
     @commands.hybrid_command(description="View the people with the most money.", aliases=["lb", "rank", "top"])
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def leaderboard(self, ctx):
+    async def leaderboard(self, ctx: GuildContext):
         users = await self.bot.pool.fetch(
             """
             SELECT user_id, balance, bank, (balance + bank) AS total_wealth

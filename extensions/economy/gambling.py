@@ -9,7 +9,7 @@ from discord.ext import commands
 from utils import Embed, Interaction
 from utils.constants import NOT_YOUR_BUTTON
 
-from ._base import EconomyBase
+from ._base import EconomyBase, GuildContext
 from .utils import *
 
 values = {"2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10, "J": 10, "Q": 10, "K": 10, "A": 11}
@@ -101,8 +101,7 @@ class BlackjackView(discord.ui.View):
 
             self.embed.add_field(name="Dealer Hand", value=f"{', '.join(self.dealer_hand)}\nValue: {calculate_hand(self.dealer_hand)}")
 
-            await remove_money(interaction.client, self.author.id, self.amount)
-            await add_bank(interaction.client, 1044996444119109702, self.amount)
+            await remove_money(interaction.client, self.author.id, interaction.guild.id, self.amount)
             await self.message.edit(embed=self.embed, view=None)
 
         else:
@@ -119,12 +118,11 @@ class BlackjackView(discord.ui.View):
         if result == "Lose" or result == "Bust":
             self.embed.color = discord.Colour.red()
             money = f"-${self.amount}"
-            await remove_money(interaction.client, self.author.id, self.amount)
-            await add_bank(interaction.client, 1044996444119109702, self.amount)
+            await remove_money(interaction.client, self.author.id, interaction.guild.id, self.amount)
         elif result == "Win":
             self.embed.color = discord.Colour.green()
             money = f"+${self.amount}"
-            await add_money(interaction.client, self.author.id, self.amount)
+            await add_money(interaction.client, self.author.id, interaction.guild.id, self.amount)
         else:
             self.embed.color = discord.Colour.yellow()
             money = f"no money lost or gained"
@@ -155,11 +153,11 @@ class GamblingCog(EconomyBase):
         ]
     )
     @app_commands.autocomplete(amount=amount_autocomplete)
-    @commands.cooldown(1, 10, commands.BucketType.user)
-    async def coinflip(self, ctx: commands.Context, choice: Literal["heads", "h", "tails", "t"], amount: BalanceConverter):
-        balance = await get_balance(self.bot, ctx.author.id)
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def coinflip(self, ctx: GuildContext, choice: Literal["heads", "h", "tails", "t"], amount: BalanceConverter):
+        balance = await get_balance(self.bot, ctx.author.id, ctx.guild.id)
 
-        if not await has_enough_money(self.bot, ctx.author.id, amount):
+        if not await has_enough_money(self.bot, ctx.author.id, ctx.guild.id, amount):
             return await self.send_embed(
                 ctx,
                 text=f"{self.bot.E['no']} You only have **${balance}**.",
@@ -192,20 +190,20 @@ class GamblingCog(EconomyBase):
         embed.add_field(name="Your balance", value=f"{balance} -> {f'{balance + amount}' if won else f'{balance - amount}'}", title=False)
 
         if won:
-            await add_money(self.bot, ctx.author.id, amount)
+            await add_money(self.bot, ctx.author.id, ctx.guild.id, amount)
         else:
-            await remove_money(self.bot, ctx.author.id, amount)
+            await remove_money(self.bot, ctx.author.id, ctx.guild.id, amount)
 
         return await ctx.send(embed=embed, silent=True)
 
     @commands.hybrid_command(description="Bet money on blackjack.", aliases=["bj"])
     @app_commands.describe(amount="The amount you want to bet on the blackjack.")
     @app_commands.autocomplete(amount=amount_autocomplete)
-    @commands.cooldown(1, 15, commands.BucketType.user)
-    async def blackjack(self, ctx: commands.Context, amount: BalanceConverter):
-        balance = await get_balance(self.bot, ctx.author.id)
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def blackjack(self, ctx: GuildContext, amount: BalanceConverter):
+        balance = await get_balance(self.bot, ctx.author.id, ctx.guild.id)
 
-        if not await has_enough_money(self.bot, ctx.author.id, amount):
+        if not await has_enough_money(self.bot, ctx.author.id, ctx.guild.id, amount):
             return await self.send_embed(
                 ctx,
                 text=f"{self.bot.E['no']} You only have **${balance}**.",
@@ -230,8 +228,8 @@ class GamblingCog(EconomyBase):
     @app_commands.describe(choice="What you want to bet on. Options: green, red, black, 00, and numbers from 0-36")
     @app_commands.autocomplete(amount=amount_autocomplete)
     @app_commands.autocomplete(choice=roulette_autocomplete)
-    @commands.cooldown(1, 15, commands.BucketType.user)
-    async def roulette(self, ctx: commands.Context, amount: BalanceConverter, choice: RouletteConverter):
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def roulette(self, ctx: GuildContext, amount: BalanceConverter, choice: RouletteConverter):
         number = random.randint(0, 37)
 
         if number == 0:
@@ -257,7 +255,7 @@ class GamblingCog(EconomyBase):
                 color=discord.Color.green(),
             )
 
-            return await add_money(self.bot, ctx.author.id, amount)
+            return await add_money(self.bot, ctx.author.id, ctx.guild.id, amount)
 
         await self.send_embed(
             ctx,
@@ -265,5 +263,4 @@ class GamblingCog(EconomyBase):
             color=discord.Color.red(),
         )
 
-        await remove_money(self.bot, ctx.author.id, amount)
-        return await add_bank(self.bot, 1044996444119109702, amount)
+        return await remove_money(self.bot, ctx.author.id, ctx.guild.id, amount)

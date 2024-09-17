@@ -3,8 +3,6 @@ import re
 
 from discord.ext import commands
 
-from utils import Embed
-
 from ._base import EconomyBase
 from .utils import *
 
@@ -47,7 +45,7 @@ class WorkCog(EconomyBase):
 
         match = re.search(r"\$(\d+)", job)
         amount = int(match.group(1)) if match else 0
-        await add_money(self.bot, ctx.author.id, amount)
+        await add_money(self.bot, ctx.author.id, ctx.guild.id, amount)
 
         return await self.send_embed(
             ctx,

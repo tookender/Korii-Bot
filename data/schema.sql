@@ -24,7 +24,8 @@ CREATE TABLE IF NOT EXISTS role_rewards (
 );
 
 CREATE TABLE IF NOT EXISTS economy (
-    user_id BIGINT PRIMARY KEY,
+    user_id  BIGINT PRIMARY KEY,
+    guild_id BIGINT,
     balance BIGINT,
     bank    BIGINT,
     job     TEXT,
