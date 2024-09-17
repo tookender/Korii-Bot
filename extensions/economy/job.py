@@ -61,7 +61,7 @@ class JobDropdown(ui.Select):
     async def callback(self, interaction: Interaction):
         selected_job = self.values[0]
         await interaction.client.pool.execute(
-            "UPDATE economy SET job = $1, last_claim = $2 WHERE user_id = $3",
+            "UPDATE economy SET job = $1, last_job_claim = $2 WHERE user_id = $3",
             selected_job, discord.utils.utcnow(), interaction.user.id
         )
 
@@ -84,7 +84,7 @@ class JobCog(EconomyBase):
             await self.claim_income(ctx, user_job)
 
     async def claim_income(self, ctx: GuildContext, user_job):
-        last_claim = await self.bot.pool.fetchval("SELECT last_claim FROM economy WHERE user_id = $1 AND guild_id = $2", ctx.author.id, ctx.guild.id)
+        last_claim = await self.bot.pool.fetchval("SELECT last_job_claim FROM economy WHERE user_id = $1 AND guild_id = $2", ctx.author.id, ctx.guild.id)
 
         if last_claim is None:
             last_claim = discord.utils.utcnow()
@@ -104,6 +104,6 @@ class JobCog(EconomyBase):
         hourly_pay = jobs_data[user_job]["pay"]
         total_income = int(hours_passed) * hourly_pay
 
-        await self.bot.pool.execute("UPDATE economy SET last_claim = $1 WHERE user_id = $2 AND guild_id = $3", now, ctx.author.id, ctx.guild.id)
+        await self.bot.pool.execute("UPDATE economy SET last_job_claim = $1 WHERE user_id = $2 AND guild_id = $3", now, ctx.author.id, ctx.guild.id)
         await add_money(self.bot, ctx.author.id, ctx.guild.id, total_income)
         await self.send_embed(ctx, text=f"You've claimed ${total_income} from your job as a {user_job.capitalize()}. Keep working hard!", return_embed=False)
