@@ -38,7 +38,7 @@ class Korii(commands.AutoShardedBot):
 
     def __init__(self) -> None:
         super().__init__(
-            command_prefix=self.get_prefix,  # type: ignore
+            command_prefix=self.get_prefix,
             case_insensitive=True,
             strip_after_prefix=True,
             description="A multi-purpose bot 👻\n" "**Website:** https://korino.dev/bot\n" "**Dashboard:** https://korino.dev/dashboard",
@@ -165,7 +165,7 @@ class Korii(commands.AutoShardedBot):
         return self.ext_logger.info(f"Loaded {success} out of {success + failed} extensions")
 
     async def setup_hook(self) -> None:
-        self.pool = await asyncpg.create_pool(config.DATABASE)  # type: ignore
+        self.pool = await asyncpg.create_pool(config.DATABASE)
 
         if not self.pool:
             raise RuntimeError("Failed to connect with the database.")
