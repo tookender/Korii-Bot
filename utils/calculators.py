@@ -32,6 +32,12 @@ def calculate_upgrade_cost(current, total):
 
 
 def calc_dmg(weapon, armor, helm, ring1, ring2, skill, ability_multiplier):
+    weapon = weapon or 0
+    armor = armor or 0
+    helm = helm or 0
+    ring1 = ring1 or 0
+    ring2 = ring2 or 0
+    skill = skill or 1
     return (weapon + armor + helm + ring1 + ring2) * skill * ability_multiplier
 
 def truncate(value):
