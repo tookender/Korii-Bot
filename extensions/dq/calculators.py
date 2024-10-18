@@ -124,7 +124,7 @@ class CalculatorsCog(DQBase):
 		result = calculate_runs(current_level, goal_level, dungeon_name, event_active, booster_active, vip)
 		
 		embed = Embed(title="Dungeon Runs Calculator",
-				description=f"To go from **Level {result["current_level"]}** to **Level {result["goal_level"]}** in **{result["dungeon_name"]}** you will need **{result["xp_needed"]} XP**")
+				description=f"To go from **Level {result['current_level']}** to **Level {result['goal_level']}** in **{result['dungeon_name']}** you will need **{result['xp_needed']} XP**")
 		embed.set_author(name="Dungeon Quest Helper", url="https://www.roblox.com/games/2414851778")
 
 		runs = result["runs"]
