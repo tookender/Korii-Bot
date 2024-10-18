@@ -68,7 +68,7 @@ class CalculatorsCog(DQBase):
 		ei_avg = damage['With Enhanced Inner']['Average']
 		ei_high = damage["With Enhanced Inner"]["High Damage"]
 
-		embed = Embed(title="Damage Range Calculator")
+		embed = Embed(title="Damage Range Calculator", description=f"{damage}")
 
 		embed.add_field(name="❌ No Inner", value=f"Low Damage: {ni_low:,} ({n(ni_low)})\nAverage Damage: {ni_avg:,} ({n(ni_avg)})\n High Damage: {ni_high:,} ({n(ni_high)})", inline=False)
 		embed.add_field(name="✨ With Inner", value=f"Low Damage: {wi_low:,} ({n(wi_low)})\nAverage Damage: {wi_avg:,} ({n(wi_avg)})\n High Damage: {wi_high:,} ({n(wi_high)})", inline=False)
