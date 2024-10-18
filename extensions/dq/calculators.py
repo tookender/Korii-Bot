@@ -95,7 +95,6 @@ class CalculatorsCog(DQBase):
 	@app_commands.describe(current_level="The current level.")
 	@app_commands.describe(goal_level="The goal level.")
 	@app_commands.describe(dungeon_name="The name of the dungeon.")
-	@app_commands.describe(difficulty="The difficulty of the dungeon.")
 	@app_commands.describe(event_active="Whether the x2 EXP event is active.")
 	@app_commands.describe(booster_active="Whether the EXP potion is active.")
 	@app_commands.describe(vip="Whether you have VIP.")
