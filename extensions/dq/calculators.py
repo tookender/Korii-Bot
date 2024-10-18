@@ -3,7 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from ._base import DQBase
-from utils.calculators import calculate_upgrade_cost, calculate_potential, calculate_damage
+from utils.dq.calculators import calculate_upgrade_cost, calculate_potential, calculate_damage, calculate_runs
 from utils import Embed
 from typing import Optional
 from decimal import Decimal
@@ -36,6 +36,7 @@ class CalculatorsCog(DQBase):
 		humanized_potential = f"({n(potential)})"
 
 		embed = Embed(title="Potential Calculator")
+		embed.set_author(name="Dungeon Quest Helper", url="https://www.roblox.com/games/2414851778")
 
 		embed.add_field(name="💪 Max Power", value=f"{potential:,} {humanized_potential if potential > 999 else ''}", inline=False)
 		embed.add_field(name="💰 Upgrade Cost", value=f"{upgrade_cost:,} {humanized_cost if upgrade_cost > 999 else ''}", inline=False)
@@ -82,9 +83,53 @@ class CalculatorsCog(DQBase):
 		ei_high = damage["With Enhanced Inner"]["High Damage"]
 
 		embed = Embed(title="Damage Range Calculator")
+		embed.set_author(name="Dungeon Quest Helper", url="https://www.roblox.com/games/2414851778")
 
 		embed.add_field(name="❌ No Inner", value=f"**Low Damage:** {fn(ni_low)}\n**Average Damage:** {fn(ni_avg)}\n**High Damage:** {fn(ni_high)}", inline=False)
 		embed.add_field(name="✨ With Inner", value=f"**Low Damage:** {fn(wi_low)}\n**Average Damage:** {fn(wi_avg)}\n**High Damage:** {fn(wi_high)}", inline=False)
 		embed.add_field(name="🌟 With Enhanced Inner", value=f"**Low Damage:** {fn(ei_low)}\n**Average Damage:** {fn(ei_avg)}\n**High Damage:** {fn(ei_high)}", inline=False)
 
 		return await ctx.send(embed=embed)
+	
+	@commands.hybrid_command(description="Calculate the number of runs needed to reach the goal level given the selected dungeon.")
+	@app_commands.describe(current_level="The current level.")
+	@app_commands.describe(goal_level="The goal level.")
+	@app_commands.describe(dungeon_name="The name of the dungeon.")
+	@app_commands.describe(difficulty="The difficulty of the dungeon.")
+	@app_commands.describe(event_active="Whether the x2 EXP event is active.")
+	@app_commands.describe(booster_active="Whether the EXP potion is active.")
+	@app_commands.describe(vip="Whether you have VIP.")
+	@app_commands.choice(dungeon_name=[
+		app_commands.Choice(name="Abyssal Void", value="Abyssal Void"),
+		app_commands.Choice(name="Yokai Peak", value="Yokai Peak"),
+		app_commands.Choice(name="Gilded Skies", value="Gilded Skies"),
+		app_commands.Choice(name="Northern Lands", value="Northern Lands"),
+		app_commands.Choice(name="Enchanted Forest", value="Enchanted Forest"),
+		app_commands.Choice(name="Aquatic Temple", value="Aquatic Temple"),
+		app_commands.Choice(name="Volcanic Chambers", value="Volcanic Chambers"),
+		app_commands.Choice(name="Orbital Outpost", value="Orbital Outpost"),
+		app_commands.Choice(name="Steampunk Sewers", value="Steampunk Sewers"),
+		app_commands.Choice(name="Ghastly Harbor", value="Ghastly Harbor"),
+		app_commands.Choice(name="The Canals", value="The Canals"),
+		app_commands.Choice(name="Samurai Palace", value="Samurai Palace"),
+		app_commands.Choice(name="The Underworld", value="The Underworld"),
+		app_commands.Choice(name="King's Castle", value="King's Castle"),
+		app_commands.Choice(name="Pirate Island", value="Pirate Island"),
+		app_commands.Choice(name="Winter Outpost (Current)", value="Winter Outpost (Current)"),
+		app_commands.Choice(name="Winter Outpost (Legacy)", value="Winter Outpost (Legacy)"),
+		app_commands.Choice(name="Desert Temple (Current)", value="Desert Temple (Current)"),
+		app_commands.Choice(name="Desert Temple (Legacy)", value="Desert Temple (Legacy)"),
+	])
+	async def calc_runs(self, ctx, current_level: int, goal_level: int, dungeon_name: Optional[str] = None, event_active: Optional[bool] = False, booster_active: Optional[bool] = False, vip: Optional[bool] = False):
+		result = calculate_runs(current_level, goal_level, dungeon_name, event_active, booster_active, vip)
+		
+		embed = Embed(title="Dungeon Runs Calculator",
+				description=f"To go from **Level {result["current_level"]}** to **Level {result["goal_level"]}** in **{result["dungeon_name"]}** you will need **{result["xp_needed"]} XP**")
+		embed.set_author(name="Dungeon Quest Helper", url="https://www.roblox.com/games/2414851778")
+
+		runs = result["runs"]
+
+		for run in runs:
+			embed.add_field(name=f"{run.key} Runs", value=f"**{run.value}** runs", inline=False)
+		
+		await ctx.send(embed=embed)
