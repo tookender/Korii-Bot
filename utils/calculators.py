@@ -43,7 +43,7 @@ def calculate_damage(selected_ability, armor, helmet, weapon, ring1, ring2, skil
         {"name": "Solar Beam (2 ticks)", "multiplier": 126 / 2}
     ]
     
-    ability_multiplier = next((a["multiplier"] for a in abilities if a["name"] == selected_ability), 0)
+    ability_multiplier = abilities[selected_ability]["multiplier"]
 
     dmg = (weapon + armor + helmet + ring1 + ring2) * skill * ability_multiplier
     
