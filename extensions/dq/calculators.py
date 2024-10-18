@@ -72,6 +72,6 @@ class CalculatorsCog(DQBase):
 
 		embed.add_field(name="❌ No Inner", value=f"**Low Damage:** {n(ni_low)}\n**Average Damage:** {n(ni_avg)}\n**High Damage:** {n(ni_high)}", inline=False)
 		embed.add_field(name="✨ With Inner", value=f"**Low Damage:** {n(wi_low)}\n**Average Damage:** {n(wi_avg)}\n**High Damage:** {n(wi_high)}", inline=False)
-		embed.add_field(name="🌟 With Inner", value=f"**Low Damage:** {n(ei_low)}\n**Average Damage:** {n(ei_avg)}\n**High Damage:** {n(ei_high)}", inline=False)
+		embed.add_field(name="🌟 With Enhanced Inner", value=f"**Low Damage:** {n(ei_low)}\n**Average Damage:** {n(ei_avg)}\n**High Damage:** {n(ei_high)}", inline=False)
 
 		return await ctx.send(embed=embed)
