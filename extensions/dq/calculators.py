@@ -3,7 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from ._base import DQBase
-from utils.calculators import *
+from utils.calculators import calculate_upgrade_cost, calculate_potential, calculate_damage
 from utils import Embed
 from typing import Optional
 
@@ -49,8 +49,8 @@ class CalculatorsCog(DQBase):
 		app_commands.Choice(name="Jade Roller", value="Jade Roller"),
 		app_commands.Choice(name="Solar Beam (2 ticks)", value="Solar Beam (2 ticks)"),
 	])
-	async def calc_damage(self, ctx, ability: app_commands.Choice[str], helmet_power: Optional[int] = 0, armor_power: Optional[int] = 0, weapon_power: Optional[int] = 0,
-						ring1_power: Optional[int] = 0, ring2_power: Optional[int] = 0, damage_skill_points: Optional[int] = 0):
+	async def calc_damage(self, ctx, ability: app_commands.Choice[str], helmet_power: Optional[int], armor_power: Optional[int], weapon_power: Optional[int],
+						ring1_power: Optional[int], ring2_power: Optional[int], damage_skill_points: Optional[int]):
 		damage = calculate_damage(ability, helmet_power, armor_power, weapon_power, ring1_power, ring2_power, damage_skill_points)
 
 		ni_low = damage['No Inner']['Low Damage']
@@ -65,10 +65,10 @@ class CalculatorsCog(DQBase):
 		ei_avg = damage['With Enhanced Inner']['Average']
 		ei_high = damage["With Enhanced Inner"]["High Damage"]
 
-		embed = Embed(title="Damage Range Calculator")
+		embed = Embed(title="Damage Range Calculator", description=f"{damage}")
 
-		embed.add_field(name="❌ No Inner", value=f"Low Damage: {ni_low}\nAverage Damage: {ni_avg}\n High Damage: {ni_high}", inline=False)
-		embed.add_field(name="✨ With Inner", value=f"Low Damage: {wi_low}\nAverage Damage: {wi_avg}\n High Damage: {wi_high}", inline=False)
-		embed.add_field(name="🌟 With Inner", value=f"Low Damage: {ei_low}\nAverage Damage: {ei_avg}\n High Damage: {ei_high}", inline=False)
+		embed.add_field(name="❌ No Inner", value=f"Low Damage: {ni_low:,}\nAverage Damage: {ni_avg:,}\n High Damage: {ni_high:,}", inline=False)
+		embed.add_field(name="✨ With Inner", value=f"Low Damage: {wi_low:,}\nAverage Damage: {wi_avg:,}\n High Damage: {wi_high:,}", inline=False)
+		embed.add_field(name="🌟 With Inner", value=f"Low Damage: {ei_low:,}\nAverage Damage: {ei_avg:,}\n High Damage: {ei_high:,}", inline=False)
 
 		return await ctx.send(embed=embed)
