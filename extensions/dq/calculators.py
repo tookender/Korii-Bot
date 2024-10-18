@@ -1,4 +1,4 @@
-from numerize import numerize
+from numerize import numerize as numerize
 from discord import app_commands
 from discord.ext import commands
 
@@ -6,6 +6,9 @@ from ._base import DQBase
 from utils.calculators import calculate_upgrade_cost, calculate_potential, calculate_damage
 from utils import Embed
 from typing import Optional
+
+def n(value):
+	return numerize.numerize(value)
 
 class CalculatorsCog(DQBase):
 	@commands.hybrid_command(description="Calculate max potential of an item and the upgrade cost.", aliases=["potential", "pot", "calc_pot", "calcpot", "potcalc", "potentialcalc"])
@@ -16,8 +19,8 @@ class CalculatorsCog(DQBase):
 		upgrade_cost = calculate_upgrade_cost(current_upgrades, total_upgrades)
 		potential = calculate_potential(current_power, current_upgrades, total_upgrades)
         
-		humanized_cost = f"({numerize.numerize(upgrade_cost)})"
-		humanized_potential = f"({numerize.numerize(potential)})"
+		humanized_cost = f"({n(upgrade_cost)})"
+		humanized_potential = f"({n(potential)})"
 
 		embed = Embed(title="Potential Calculator")
 
@@ -49,8 +52,8 @@ class CalculatorsCog(DQBase):
 		app_commands.Choice(name="Jade Roller", value="Jade Roller"),
 		app_commands.Choice(name="Solar Beam (2 ticks)", value="Solar Beam (2 ticks)"),
 	])
-	async def calc_damage(self, ctx, ability: app_commands.Choice[str], helmet_power: int, armor_power: int, weapon_power: int,
-						ring1_power: int, ring2_power: int, damage_skill_points: int):
+	async def calc_damage(self, ctx, ability: app_commands.Choice[str], helmet_power: Optional[int] = 0, armor_power: Optional[int] = 0, weapon_power: Optional[int] = 0,
+						ring1_power: Optional[int] = 0, ring2_power: Optional[int] = 0, damage_skill_points: Optional[int] = 0):
 		damage = calculate_damage(ability, armor_power, helmet_power, weapon_power, ring1_power, ring2_power, damage_skill_points)
 
 		ni_low = damage['No Inner']['Low Damage']
@@ -65,10 +68,10 @@ class CalculatorsCog(DQBase):
 		ei_avg = damage['With Enhanced Inner']['Average']
 		ei_high = damage["With Enhanced Inner"]["High Damage"]
 
-		embed = Embed(title="Damage Range Calculator", description=f"{damage}")
+		embed = Embed(title="Damage Range Calculator")
 
-		embed.add_field(name="❌ No Inner", value=f"Low Damage: {ni_low:,}\nAverage Damage: {ni_avg:,}\n High Damage: {ni_high:,}", inline=False)
-		embed.add_field(name="✨ With Inner", value=f"Low Damage: {wi_low:,}\nAverage Damage: {wi_avg:,}\n High Damage: {wi_high:,}", inline=False)
-		embed.add_field(name="🌟 With Inner", value=f"Low Damage: {ei_low:,}\nAverage Damage: {ei_avg:,}\n High Damage: {ei_high:,}", inline=False)
+		embed.add_field(name="❌ No Inner", value=f"Low Damage: {ni_low:,} ({n(ni_low)})\nAverage Damage: {ni_avg:,} ({n(ni_avg)})\n High Damage: {ni_high:,} ({n(ni_high)})", inline=False)
+		embed.add_field(name="✨ With Inner", value=f"Low Damage: {wi_low:,} ({n(wi_low)})\nAverage Damage: {wi_avg:,} ({n(wi_avg)})\n High Damage: {wi_high:,} ({n(wi_high)})", inline=False)
+		embed.add_field(name="🌟 With Inner", value=f"Low Damage: {ei_low:,} ({n(ei_low)})\nAverage Damage: {ei_avg:,} ({n(ei_avg)})\n High Damage: {ei_high:,} ({n(ei_high)})", inline=False)
 
 		return await ctx.send(embed=embed)
