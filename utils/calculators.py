@@ -31,19 +31,7 @@ def calculate_upgrade_cost(current, total):
     return cost
 
 
-def calc_dmg(weapon, armor, helm, ring1, ring2, skill, ability_multiplier):
-    weapon = weapon or 0
-    armor = armor or 0
-    helm = helm or 0
-    ring1 = ring1 or 0
-    ring2 = ring2 or 0
-    skill = skill or 1
-    return (weapon + armor + helm + ring1 + ring2) * skill * ability_multiplier
-
-def truncate(value):
-    return int(value)
-
-def calculate_damage(selected_ability, weapon, armor, helm, ring1, ring2, skill):
+def calculate_damage(selected_ability, armor, helmet, weapon, ring1, ring2, skill):
     abilities = [
         {"name": "Spinning Blade Smash / Void Dragon", "multiplier": 148},
         {"name": "Kunai Knives (3 ticks)", "multiplier": 150 / 3},
@@ -57,7 +45,7 @@ def calculate_damage(selected_ability, weapon, armor, helm, ring1, ring2, skill)
     
     ability_multiplier = next((a["multiplier"] for a in abilities if a["name"] == selected_ability), 0)
 
-    dmg = calc_dmg(weapon, armor, helm, ring1, ring2, skill, ability_multiplier)
+    dmg = (weapon + armor + helmet + ring1 + ring2) * skill * ability_multiplier
     
     low = dmg * 0.95
     high = dmg * 1.05
@@ -73,17 +61,17 @@ def calculate_damage(selected_ability, weapon, armor, helm, ring1, ring2, skill)
     base_e_inner = dmg * 1.9
     high_e_inner = dmg * 1.9 * 1.05
 
-    low_damage = truncate(low)
-    base_damage = truncate(dmg)
-    high_damage = truncate(high)
+    low_damage = int(low)
+    base_damage = int(dmg)
+    high_damage = int(high)
 
-    low_inner_damage = truncate(low_inner)
-    base_inner_damage = truncate(base_inner)
-    high_inner_damage = truncate(high_inner)
+    low_inner_damage = int(low_inner)
+    base_inner_damage = int(base_inner)
+    high_inner_damage = int(high_inner)
 
-    low_e_inner_damage = truncate(low_e_inner)
-    base_e_inner_damage = truncate(base_e_inner)
-    high_e_inner_damage = truncate(high_e_inner)
+    low_e_inner_damage = int(low_e_inner)
+    base_e_inner_damage = int(base_e_inner)
+    high_e_inner_damage = int(high_e_inner)
 
     return {
         "No Inner": {
@@ -100,5 +88,9 @@ def calculate_damage(selected_ability, weapon, armor, helm, ring1, ring2, skill)
             "Low Damage": low_e_inner_damage,
             "Average": base_e_inner_damage,
             "High Damage": high_e_inner_damage
+        },
+        f"Other Information": {
+            "ability_multiplier": ability_multiplier,
+            "dmg": dmg,
         }
     }
