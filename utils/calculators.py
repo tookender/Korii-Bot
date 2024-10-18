@@ -43,8 +43,10 @@ def calculate_damage(selected_ability, armor, helmet, weapon, ring1, ring2, skil
         {"name": "Solar Beam (2 ticks)", "multiplier": 126 / 2}
     ]
 
-    ability_multiplier = (a["multiplier"] for a in abilities if a["name"] == selected_ability)
-
+    for ability in abilities:
+        if ability["name"] == selected_ability:
+            ability_multiplier = ability["multiplier"]
+            
     dmg = int(weapon * (0.6597 + 0.013202 * skill) * (armor + helmet + ring1 + ring2) * 0.0028 * ability_multiplier)
     low = dmg * 0.95
     high = dmg * 1.05
@@ -60,17 +62,17 @@ def calculate_damage(selected_ability, armor, helmet, weapon, ring1, ring2, skil
     base_e_inner = dmg * 1.9
     high_e_inner = dmg * 1.9 * 1.05
 
-    low_damage = int(low)
-    base_damage = int(dmg)
-    high_damage = int(high)
+    low_damage = low
+    base_damage = dmg
+    high_damage = high
 
-    low_inner_damage = int(low_inner)
-    base_inner_damage = int(base_inner)
-    high_inner_damage = int(high_inner)
+    low_inner_damage = low_inner
+    base_inner_damage = base_inner
+    high_inner_damage = high_inner
 
-    low_e_inner_damage = int(low_e_inner)
-    base_e_inner_damage = int(base_e_inner)
-    high_e_inner_damage = int(high_e_inner)
+    low_e_inner_damage = low_e_inner
+    base_e_inner_damage = base_e_inner
+    high_e_inner_damage = high_e_inner
 
     return {
         "No Inner": {
