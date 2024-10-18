@@ -1,4 +1,4 @@
-from numerize import numerize as numerize
+from numerize.numerize import numerize
 from discord import app_commands
 from discord.ext import commands
 
@@ -8,7 +8,7 @@ from utils import Embed
 from typing import Optional
 
 def n(value):
-	return numerize.numerize(value)
+	return numerize(value, 3)
 
 class CalculatorsCog(DQBase):
 	@commands.hybrid_command(description="Calculate max potential of an item and the upgrade cost.", aliases=["potential", "pot", "calc_pot", "calcpot", "potcalc", "potentialcalc"])
@@ -68,7 +68,7 @@ class CalculatorsCog(DQBase):
 		ei_avg = damage['With Enhanced Inner']['Average']
 		ei_high = damage["With Enhanced Inner"]["High Damage"]
 
-		embed = Embed(title="Damage Range Calculator")
+		embed = Embed(title="Damage Range Calculator", description=f"{damage}")
 
 		embed.add_field(name="❌ No Inner", value=f"**Low Damage:** {n(ni_low)}\n**Average Damage:** {n(ni_avg)}\n**High Damage:** {n(ni_high)}", inline=False)
 		embed.add_field(name="✨ With Inner", value=f"**Low Damage:** {n(wi_low)}\n**Average Damage:** {n(wi_avg)}\n**High Damage:** {n(wi_high)}", inline=False)
