@@ -49,8 +49,8 @@ class CalculatorsCog(DQBase):
 		app_commands.Choice(name="Jade Roller", value="Jade Roller"),
 		app_commands.Choice(name="Solar Beam (2 ticks)", value="Solar Beam (2 ticks)"),
 	])
-	async def calc_damage(self, ctx, ability: app_commands.Choice[str], helmet_power: Optional[int], armor_power: Optional[int], weapon_power: Optional[int],
-						ring1_power: Optional[int], ring2_power: Optional[int], damage_skill_points: Optional[int]):
+	async def calc_damage(self, ctx, ability: app_commands.Choice[str], helmet_power: Optional[int] = 0, armor_power: Optional[int] = 0, weapon_power: Optional[int] = 0,
+						ring1_power: Optional[int] = 0, ring2_power: Optional[int] = 0, damage_skill_points: Optional[int] = 0):
 		damage = calculate_damage(ability, helmet_power, armor_power, weapon_power, ring1_power, ring2_power, damage_skill_points)
 
 		ni_low = damage['No Inner']['Low Damage']
