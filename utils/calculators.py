@@ -95,5 +95,6 @@ def calculate_damage(selected_ability, armor, helmet, weapon, ring1, ring2, skil
         f"Other Information": {
             "ability_multiplier": ability_multiplier,
             "dmg": dmg,
+            "selected_ability": selected_ability
         }
     }
