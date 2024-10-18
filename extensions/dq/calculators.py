@@ -99,7 +99,7 @@ class CalculatorsCog(DQBase):
 	@app_commands.describe(event_active="Whether the x2 EXP event is active.")
 	@app_commands.describe(booster_active="Whether the EXP potion is active.")
 	@app_commands.describe(vip="Whether you have VIP.")
-	@app_commands.choice(dungeon_name=[
+	@app_commands.choices(dungeon_name=[
 		app_commands.Choice(name="Abyssal Void", value="Abyssal Void"),
 		app_commands.Choice(name="Yokai Peak", value="Yokai Peak"),
 		app_commands.Choice(name="Gilded Skies", value="Gilded Skies"),
