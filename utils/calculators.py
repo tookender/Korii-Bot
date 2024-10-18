@@ -46,7 +46,7 @@ def calculate_damage(selected_ability, armor, helmet, weapon, ring1, ring2, skil
     ability_multiplier = 1
 
     for ability in abilities:
-        if ability["name"] == selected_ability:
+        if ability["name"] == selected_ability.value:
             ability_multiplier = ability["multiplier"]
 
     dmg = int(weapon * (0.6597 + 0.013202 * skill) * (armor + helmet + ring1 + ring2) * 0.0028 * ability_multiplier)
