@@ -6,9 +6,22 @@ from ._base import DQBase
 from utils.calculators import calculate_upgrade_cost, calculate_potential, calculate_damage
 from utils import Embed
 from typing import Optional
+from decimal import Decimal
 
 def n(value):
 	return numerize(value, 3)
+
+def fn(num):
+    suffixes = ["", "K", "M", "B", "T", "Q", "Qi"]
+    dnum = Decimal(num)
+    
+    for i, suffix in enumerate(suffixes):
+        unit = Decimal(1000) ** i
+        if dnum < unit * 1000:
+            formatted_number = dnum / unit
+            return f"{formatted_number:.2f}".rstrip('0').rstrip('.') + suffix
+    
+    return f"{dnum:.2e}"
 
 class CalculatorsCog(DQBase):
 	@commands.hybrid_command(description="Calculate max potential of an item and the upgrade cost.", aliases=["potential", "pot", "calc_pot", "calcpot", "potcalc", "potentialcalc"])
@@ -70,8 +83,8 @@ class CalculatorsCog(DQBase):
 
 		embed = Embed(title="Damage Range Calculator", description=f"{damage}")
 
-		embed.add_field(name="❌ No Inner", value=f"**Low Damage:** {n(ni_low)}\n**Average Damage:** {n(ni_avg)}\n**High Damage:** {n(ni_high)}", inline=False)
-		embed.add_field(name="✨ With Inner", value=f"**Low Damage:** {n(wi_low)}\n**Average Damage:** {n(wi_avg)}\n**High Damage:** {n(wi_high)}", inline=False)
-		embed.add_field(name="🌟 With Enhanced Inner", value=f"**Low Damage:** {n(ei_low)}\n**Average Damage:** {n(ei_avg)}\n**High Damage:** {n(ei_high)}", inline=False)
+		embed.add_field(name="❌ No Inner", value=f"**Low Damage:** {fn(ni_low)}\n**Average Damage:** {fn(ni_avg)}\n**High Damage:** {fn(ni_high)}", inline=False)
+		embed.add_field(name="✨ With Inner", value=f"**Low Damage:** {fn(wi_low)}\n**Average Damage:** {fn(wi_avg)}\n**High Damage:** {fn(wi_high)}", inline=False)
+		embed.add_field(name="🌟 With Enhanced Inner", value=f"**Low Damage:** {fn(ei_low)}\n**Average Damage:** {fn(ei_avg)}\n**High Damage:** {fn(ei_high)}", inline=False)
 
 		return await ctx.send(embed=embed)
