@@ -39,7 +39,7 @@ class CalculatorsCog(DQBase):
 	@app_commands.describe(ring1_power="The power of your 1st ring.")
 	@app_commands.describe(ring2_power="The power of your 2nd ring.")
 	@app_commands.describe(damage_skill_points="The amount of damage skill points you have.")
-	@app_commands.choices(command=[
+	@app_commands.choices(ability=[
 		app_commands.Choice(name="Spinning Blade Smash / Void Dragon", value="Spinning Blade Smash / Void Dragon"),
 		app_commands.Choice(name="Kunai Knives (3 ticks)", value="Kunai Knives (3 ticks)"),
 		app_commands.Choice(name="Rift Beam (37 ticks)", value="Rift Beam (37 ticks)"),
