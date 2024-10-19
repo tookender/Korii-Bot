@@ -142,6 +142,6 @@ class CalculatorsCog(DQBase):
 		runs = result["runs"]
 
 		for run in runs.items():
-			embed.add_field(name=f"{run[0]} Runs", value=f"**{fn(run[1])}** runs", inline=False)
+			embed.add_field(name=f"{run[0]} Runs", value=f"**{fn(run[1])}** runs", inline=True)
 		
 		await ctx.send(embed=embed)
