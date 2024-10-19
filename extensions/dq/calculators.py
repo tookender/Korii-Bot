@@ -12,7 +12,7 @@ def n(value):
 	return numerize(value, 3)
 
 def fn(num):
-    suffixes = ["", "K", "M", "B", "T", "Q", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Udc"]
+    suffixes = ["", "K", "M", "B", "T", "Q", "Qi", "Sx", "Sp", "Oc", "Nonillion", "Decillion", "Undecillion", "Duodecillion", "Tredecillion", "Quattuordecillion", "i don't like you"]
     dnum = Decimal(num)
     
     for i, suffix in enumerate(suffixes):
