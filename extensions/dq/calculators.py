@@ -57,11 +57,24 @@ class CalculatorsCog(DQBase):
 	@app_commands.describe(ring2_power="The power of your 2nd ring.")
 	@app_commands.describe(damage_skill_points="The amount of damage skill points you have.")
 	@app_commands.choices(ability=[
+		# AV
+		app_commands.Choice(name="Gravity Leap", value="Gravity Leap"),
+		app_commands.Choice(name="Unstable Warp (2 ticks)", value="Unstable Warp (2 ticks)"),
+		app_commands.Choice(name="Mighty Cleave (fully charged, 2 ticks)", value="Mighty Cleave (fully charged, 2 ticks)"),
+		app_commands.Choice(name="Mighty Cleave (half charged)", value="Mighty Cleave (half charged)"),
+		app_commands.Choice(name="Sacrificial Orbs (fully charged)", value="Sacrificial Orbs (fully charged)"),
+		app_commands.Choice(name="Sacrificial Orbs (half charged)", value="Sacrificial Orbs (half charged)"),
+		app_commands.Choice(name="Shatterstrike (6 ticks)", value="Shatterstrike (6 ticks)"),
+		app_commands.Choice(name="Voidflames (5 ticks)", value="Voidflames (5 ticks)"),
+
+		# YP
 		app_commands.Choice(name="Spinning Blade Smash / Void Dragon", value="Spinning Blade Smash / Void Dragon"),
 		app_commands.Choice(name="Kunai Knives (3 ticks)", value="Kunai Knives (3 ticks)"),
 		app_commands.Choice(name="Rift Beam (37 ticks)", value="Rift Beam (37 ticks)"),
 		app_commands.Choice(name="Triple Quake (3 ticks)", value="Triple Quake (3 ticks)"),
 		app_commands.Choice(name="Chain Storm (6 ticks)", value="Chain Storm (6 ticks)"),
+
+		# GS
 		app_commands.Choice(name="Blade Barrage / God Spear / Amethyst Beams / Jade Rain", value="Blade Barrage / God Spear / Amethyst Beams / Jade Rain"),
 		app_commands.Choice(name="Jade Roller", value="Jade Roller"),
 		app_commands.Choice(name="Solar Beam (2 ticks)", value="Solar Beam (2 ticks)"),
@@ -119,7 +132,7 @@ class CalculatorsCog(DQBase):
 		app_commands.Choice(name="Desert Temple (Current)", value="Desert Temple (Current)"),
 		app_commands.Choice(name="Desert Temple (Legacy)", value="Desert Temple (Legacy)"),
 	])
-	async def calc_runs(self, ctx, current_level: int, goal_level: int, dungeon_name: Optional[str] = None, event_active: Optional[bool] = False, booster_active: Optional[bool] = False, vip: Optional[bool] = False):
+	async def calc_runs(self, ctx, current_level: int, goal_level: int, dungeon_name: str, event_active: Optional[bool] = False, booster_active: Optional[bool] = False, vip: Optional[bool] = False):
 		result = calculate_runs(current_level, goal_level, dungeon_name, event_active, booster_active, vip)
 		
 		embed = Embed(title="Dungeon Runs Calculator",

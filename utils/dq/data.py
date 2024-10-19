@@ -3,11 +3,24 @@
 # --------------------------------------------- #
 
 abilities = [
+	# AV
+	{"name": "Gravity Leap", "multiplier": 190},
+	{"name": "Unstable Warp (2 ticks)", "multiplier": 180 / 2},
+	{"name": "Mighty Cleave (fully charged, 2 ticks)", "multiplier": 280 / 2},
+	{"name": "Mighty Cleave (half charged)", "multiplier": 120},
+	{"name": "Sacrificial Orbs (fully charged)", "multiplier": 280},
+	{"name": "Sacrificial Orbs (half charged)", "multiplier": 140},
+	{"name": "Shatterstrike (6 ticks)", "multiplier": 186 / 6},
+	{"name": "Voidflames (5 ticks)", "multiplier": 185 / 5},
+
+	# YP
 	{"name": "Spinning Blade Smash / Void Dragon", "multiplier": 148},
 	{"name": "Kunai Knives (3 ticks)", "multiplier": 150 / 3},
 	{"name": "Rift Beam (37 ticks)", "multiplier": 203 / 37},
 	{"name": "Triple Quake (3 ticks)", "multiplier": 144 / 3},
 	{"name": "Chain Storm (6 ticks)", "multiplier": 147 / 6},
+
+	# GS
 	{"name": "Blade Barrage / God Spear / Amethyst Beams / Jade Rain", "multiplier": 133},
 	{"name": "Jade Roller", "multiplier": 126},
 	{"name": "Solar Beam (2 ticks)", "multiplier": 126 / 2}
