@@ -25,7 +25,7 @@ class ErrorsCog(EventsBase):
 
         if reason := errors.get(type(error)):
             embed = Embed(title="G-HOOOOOOST", description=reason.format(self=self, error=error))
-            return await ctx.reply(embed=embed)
+            return await ctx.send(embed=embed)
 
         embed = Embed(title="something spoooky happened 👻👻", description=f"```prolog\n{error}\n```")
-        return await ctx.reply(embed=embed)
+        return await ctx.send(embed=embed)
