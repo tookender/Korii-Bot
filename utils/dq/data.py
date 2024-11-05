@@ -2,6 +2,29 @@
 # Please view 'notice.md' for more information. #
 # --------------------------------------------- #
 
+abilities_ticks = [
+	{"name": "Gravity Leap", "ticks": 1},
+	{"name": "Unstable Warp (2 ticks)", "ticks": 2},
+	{"name": "Mighty Cleave (fully charged, 2 ticks)", "ticks": 2},
+	{"name": "Mighty Cleave (half charged)", "ticks": 1},
+	{"name": "Sacrificial Orbs (fully charged)", "ticks": 1},
+	{"name": "Sacrificial Orbs (half charged)", "ticks": 1},
+	{"name": "Shatterstrike (6 ticks)", "ticks": 6},
+	{"name": "Voidflames (5 ticks)", "ticks": 5},
+
+	# YP
+	{"name": "Spinning Blade Smash / Void Dragon", "ticks": 1},
+	{"name": "Kunai Knives (3 ticks)", "ticks": 3},
+	{"name": "Rift Beam (37 ticks)", "ticks": 37},
+	{"name": "Triple Quake (3 ticks)", "ticks": 3},
+	{"name": "Chain Storm (6 ticks)", "ticks": 6},
+
+	# GS
+	{"name": "Blade Barrage / God Spear / Amethyst Beams / Jade Rain", "ticks": 1},
+	{"name": "Jade Roller", "ticks": 1},
+	{"name": "Solar Beam (2 ticks)", "ticks": 2}
+]
+
 abilities = [
 	# AV
 	{"name": "Gravity Leap", "multiplier": 190},

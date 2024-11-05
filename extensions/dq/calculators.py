@@ -1,5 +1,5 @@
 from numerize.numerize import numerize
-from discord import app_commands
+from discord import app_commands, ui, ButtonStyle
 from discord.ext import commands
 
 from ._base import DQBase
@@ -7,6 +7,7 @@ from utils.dq.calculators import calculate_upgrade_cost, calculate_potential, ca
 from utils import Embed
 from typing import Optional
 from decimal import Decimal
+from utils.dq.data import abilities_ticks
 
 def n(value):
 	return numerize(value, 3)
@@ -22,6 +23,44 @@ def fn(num):
             return f"{formatted_number:.2f}".rstrip('0').rstrip('.') + suffix
     
     return f"{dnum:.2e}"
+
+class DamageView(ui.View):
+    def __init__(self, damage_data, ability_name):
+        super().__init__()
+        self.damage_data = damage_data
+        self.ticks = next((item["ticks"] for item in abilities_ticks if item["name"] == ability_name), 1)
+        
+        if self.ticks == 1:
+            self.remove_item(self.full_damage)
+
+    @ui.button(label="Show Full Damage", style=ButtonStyle.green)
+    async def full_damage(self, interaction, button):
+        ticked_damage = {
+            category: {
+                key: value * self.ticks for key, value in stats.items()
+            } for category, stats in self.damage_data.items()
+        }
+        
+        embed = create_damage_embed(f"Full Damage Calculator ({self.ticks} ticks)", ticked_damage)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+
+def create_damage_embed(title: str, damage_data: dict) -> Embed:
+    embed = Embed(title=title)
+    embed.set_author(name="Dungeon Quest Helper", url="https://www.roblox.com/games/2414851778")
+
+    for category, label, emoji in [
+        ("No Inner", "No Inner", "❌"),
+        ("With Inner", "With Inner", "✨"),
+        ("With Enhanced Inner", "With Enhanced Inner", "🌟")
+    ]:
+        stats = damage_data[category]
+        embed.add_field(
+            name=f"{emoji} {label}",
+            value=f"**Low Damage:** {fn(stats['Low Damage'])}\n**Average Damage:** {fn(stats['Average'])}\n**High Damage:** {fn(stats['High Damage'])}",
+            inline=False
+        )
+    
+    return embed
 
 class CalculatorsCog(DQBase):
 	@commands.hybrid_command(description="Calculate max potential of an item and the upgrade cost.", aliases=["potential", "pot", "calc_pot", "calcpot", "potcalc", "potentialcalc"])
@@ -82,27 +121,11 @@ class CalculatorsCog(DQBase):
 	async def calc_damage(self, ctx, ability: app_commands.Choice[str], helmet_power: Optional[int] = 0, armor_power: Optional[int] = 0, weapon_power: Optional[int] = 0,
 						ring1_power: Optional[int] = 0, ring2_power: Optional[int] = 0, damage_skill_points: Optional[int] = 0):
 		damage = calculate_damage(ability, armor_power, helmet_power, weapon_power, ring1_power, ring2_power, damage_skill_points)
-
-		ni_low = damage['No Inner']['Low Damage']
-		ni_avg = damage['No Inner']['Average']
-		ni_high = damage['No Inner']['High Damage']
-
-		wi_low = damage['With Inner']['Low Damage']
-		wi_avg = damage['With Inner']['Average']
-		wi_high = damage['With Inner']['High Damage']
-
-		ei_low = damage['With Enhanced Inner']['Low Damage']
-		ei_avg = damage['With Enhanced Inner']['Average']
-		ei_high = damage["With Enhanced Inner"]["High Damage"]
-
-		embed = Embed(title="Damage Range Calculator")
-		embed.set_author(name="Dungeon Quest Helper", url="https://www.roblox.com/games/2414851778")
-
-		embed.add_field(name="❌ No Inner", value=f"**Low Damage:** {fn(ni_low)}\n**Average Damage:** {fn(ni_avg)}\n**High Damage:** {fn(ni_high)}", inline=False)
-		embed.add_field(name="✨ With Inner", value=f"**Low Damage:** {fn(wi_low)}\n**Average Damage:** {fn(wi_avg)}\n**High Damage:** {fn(wi_high)}", inline=False)
-		embed.add_field(name="🌟 With Enhanced Inner", value=f"**Low Damage:** {fn(ei_low)}\n**Average Damage:** {fn(ei_avg)}\n**High Damage:** {fn(ei_high)}", inline=False)
-
-		return await ctx.send(embed=embed)
+		
+		embed = create_damage_embed("Damage Range Calculator", damage)
+		view = DamageView(damage, ability.value)
+		
+		return await ctx.send(embed=embed, view=view)
 	
 	@commands.hybrid_command(description="Calculate the number of runs needed to reach the goal level given the selected dungeon.")
 	@app_commands.describe(current_level="The current level.")
