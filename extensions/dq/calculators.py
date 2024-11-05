@@ -28,21 +28,25 @@ class DamageView(ui.View):
     def __init__(self, damage_data, ability_name):
         super().__init__()
         self.damage_data = damage_data
-        self.ticks = next((item["ticks"] for item in abilities_ticks if item["name"] == ability_name), 1)
+        self.ticks = next((ability["ticks"] for ability in abilities_ticks if ability["name"] == ability_name), 1)
         
         if self.ticks == 1:
             self.remove_item(self.full_damage)
 
     @ui.button(label="Show Full Damage", style=ButtonStyle.green)
     async def full_damage(self, interaction, button):
-        ticked_damage = {
-            category: {
-                key: value * self.ticks for key, value in stats.items()
-            } for category, stats in self.damage_data.items()
-        }
+        for key, sub_dict in self.damage_data.items():
+            if "Inner" in key:
+                for sub_key, value in sub_dict.items():
+                    sub_dict[sub_key] = value * self.ticks
         
-        embed = create_damage_embed(f"Full Damage Calculator ({self.ticks} ticks)", ticked_damage)
+        embed = create_damage_embed(f"Full Damage Calculator ({self.ticks} ticks)", self.damage_data)
         await interaction.response.send_message(embed=embed, ephemeral=True)
+        
+    @ui.button(label="Raw JSON Data", style=ButtonStyle.green)
+    async def json_data(self, interaction, button):
+        await interaction.response.send_message(f"{'`'*3}json\n{self.damage_data}\n{'`'*3}", ephemeral=True)
+
 
 def create_damage_embed(title: str, damage_data: dict) -> Embed:
     embed = Embed(title=title)
