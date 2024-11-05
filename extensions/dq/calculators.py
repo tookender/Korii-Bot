@@ -54,7 +54,7 @@ def create_damage_embed(title: str, damage_data: dict, multiply: int = 1) -> Emb
         stats = damage_data[category]
         embed.add_field(
             name=f"{emoji} {label}",
-            value=f"**Low Damage:** {fn(stats['Low Damage']) * multiply}\n**Average Damage:** {fn(stats['Average']) * multiply}\n**High Damage:** {fn(stats['High Damage']) * multiply}",
+            value=f"**Low Damage:** {fn(stats['Low Damage'] * multiply)}\n**Average Damage:** {fn(stats['Average'] * multiply)}\n**High Damage:** {fn(stats['High Damage'] * multiply)}",
             inline=False
         )
     
