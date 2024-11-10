@@ -28,17 +28,19 @@ vocabulary = {
     "Ich treibe Sport/ klettere / spiele Gitarre.": "Je fais du sport / de l'escalade / de la guitare."
 }
 
+active_games = {}
+
 class VocabularyCommand(UtilityBase):
     @commands.command(name="vocab")
     async def vocab(self, ctx):
-        if ctx.author.id in self.active_games:
+        if ctx.author.id in active_games:
             await ctx.send("You are already in a game. Type 'stop' to end it.")
             return
 
-        self.active_games[ctx.author.id] = True
+        active_games[ctx.author.id] = True
         await ctx.send("Starting the vocabulary game! Type 'stop' to end it.")
 
-        while self.active_games.get(ctx.author.id):
+        while active_games.get(ctx.author.id):
             german_phrase = random.choice(list(vocabulary.keys()))
             french_answer = vocabulary[german_phrase]
 
@@ -51,7 +53,7 @@ class VocabularyCommand(UtilityBase):
             msg = await self.bot.wait_for("message", check=check)
 
             if msg.content.lower() == "stop":
-                del self.active_games[ctx.author.id]
+                del active_games[ctx.author.id]
                 await ctx.send("Game stopped.")
                 return
 
