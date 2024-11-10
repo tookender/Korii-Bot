@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random
+from ._base import UtilityBase
 
 vocabulary = {
     "Wie heißt du?": "Tu t'appelles comment?",
@@ -27,11 +28,7 @@ vocabulary = {
     "Ich treibe Sport/ klettere / spiele Gitarre.": "Je fais du sport / de l'escalade / de la guitare."
 }
 
-class VocabularyCommand(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-        self.active_games = {}
-
+class VocabularyCommand(UtilityBase):
     @commands.command(name="vocab")
     async def vocab(self, ctx):
         if ctx.author.id in self.active_games:
