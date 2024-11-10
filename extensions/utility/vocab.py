@@ -1,8 +1,3 @@
-import discord
-from discord.ext import commands
-import random
-from ._base import UtilityBase
-
 vocabulary = {
     "Wie heißt du?": "Tu t'appelles comment?",
     "Ich heiße Leo. Und du?": "Je m'appelle Leo. Et toi?",
@@ -27,39 +22,3 @@ vocabulary = {
     "Für mich, ist Sport der Horror!": "Pour moi, le sport c'est l'horreur",
     "Ich treibe Sport/ klettere / spiele Gitarre.": "Je fais du sport / de l'escalade / de la guitare."
 }
-
-active_games = {}
-
-class VocabularyCommand(UtilityBase):
-    @commands.command(name="vocab")
-    async def vocab(self, ctx):
-        if ctx.author.id in active_games:
-            await ctx.send("You are already in a game. Type 'stop' to end it.")
-            return
-
-        active_games[ctx.author.id] = True
-        await ctx.send("Starting the vocabulary game! Type 'stop' to end it.")
-
-        while active_games.get(ctx.author.id):
-            german_phrase = random.choice(list(vocabulary.keys()))
-            french_answer = vocabulary[german_phrase]
-
-            embed = discord.Embed(title="Translate to French", description=german_phrase, color=discord.Color.blue())
-            await ctx.send(embed=embed)
-
-            def check(m):
-                return m.author == ctx.author and m.channel == ctx.channel
-
-            msg = await self.bot.wait_for("message", check=check)
-
-            if msg.content.lower() == "stop":
-                del active_games[ctx.author.id]
-                await ctx.send("Game stopped.")
-                return
-
-            if msg.content.strip() == french_answer:
-                embed = discord.Embed(title="Correct!", description="Well done!", color=discord.Color.green())
-                await ctx.send(embed=embed)
-            else:
-                embed = discord.Embed(title="Incorrect!", description="You need to correct it to proceed.", color=discord.Color.red())
-                await ctx.send(embed=embed)
