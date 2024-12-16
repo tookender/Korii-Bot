@@ -8,9 +8,11 @@ class EventsBase(commands.Cog):
     def __init__(self, bot: Korii):
         self.bot = bot
         self.quests.start()
+        self.gifts.start()
     
     def cog_unload(self):
         self.quests.cancel()
+        self.gifts.cancel()
 
     @tasks.loop(minutes=1)
     async def quests(self):
@@ -19,17 +21,16 @@ class EventsBase(commands.Cog):
         if now.weekday() == 2:
             if now.hour == 16 and now.minute == 0:
                 channel = self.bot.get_channel(1269897035327209504)
-                await channel.send("🎁 | You can claim your daily gift! Weekly quests have refreshed.")
+                await channel.send("📅 | Weekly quests have refreshed!")
         else:
             if now.hour == 16 and now.minute == 0:
                 channel = self.bot.get_channel(1269897035327209504)
-                await channel.send("🎁 | You can claim your daily gift! Daily quests have refreshed.")
+                await channel.send("🗓️ | Daily quests have refreshed.")
 
-    @tasks.loop(time=datetime.time(hour=10, minute=0))
-    async def before(self):
-        timezone = pytz.timezone("America/Chicago")
-        time = timezone.localize(datetime.datetime.now().replace(hour=19, minute=0, second=0, microsecond=0))
-        unix_timestamp = int(time.timestamp())
+    @tasks.loop(minutes=1)
+    async def gifts(self):
+        now = datetime.datetime.now()
 
-        channel = self.bot.get_channel(1269897035327209504)
-        await channel.send(f"⚠️ | Make sure to log in before <t:{unix_timestamp}:F>") 
+        if now.hour == 3 and now.minute == 40:
+            channel = self.bot.get_channel(1269897035327209504)
+            await channel.send("🎁 | Go claim your daily gift!")
