@@ -19,11 +19,11 @@ class EventsBase(commands.Cog):
         if now.weekday() == 2:
             if now.hour == 16 and now.minute == 0:
                 channel = self.bot.get_channel(1269897035327209504)
-                await channel.send("⚠️ | Weekly Quests have been refreshed")
+                await channel.send("🎁 | You can claim your daily gift! Weekly quests have refreshed.")
         else:
             if now.hour == 16 and now.minute == 0:
                 channel = self.bot.get_channel(1269897035327209504)
-                await channel.send("⚠️ | Daily Quests have been refreshed")
+                await channel.send("🎁 | You can claim your daily gift! Daily quests have refreshed.")
 
     @tasks.loop(time=datetime.time(hour=10, minute=0))
     async def before(self):
