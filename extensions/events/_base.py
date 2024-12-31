@@ -26,11 +26,3 @@ class EventsBase(commands.Cog):
             if now.hour == 16 and now.minute == 0:
                 channel = self.bot.get_channel(1269897035327209504)
                 await channel.send("🗓️ | Daily quests have refreshed.")
-
-    @tasks.loop(minutes=1)
-    async def gifts(self):
-        now = datetime.datetime.now()
-
-        if now.hour == 3 and now.minute == 40:
-            channel = self.bot.get_channel(1269897035327209504)
-            await channel.send("🎁 | Go claim your daily gift!")

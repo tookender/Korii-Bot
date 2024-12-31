@@ -12,3 +12,4 @@ humanfriendly
 numerize
 git+https://github.com/Gorialis/jishaku
 git+https://github.com/Rapptz/discord-ext-menus
+git+https://github.com/notiku/discord_ios/
