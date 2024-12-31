@@ -1,11 +1,10 @@
-discord.py
+https://github.com/tookender/discord.py
 asyncpg
 beautifulsoup4
 pytz
 mystbin-py
 pygit2
 psutil
-discord.py
 python-dateutil
 pynacl
 humanfriendly
