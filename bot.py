@@ -176,7 +176,7 @@ class Korii(commands.AutoShardedBot):
         self.bot_code()
         await self.load_extensions()
 
-        await self.change_presence(status=discord.Status.idlediscord)
+        await self.change_presence(status=discord.Status.idle)
 
     async def start(self) -> None:
         discord.utils.setup_logging(level=logging.INFO)
