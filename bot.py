@@ -44,7 +44,7 @@ class Korii(commands.AutoShardedBot):
             description="A multi-purpose bot 👻\n" "**Website:** https://korino.dev/bot\n" "**Dashboard:** https://korino.dev/dashboard",
             intents=discord.Intents.all(),
             allowed_mentions=discord.AllowedMentions.none(),
-            owner_ids=[1022842005920940063, 555818548291829792],
+            owner_ids=[1022842005920940063, 812015432370356224, 555818548291829792, 916964266274324502],
         )
 
         self.ext_logger = logging.getLogger("korii.ext")
