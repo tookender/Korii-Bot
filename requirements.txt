@@ -1,4 +1,4 @@
-https://github.com/tookender/discord.py
+discord.py
 asyncpg
 beautifulsoup4
 pytz
@@ -9,5 +9,5 @@ python-dateutil
 pynacl
 humanfriendly
 numerize
-git+https://github.com/Gorialis/jishaku
-git+https://github.com/Rapptz/discord-ext-menus
+jishaku @ https://github.com/Gorialis/jishaku/archive/master.zip
+discord-ext-menus @ https://github.com/Rapptz/discord-ext-menus/archive/master.zip
