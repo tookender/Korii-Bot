@@ -68,6 +68,8 @@ class Korii(commands.AutoShardedBot):
         self.log_cache = defaultdict(lambda: defaultdict(list))
         self.guild_loggings: typing.Dict[int, LoggingEventsFlags] = {}
 
+        self.giveaway_cache: dict[int, dict] = {}
+
     def tick(self, boolean: bool | None):
         if boolean == True:
             return self.E["yes"]
@@ -165,7 +167,7 @@ class Korii(commands.AutoShardedBot):
         return self.ext_logger.info(f"Loaded {success} out of {success + failed} extensions")
 
     async def setup_hook(self) -> None:
-        self.pool = await asyncpg.create_pool(config.DATABASE)
+        self.pool = await asyncpg.create_pool(config.DATABASE) # type: ignore
 
         if not self.pool:
             raise RuntimeError("Failed to connect with the database.")
@@ -175,6 +177,7 @@ class Korii(commands.AutoShardedBot):
 
         self.bot_code()
         await self.load_extensions()
+        await self.populate_cache()
 
     async def start(self) -> None:
         discord.utils.setup_logging(level=logging.INFO)
@@ -201,6 +204,9 @@ class Korii(commands.AutoShardedBot):
         return await super().get_context(message, cls=cls)
 
     async def populate_cache(self):
+        giveaway_records = await self.pool.fetch("SELECT * FROM giveaways")
+        self.giveaway_cache = {record["message_id"]: record for record in giveaway_records}
+
         for entry in await self.pool.fetch("SELECT * FROM log_channels"):
             guild_id = entry["guild_id"]
             await self.pool.execute(

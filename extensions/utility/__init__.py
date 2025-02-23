@@ -6,10 +6,9 @@ from .ping import PingCog
 from .source import SourceCog
 from .spotify import SpotifyCog
 from .translate import TranslateCog
-from .vocab import VocabularyCommand
 
 
-class Utility(InfoCog, NeofetchCog, PingCog, SourceCog, EmbedCog, TranslateCog, SpotifyCog, DefineCog, VocabularyCommand):
+class Utility(InfoCog, NeofetchCog, PingCog, SourceCog, EmbedCog, TranslateCog, SpotifyCog, DefineCog):
     pass
 
 

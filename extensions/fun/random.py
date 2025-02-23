@@ -20,6 +20,14 @@ class RandomCog(FunBase):
         await asyncio.sleep(wait)
         return await interaction.edit_original_response(content=content)
 
+    @fun.command(description="Decide between a list of items seperated through a comma.")
+    @app_commands.describe(items="List of items, seperated with a comma.")
+    async def decide(self, interaction: Interaction, items: str):
+        seperated_items = items.split(",")
+        embed = Embed(description=f"{random.choice(seperated_items)}")
+
+        return await interaction.response.send_message(embed=embed)
+
     @fun.command(description="Turn a user's profile picture into emojis.")
     @app_commands.describe(user="The user's profile picture you wish to turn into emojis.")
     @app_commands.guild_only()
