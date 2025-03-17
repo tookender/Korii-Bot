@@ -10,14 +10,6 @@ BEGIN
 END
 $$;
 
-CREATE TABLE IF NOT EXISTS giveaways (
-    id SERIAL PRIMARY KEY,
-    end_time BIGINT NOT NULL,
-    message_id BIGINT NOT NULL,
-    channel_id BIGINT NOT NULL,
-    prize TEXT NOT NULL,
-    winners INT NOT NULL CHECK (winners > 0)
-);
 
 CREATE TABLE IF NOT EXISTS levels (
     guild_id BIGINT NOT NULL,

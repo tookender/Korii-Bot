@@ -8,11 +8,9 @@ class EventsBase(commands.Cog):
     def __init__(self, bot: Korii):
         self.bot = bot
         self.quests.start()
-        self.gifts.start()
     
     def cog_unload(self):
         self.quests.cancel()
-        self.gifts.cancel()
 
     @tasks.loop(minutes=1)
     async def quests(self):

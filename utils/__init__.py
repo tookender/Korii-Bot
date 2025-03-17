@@ -8,7 +8,6 @@ else:
 from .bases import *
 from .constants import *
 from .utils import *
-# from .giveaways import *
 
 Interaction: TypeAlias = discord.Interaction[Korii]
 
