@@ -2,15 +2,12 @@ FROM python:3.11-slim
 
 WORKDIR /main
 
+RUN apt-get update && apt-get upgrade -y && apt-get install -y neofetch
+
 COPY requirements.txt .
-
 RUN pip install --no-cache-dir -r requirements.txt
-    
-COPY . .
 
-RUN apt-get -y update
-RUN apt-get -y upgrade
-RUN apt-get install -y neofetch
+COPY . .
 
 EXPOSE 6969
 
