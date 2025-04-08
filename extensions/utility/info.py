@@ -112,7 +112,7 @@ class InfoCog(UtilityBase):
             name="Information",
             value=f"{EMOJIS['edit']} **Name:** {ctx.guild.name}\n"
             f"{EMOJIS['text2']} **ID:** `{ctx.guild.id}`\n"
-            f"{EMOJIS['text1']} **Description:** {await utils.shorten_text(self.bot, ctx.guild.description or 'No description.', 16)}\n"
+            f"{EMOJIS['text1']} **Description:** {ctx.guild.description}\n"
             "\n"
             f"{EMOJIS['owner']} **Owner:** {ctx.guild.owner.display_name}\n"
             f"{EMOJIS['text2']} **ID:** `{ctx.guild.owner.id}`\n"
