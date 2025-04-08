@@ -1,6 +1,7 @@
 import datetime
 import itertools
 import time
+import mystbin
 from typing import TYPE_CHECKING, Coroutine
 
 import discord
@@ -29,7 +30,8 @@ async def shorten_text(bot: Korii, text: str, length: int | None = None, code: i
     """
 
     if not length:
-        url = await bot.mystbin.create_paste(filename="OwO.txt", content=text)
+        file = mystbin.File(filename="OwO.txt", content=text)
+        url = await bot.mystbin.create_paste(files=[file])
 
         return url
 
@@ -39,7 +41,8 @@ async def shorten_text(bot: Korii, text: str, length: int | None = None, code: i
     if len(text) <= length:
         return text
 
-    url = await bot.mystbin.create_paste(filename="OwO.txt", content=text)
+    file = mystbin.File(filename="OwO.txt", content=text)
+    url = await bot.mystbin.create_paste(files=[file])
     text = text[:length]
 
     if code:
